@@ -1,0 +1,9 @@
+# 统一 LF —— 云函数跑在 Linux 上，CRLF 会让 scf_bootstrap 失效
+* text=auto eol=lf
+
+# 二进制文件不要做行尾处理
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.ico binary

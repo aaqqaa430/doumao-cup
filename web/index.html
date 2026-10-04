@@ -1,0 +1,5363 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <title>豆猫杯 · 黑流树海 | 赛事规程与应援卜算</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%230a110e' stroke='%23e6a117' stroke-width='6'/><polygon points='50,15 62,38 88,40 68,58 74,85 50,70 26,85 32,58 12,40 38,38' fill='%23ffd166'/></svg>">
+  <style>
+    /* ==========================================================================
+       1. 黑流树海 DESIGN TOKENS (沉沦者的黑流树海 · 参考实机色彩与规范)
+       ========================================================================== */
+    :root {
+      --bf-bg-blackboard:   #09110e;
+      --bf-bg-abyss:        #040706;
+      --bf-bg-card:         #0e1613;
+      --bf-bg-card-hover:   #14201c;
+      --bf-bg-overlay:      rgba(4, 7, 6, 0.94);
+
+      /* 核心神圣色彩 (神血赤金) */
+      --bf-gold-blood:      #e6a117;
+      --bf-gold-sacred:     #ffd166;
+      --bf-gold-dim:        #87621c;
+
+      /* 生理与解剖色彩 */
+      --bf-red-carne:       #9e1c1c;
+      --bf-red-hunt:        #dc2626;
+      --bf-red-glow:        rgba(220, 38, 38, 0.45);
+
+      /* 灵性与幽冥色彩 (中吉/小吉相同特效) */
+      --bf-cyan-embryo:     #14b8a6;
+      --bf-cyan-glow:       rgba(20, 184, 166, 0.45);
+      --bf-blue-tear:       #0284c7;
+
+      /* 墨水、粉笔微尘与刻度 */
+      --bf-chalk-white:     #e0e4dd;
+      --bf-chalk-dim:       #8a948c;
+      --bf-chalk-muted:     #3e4742;
+      --bf-chalk-border:    rgba(224, 228, 221, 0.16);
+
+      /* 字体体系 */
+      --font-serif: "Source Han Serif SC", "Noto Serif SC", "Songti SC", "SimSun", Georgia, serif;
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      --font-script: "Italianno", "Brush Script MT", "Caveat", "Apple Chancery", cursive, var(--font-serif);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bf-bg-abyss);
+      color: var(--bf-chalk-white);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      background-image: 
+        radial-gradient(circle at 50% 15%, rgba(20, 184, 166, 0.05) 0%, transparent 65%),
+        radial-gradient(circle at 85% 75%, rgba(230, 161, 23, 0.04) 0%, transparent 55%),
+        radial-gradient(circle at 15% 85%, rgba(158, 28, 28, 0.05) 0%, transparent 60%);
+      position: relative;
+    }
+
+    /* 黑板粉尘微粒杂色层 */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.35;
+      background-image: radial-gradient(rgba(224, 228, 221, 0.18) 1px, transparent 1px);
+      background-size: 28px 28px;
+    }
+
+    /* 滚动条美化 */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bf-bg-abyss); }
+    ::-webkit-scrollbar-thumb { background: #26332d; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--bf-gold-dim); }
+
+    /* ==========================================================================
+       2. TOP NAVIGATION HUD (顶部导航与状态条)
+       ========================================================================== */
+    /* 页头与总台直播条共用一个吸顶容器：
+       原来 .top-nav 自己 sticky，现在由外层 .sticky-top 统一吸顶，
+       这样两条能自然叠在视口顶端，不需要靠 JS 量高度去对齐。 */
+    .sticky-top {
+      position: sticky;
+      top: 0;
+      z-index: 60;
+    }
+
+    .top-nav {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 64px;
+      padding: 0 24px;
+      background: rgba(9, 17, 14, 0.95);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--bf-chalk-border);
+      gap: 16px;
+    }
+
+    .top-nav-row1 {
+      display: contents; /* 宽屏下直接作为父容器的 flex 子项 */
+    }
+
+    .brand-section {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .brand-logo-badge {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #23342d, #08100e);
+      border: 1.5px solid var(--bf-gold-blood);
+      box-shadow: 0 0 10px rgba(230, 161, 23, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .brand-logo-badge svg { width: 22px; height: 22px; fill: var(--bf-gold-sacred); }
+
+    .brand-texts {
+      display: flex;
+      flex-direction: column;
+    }
+    .brand-title {
+      font-family: var(--font-serif);
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .brand-tag {
+      font-size: 11px;
+      color: var(--bf-gold-blood);
+      border: 1px solid;
+      padding: 1px 5px;
+      border-radius: 2px;
+      letter-spacing: 0.05em;
+    }
+    .brand-sub {
+      font-family: var(--font-script);
+      font-size: 14px;
+      color: var(--bf-gold-sacred);
+      margin-top: -3px;
+      font-style: italic;
+    }
+
+    /* 顶部主要模式 Tabs */
+    .nav-tabs {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(4, 7, 6, 0.6);
+      padding: 4px;
+      border-radius: 4px;
+      border: 1px solid var(--bf-chalk-border);
+    }
+    .nav-tab {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--bf-chalk-dim);
+      padding: 7px 18px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 2px;
+      transition: all 0.25s;
+      white-space: nowrap;
+    }
+    .nav-tab svg { width: 14px; height: 14px; fill: currentColor; flex-shrink: 0; }
+    .nav-tab:hover {
+      color: var(--bf-chalk-white);
+      background: rgba(224, 228, 221, 0.05);
+    }
+    .nav-tab.active {
+      background: rgba(230, 161, 23, 0.14);
+      color: var(--bf-gold-sacred);
+      border-color: var(--bf-gold-blood);
+      box-shadow: 0 0 12px rgba(230, 161, 23, 0.25);
+    }
+
+    /* 右侧总赞数水泡与快捷工具 */
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+    .total-likes-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(220, 38, 38, 0.12);
+      border: 1px solid rgba(220, 38, 38, 0.35);
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      color: #fca5a5;
+    }
+    .total-likes-pill svg { width: 15px; height: 15px; fill: var(--bf-red-hunt); flex-shrink: 0; }
+    .total-likes-num { font-weight: 800; color: #fff; }
+    /* 云端同步：今日剩余额度胶囊（金色，与红色的总应援区分） */
+    .total-likes-pill.quota-pill {
+      background: rgba(214, 168, 74, 0.14);
+      border-color: rgba(214, 168, 74, 0.42);
+      color: #e8cd85;
+    }
+    .total-likes-pill.quota-pill svg { fill: #d6a84a; }
+    .total-likes-pill.quota-pill.quota-empty {
+      background: rgba(140, 140, 140, 0.16);
+      border-color: rgba(170, 170, 170, 0.4);
+      color: #bdbdbd;
+    }
+    .total-likes-pill.quota-pill.quota-empty svg { fill: #9e9e9e; }
+
+    /* ==========================================================================
+       3. BANNER / HERO SECTION
+       ========================================================================== */
+    .hero-banner {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      min-height: 190px;
+      background: #060b09;
+      background-image: linear-gradient(to bottom, rgba(9, 17, 14, 0.72), var(--bf-bg-abyss)), url('assets/bg/theme_lobby.png');
+      background-size: cover;
+      background-position: center 30%;
+      border-bottom: 1px solid var(--bf-chalk-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      text-align: center;
+      padding: 24px 20px;
+    }
+    .hero-title {
+      font-family: var(--font-serif);
+      font-size: clamp(22px, 4.5vw, 34px);
+      font-weight: 700;
+      letter-spacing: 0.25em;
+      color: #fff;
+      text-shadow: 0 0 20px rgba(255, 209, 102, 0.4);
+      margin-bottom: 6px;
+    }
+    .hero-subtitle {
+      font-family: var(--font-script);
+      font-size: clamp(14px, 2.5vw, 20px);
+      color: var(--bf-gold-sacred);
+      letter-spacing: 0.1em;
+      font-style: italic;
+      margin-bottom: 14px;
+    }
+    .hero-tags {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .hero-tag {
+      background: rgba(9, 17, 14, 0.85);
+      border: 1px solid var(--bf-chalk-border);
+      padding: 3px 10px;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      color: var(--bf-chalk-dim);
+      border-radius: 2px;
+    }
+
+    /* ==========================================================================
+       4. MAIN CONTAINER & TABS
+       ========================================================================== */
+    .main-container {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 1260px;
+      margin: 24px auto 60px;
+      padding: 0 20px;
+      flex: 1;
+    }
+
+    .tab-content-panel {
+      display: none;
+      animation: fadeIn 0.3s ease-out forwards;
+    }
+    .tab-content-panel.active {
+      display: block;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ==========================================================================
+       5. MODULE A: 选手名录与应援 (PLAYERS ROSTER & CHEER)
+       ========================================================================== */
+    .roster-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 22px;
+      background: var(--bf-bg-card);
+      border: 1px solid var(--bf-chalk-border);
+      padding: 16px 20px;
+      border-radius: 4px;
+    }
+    .roster-summary-text {
+      font-family: var(--font-serif);
+      font-size: 15px;
+      letter-spacing: 0.1em;
+    }
+    .roster-summary-text strong { color: var(--bf-gold-sacred); }
+
+    .filter-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .search-input {
+      background: #040806;
+      border: 1px solid var(--bf-chalk-muted);
+      color: var(--bf-chalk-white);
+      padding: 8px 14px;
+      font-size: 14px;
+      border-radius: 2px;
+      outline: none;
+      width: 200px;
+      transition: all 0.2s;
+    }
+    .search-input:focus {
+      border-color: var(--bf-gold-blood);
+      box-shadow: 0 0 10px rgba(230, 161, 23, 0.3);
+    }
+    .filter-select {
+      background: #040806;
+      border: 1px solid var(--bf-chalk-muted);
+      color: var(--bf-chalk-white);
+      padding: 8px 12px;
+      font-size: 14px;
+      border-radius: 2px;
+      outline: none;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .filter-select:focus { border-color: var(--bf-gold-blood); }
+
+    /* 应援排行 TOP3（紧凑横条，占位尽量小） */
+    .cheer-rank-strip {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      background: var(--bf-bg-card);
+      border: 1px solid var(--bf-chalk-border);
+      border-left: 3px solid var(--bf-gold-blood);
+      border-radius: 4px;
+      padding: 7px 12px;
+      margin-bottom: 14px;
+    }
+    .cheer-rank-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      flex-shrink: 0;
+      font-family: var(--font-serif);
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      color: var(--bf-gold-sacred);
+    }
+    .cheer-rank-label svg { width: 13px; height: 13px; fill: var(--bf-gold-blood); flex-shrink: 0; }
+    .cheer-rank-list {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 1;
+      min-width: 0;
+      flex-wrap: wrap;
+    }
+    .cheer-rank-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex: 1 1 0;
+      min-width: 0;
+      max-width: 240px;
+      background: rgba(9, 17, 14, 0.72);
+      border: 1px solid var(--bf-chalk-border);
+      border-radius: 20px;
+      padding: 3px 10px 3px 3px;
+    }
+    .cheer-rank-item.rank-1 { border-color: rgba(230, 161, 23, 0.55); }
+    .cheer-rank-item.rank-2 { border-color: rgba(190, 200, 208, 0.42); }
+    .cheer-rank-item.rank-3 { border-color: rgba(176, 114, 58, 0.5); }
+    .cheer-rank-no {
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 800;
+      color: #0b0f0c;
+      background: var(--bf-chalk-dim);
+    }
+    .rank-1 .cheer-rank-no { background: linear-gradient(135deg, #ffe08a, #e6a117); box-shadow: 0 0 8px rgba(230, 161, 23, 0.55); }
+    .rank-2 .cheer-rank-no { background: linear-gradient(135deg, #eef2f5, #a9b4bc); }
+    .rank-3 .cheer-rank-no { background: linear-gradient(135deg, #e8bd93, #a96a33); }
+    .cheer-rank-name {
+      flex: 1;
+      min-width: 0;
+      font-size: 12px;
+      line-height: 1.3;
+      color: var(--bf-chalk-white);
+      /* 名称必须完整可见：不用省略号，宁可换行 */
+      white-space: normal;
+      overflow-wrap: break-word;
+      word-break: break-word;
+    }
+    .cheer-rank-count {
+      flex-shrink: 0;
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--bf-gold-sacred);
+    }
+    .cheer-rank-count em {
+      font-size: 10px;
+      font-style: normal;
+      font-weight: 400;
+      color: var(--bf-chalk-dim);
+      margin-left: 2px;
+    }
+    .cheer-rank-empty { font-size: 12px; color: var(--bf-chalk-dim); letter-spacing: 0.08em; }
+    /* 榜单前三在选手卡片上的小角标 */
+    .rank-mark {
+      display: inline-block;
+      vertical-align: middle;
+      margin-right: 6px;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      padding: 1px 5px;
+      border-radius: 2px;
+      color: #0b0f0c;
+      background: var(--bf-chalk-dim);
+    }
+    .rank-mark-1 { background: linear-gradient(135deg, #ffe08a, #e6a117); box-shadow: 0 0 8px rgba(230, 161, 23, 0.45); }
+    .rank-mark-2 { background: linear-gradient(135deg, #eef2f5, #a9b4bc); }
+    .rank-mark-3 { background: linear-gradient(135deg, #e8bd93, #a96a33); }
+
+    /* 选手卡片网格 */
+    .players-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+    }
+    .player-card {
+      background: var(--bf-bg-card);
+      border: 1px solid var(--bf-chalk-border);
+      border-radius: 4px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      transition: all 0.25s ease;
+    }
+    .player-card:hover {
+      background: var(--bf-bg-card-hover);
+      border-color: rgba(230, 161, 23, 0.5);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+    }
+    .player-top-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    .player-badge-group {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      flex-wrap: wrap;
+      min-width: 0;
+    }
+    .diff-badge {
+      font-size: 11px;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 2px;
+      letter-spacing: 0.05em;
+    }
+    .diff-badge.n15 {
+      background: rgba(158, 28, 28, 0.3);
+      border: 1px solid var(--bf-red-carne);
+      color: #fca5a5;
+    }
+    .diff-badge.n12 {
+      background: rgba(230, 161, 23, 0.2);
+      border: 1px solid var(--bf-gold-blood);
+      color: var(--bf-gold-sacred);
+    }
+    .squad-badge {
+      font-size: 11px;
+      background: rgba(20, 184, 166, 0.15);
+      border: 1px solid rgba(20, 184, 166, 0.4);
+      color: #5eead4;
+      padding: 2px 6px;
+      border-radius: 2px;
+    }
+    /* 选手标签（「完赛」之类）：金色成就徽章，跟 N15 的红、分队的青区分开。
+       注意 —— 这里只允许换行，绝不做省略号截断。 */
+    .tag-badge {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      background: linear-gradient(135deg, rgba(230, 161, 23, 0.3), rgba(230, 161, 23, 0.1));
+      border: 1px solid rgba(255, 209, 102, 0.55);
+      color: var(--bf-gold-sacred);
+      padding: 2px 6px;
+      border-radius: 2px;
+      white-space: nowrap;
+      box-shadow: 0 0 8px rgba(230, 161, 23, 0.18);
+    }
+    .player-id-label {
+      font-family: var(--font-serif);
+      font-size: 11px;
+      color: var(--bf-chalk-muted);
+    }
+    .player-group-name {
+      font-family: var(--font-serif);
+      font-size: 17px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 4px;
+      letter-spacing: 0.05em;
+    }
+    .player-game-name {
+      font-size: 12px;
+      color: var(--bf-chalk-dim);
+      margin-bottom: 14px;
+      line-height: 1.4;
+      word-break: break-all;
+    }
+    .player-bottom-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px dashed rgba(224, 228, 221, 0.1);
+      padding-top: 12px;
+    }
+    .like-counter-display {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: var(--bf-chalk-dim);
+    }
+    .like-counter-display strong {
+      color: var(--bf-chalk-white);
+      font-size: 15px;
+    }
+
+    /* 点赞应援按钮 */
+    .cheer-btn {
+      background: rgba(220, 38, 38, 0.15);
+      border: 1px solid var(--bf-red-carne);
+      color: #fecaca;
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      border-radius: 3px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+      position: relative;
+      min-height: 38px;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    .cheer-btn svg { width: 14px; height: 14px; fill: currentColor; }
+    .cheer-btn:hover {
+      background: var(--bf-red-hunt);
+      color: #fff;
+      box-shadow: 0 0 14px rgba(220, 38, 38, 0.6);
+      transform: scale(1.04);
+    }
+    .cheer-btn:active {
+      transform: scale(0.96);
+    }
+    /* 额度耗尽后的应援按钮：压暗降噪，点它不再飘 +1，也不假装成功 */
+    .cheer-btn.is-empty {
+      background: rgba(140, 148, 143, 0.10);
+      border-color: rgba(160, 170, 164, 0.32);
+      color: #98a29b;
+      box-shadow: none;
+    }
+    .cheer-btn.is-empty:hover {
+      background: rgba(140, 148, 143, 0.16);
+      color: #b6bfb9;
+      box-shadow: none;
+      transform: none;
+    }
+    .cheer-btn.is-empty svg { fill: #8a948c; }
+
+    /* 应援额度提示气泡：锚定在被点的按钮旁边（旧版固定在视口顶部，手机上常被吸顶页头
+       挡住或落在视野之外）。自带「淡入 → 停留 → 淡出」的完整生命周期。 */
+    .cheer-quota-toast {
+      position: fixed;
+      z-index: 1200;
+      pointer-events: none;
+      /* 宽度由 JS 显式钉死：fixed 元素在 left 已定、width:auto 时会按「剩余可用宽度」
+         做 shrink-to-fit，靠右时会被压扁成多行、进而顶出屏幕底部。 */
+      width: 300px;
+      box-sizing: border-box;
+      max-width: min(86vw, 300px);
+      padding: 9px 14px;
+      border-radius: 10px;
+      background: rgba(26, 10, 10, 0.97);
+      border: 1px solid rgba(220, 38, 38, 0.55);
+      box-shadow: 0 10px 26px rgba(0, 0, 0, 0.55), 0 0 16px rgba(220, 38, 38, 0.22);
+      color: #fecaca;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.45;
+      text-align: center;
+      animation: quotaToast 2.4s ease forwards;
+    }
+    .cheer-quota-toast .cheer-quota-main { display: block; }
+    .cheer-quota-toast .cheer-quota-main b { color: var(--bf-gold-sacred); font-weight: 800; }
+    .cheer-quota-toast .cheer-quota-sub {
+      display: block;
+      margin-top: 4px;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #e8cd85;
+    }
+    @keyframes quotaToast {
+      0%   { opacity: 0; transform: translate(-50%, 8px) scale(0.94); }
+      10%  { opacity: 1; transform: translate(-50%, 0) scale(1); }
+      78%  { opacity: 1; transform: translate(-50%, 0) scale(1); }
+      100% { opacity: 0; transform: translate(-50%, -10px) scale(1); }
+    }
+
+    /* 点赞粒子动画 */
+    .cheer-float-num {
+      position: fixed;
+      color: var(--bf-gold-sacred);
+      font-size: 16px;
+      font-weight: 800;
+      pointer-events: none;
+      animation: floatUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      z-index: 1000;
+      text-shadow: 0 0 8px rgba(255, 209, 102, 0.8);
+    }
+    @keyframes floatUp {
+      0% { opacity: 1; transform: translateY(0) scale(1); }
+      100% { opacity: 0; transform: translateY(-40px) scale(1.3); }
+    }
+
+    /* ==========================================================================
+       6. MODULE B: 赛事规则画廊与章节切片 (RULES SLICES VIEWER)
+       ========================================================================== */
+    .rules-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .rules-nav-card {
+      background: var(--bf-bg-card);
+      border: 1px solid var(--bf-chalk-border);
+      border-radius: 4px;
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .rule-set-switch-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      border-bottom: 1px dashed var(--bf-chalk-border);
+      padding-bottom: 12px;
+    }
+    .rule-set-tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .rule-set-btn {
+      background: rgba(224, 228, 221, 0.05);
+      border: 1px solid var(--bf-chalk-border);
+      color: var(--bf-chalk-dim);
+      padding: 7px 18px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      border-radius: 2px;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .rule-set-btn.active {
+      background: rgba(230, 161, 23, 0.16);
+      border-color: var(--bf-gold-blood);
+      color: var(--bf-gold-sacred);
+      box-shadow: 0 0 10px rgba(230, 161, 23, 0.25);
+    }
+
+    .rule-viewmode-toggle {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+    .viewmode-btn {
+      background: rgba(4, 7, 6, 0.7);
+      border: 1px solid var(--bf-chalk-muted);
+      color: var(--bf-chalk-dim);
+      padding: 5px 12px;
+      font-size: 12px;
+      cursor: pointer;
+      border-radius: 2px;
+      transition: all 0.2s;
+    }
+    .viewmode-btn.active {
+      background: rgba(20, 184, 166, 0.2);
+      border-color: var(--bf-cyan-embryo);
+      color: #5eead4;
+    }
+
+    /* 水平章节药丸条 */
+    .chapter-pills-scroll {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: thin;
+    }
+    .chapter-pill {
+      background: rgba(4, 7, 6, 0.75);
+      border: 1px solid var(--bf-chalk-muted);
+      color: var(--bf-chalk-dim);
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: 20px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+    .chapter-pill:hover {
+      color: var(--bf-chalk-white);
+      border-color: var(--bf-chalk-border);
+    }
+    .chapter-pill.active {
+      background: rgba(230, 161, 23, 0.2);
+      border-color: var(--bf-gold-blood);
+      color: var(--bf-gold-sacred);
+      box-shadow: 0 0 8px rgba(230, 161, 23, 0.3);
+    }
+
+    /* 规则切片主阅览卡片 */
+    .rules-viewer-card {
+      background: #060b09;
+      border: 1px solid var(--bf-chalk-border);
+      border-radius: 4px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.7);
+    }
+
+    .chapter-header-banner {
+      width: 100%;
+      max-width: 880px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .chapter-badge-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .chapter-seq-badge {
+      font-family: var(--font-serif);
+      font-size: 12px;
+      color: var(--bf-gold-blood);
+      background: rgba(230, 161, 23, 0.12);
+      border: 1px solid var(--bf-gold-blood);
+      padding: 2px 8px;
+      border-radius: 2px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      display: inline-block;
+    }
+    .chapter-main-title {
+      font-family: var(--font-serif);
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .chapter-summary-tag {
+      font-size: 12px;
+      color: var(--bf-chalk-dim);
+    }
+
+    /* 翻页导航栏 */
+    .chapter-pager-bar {
+      width: 100%;
+      max-width: 880px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .pager-nav-btn {
+      background: rgba(224, 228, 221, 0.06);
+      border: 1px solid var(--bf-chalk-border);
+      color: var(--bf-chalk-white);
+      padding: 8px 18px;
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: 3px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+      min-height: 38px;
+    }
+    .pager-nav-btn:hover:not(:disabled) {
+      background: rgba(230, 161, 23, 0.18);
+      border-color: var(--bf-gold-blood);
+      color: var(--bf-gold-sacred);
+    }
+    .pager-nav-btn:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+    .pager-indicator {
+      font-size: 13px;
+      color: var(--bf-chalk-dim);
+      font-weight: 600;
+    }
+
+    /* 切片图片展示框 */
+    .slice-img-frame {
+      width: 100%;
+      max-width: 880px;
+      border: 1px solid var(--bf-chalk-muted);
+      border-radius: 4px;
+      background: #000;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.8);
+    }
+    .slice-img-element {
+      width: 100%;
+      height: auto;
+      display: block;
+      cursor: zoom-in;
+      transition: opacity 0.25s;
+    }
+    .slice-zoom-hint {
+      position: absolute;
+      bottom: 12px;
+      right: 12px;
+      background: rgba(4, 7, 6, 0.85);
+      border: 1px solid var(--bf-gold-blood);
+      color: var(--bf-gold-sacred);
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 2px;
+      pointer-events: none;
+      backdrop-filter: blur(4px);
+    }
+
+    /* 连续滚动视图模式 */
+    .continuous-slices-container {
+      width: 100%;
+      max-width: 880px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .continuous-slice-item {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .continuous-slice-title {
+      font-family: var(--font-serif);
+      font-size: 14px;
+      color: var(--bf-gold-sacred);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    /* ==========================================================================
+       7. MODULE C: 命运藏品卜算台 (RELIC DIVINATION ALTA)
+       ========================================================================== */
+    .gacha-stage {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .gacha-altar {
+      width: 100%;
+      max-width: 860px;
+      background: linear-gradient(180deg, #0d1613, #040806);
+      border: 1.5px solid var(--bf-chalk-border);
+      border-radius: 6px;
+      padding: 32px 24px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.8);
+      margin-bottom: 24px;
+    }
+
+    /* 祭坛符文背景 */
+    .gacha-altar::before {
+      content: "";
+      position: absolute;
+      top: 50%; left: 50%;
+      width: clamp(220px, 60vw, 420px);
+      height: clamp(220px, 60vw, 420px);
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      border: 1px dashed rgba(230, 161, 23, 0.2);
+      animation: rotateAltar 30s linear infinite;
+      pointer-events: none;
+    }
+    @keyframes rotateAltar {
+      from { transform: translate(-50%, -50%) rotate(0deg); }
+      to { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+
+    .altar-title {
+      font-family: var(--font-serif);
+      font-size: clamp(20px, 4vw, 26px);
+      letter-spacing: 0.22em;
+      color: var(--bf-chalk-white);
+      margin-bottom: 6px;
+    }
+    .altar-desc {
+      font-family: var(--font-script);
+      font-size: clamp(14px, 2.5vw, 17px);
+      color: var(--bf-gold-sacred);
+      margin-bottom: 24px;
+    }
+
+    /* 抽奖展示台 */
+    .gacha-display-zone {
+      min-height: 380px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 28px;
+      position: relative;
+      width: 100%;
+    }
+    .gacha-placeholder {
+      color: var(--bf-chalk-dim);
+      font-size: 14px;
+      font-style: italic;
+      padding: 40px 20px;
+      border: 1px dashed rgba(224, 228, 221, 0.15);
+      border-radius: 4px;
+      max-width: 380px;
+      line-height: 1.8;
+    }
+
+    /* 单次抽出的独立神圣藏品卡片 */
+    .divined-relic-card {
+      width: min(340px, 92vw);
+      background: #08100d;
+      border: 2px solid var(--bf-chalk-border);
+      border-radius: 6px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.85);
+      animation: cardAppear 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      cursor: pointer;
+      position: relative;
+      transition: transform 0.25s, box-shadow 0.25s;
+    }
+    .divined-relic-card:hover {
+      transform: translateY(-3px) scale(1.02);
+    }
+    @keyframes cardAppear {
+      0% { opacity: 0; transform: scale(0.7) translateY(24px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    /* 卡片顶部的吉凶徽章条 */
+    .card-tier-banner {
+      width: 100%;
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.15em;
+      border-bottom: 1px solid rgba(224, 228, 221, 0.1);
+    }
+    .card-tier-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .card-zoom-tag {
+      font-size: 11px;
+      font-weight: 500;
+      opacity: 0.8;
+      letter-spacing: 0.05em;
+    }
+
+    /* 藏品切片图片主窗格 (标准 880:1055 黄金卡牌纵向比例) */
+    .card-img-window {
+      width: 100%;
+      aspect-ratio: 880 / 1055;
+      position: relative;
+      background: #030605;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .card-img-window img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+    }
+
+    /* 图标类藏品（方形原画）：等比完整显示，不裁切、不放大失真 */
+    .card-img-window.is-icon {
+      aspect-ratio: 1 / 1;
+      padding: 22px;
+      box-sizing: border-box;
+      background:
+        radial-gradient(circle at 50% 46%, rgba(214, 168, 74, 0.16), transparent 64%),
+        linear-gradient(180deg, #0b1512 0%, #030605 100%);
+    }
+    .card-img-window.is-icon img {
+      width: auto;
+      height: auto;
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.85));
+    }
+
+    /* 带文本说明的藏品卡：略微加宽，避免长句折行过密 */
+    .divined-relic-card.is-text { width: min(380px, 92vw); }
+
+    /* 藏品「作用」与「说明」文字区 */
+    .card-relic-effect,
+    .card-relic-desc {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 10px 14px;
+      font-size: 12.5px;
+      line-height: 1.7;
+      text-align: left;
+      border-top: 1px solid rgba(224, 228, 221, 0.1);
+    }
+    .card-relic-effect {
+      color: #ece0be;
+      background: rgba(214, 168, 74, 0.09);
+    }
+    .card-relic-desc {
+      color: rgba(224, 228, 221, 0.68);
+      font-style: italic;
+      background: rgba(224, 228, 221, 0.03);
+    }
+    .card-relic-effect .label,
+    .card-relic-desc .label {
+      display: inline-block;
+      margin-right: 6px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      vertical-align: 1px;
+    }
+    .card-relic-effect .label { color: var(--bf-gold-sacred); }
+    .card-relic-desc .label { color: rgba(224, 228, 221, 0.5); font-style: normal; }
+
+    /* 凶兆特别警告条 */
+    .xiong-danger-desc {
+      width: 100%;
+      padding: 10px 14px;
+      background: rgba(158, 28, 28, 0.25);
+      border-top: 1px solid var(--bf-red-hunt);
+      font-size: 12px;
+      color: #fca5a5;
+      text-align: center;
+      line-height: 1.4;
+    }
+
+    /* 五档特效样式 */
+    /* 1. 鸿运 (全屏液态赤金烈焰) */
+    .tier-hongyun {
+      border-color: var(--bf-gold-sacred) !important;
+      box-shadow: 0 0 30px rgba(255, 209, 102, 0.85), inset 0 0 15px rgba(230, 161, 23, 0.4) !important;
+    }
+    .tier-hongyun .card-tier-banner {
+      background: linear-gradient(90deg, #92400e, #d97706, #f59e0b);
+      color: #fff;
+      text-shadow: 0 0 8px rgba(0, 0, 0, 0.8);
+    }
+
+    /* 2. 大吉 (赤金流光) */
+    .tier-daji {
+      border-color: var(--bf-gold-blood) !important;
+      box-shadow: 0 0 22px rgba(230, 161, 23, 0.7) !important;
+    }
+    .tier-daji .card-tier-banner {
+      background: rgba(230, 161, 23, 0.25);
+      color: var(--bf-gold-sacred);
+    }
+
+    /* 3. 中吉 & 小吉 (特效完全相同: 幽海青蓝光晕) */
+    .tier-zhongji, .tier-xiaoji {
+      border-color: var(--bf-cyan-embryo) !important;
+      box-shadow: 0 0 20px rgba(20, 184, 166, 0.6) !important;
+    }
+    .tier-zhongji .card-tier-banner, .tier-xiaoji .card-tier-banner {
+      background: rgba(20, 184, 166, 0.22);
+      color: #5eead4;
+    }
+
+    /* 4. 平 (淡白素微光) */
+    .tier-ping {
+      border-color: var(--bf-chalk-dim) !important;
+      box-shadow: 0 0 14px rgba(224, 228, 221, 0.3) !important;
+    }
+    .tier-ping .card-tier-banner {
+      background: rgba(224, 228, 221, 0.12);
+      color: var(--bf-chalk-white);
+    }
+
+    /* 5. 凶 (全屏血墨翻涌) */
+    .tier-xiong {
+      border-color: var(--bf-red-hunt) !important;
+      box-shadow: 0 0 30px rgba(220, 38, 38, 0.9), inset 0 0 15px rgba(158, 28, 28, 0.6) !important;
+      animation: evilShake 0.4s ease-in-out infinite alternate;
+    }
+    @keyframes evilShake {
+      0% { transform: scale(1) rotate(-0.4deg); }
+      100% { transform: scale(1.015) rotate(0.4deg); }
+    }
+    .tier-xiong .card-tier-banner {
+      background: rgba(158, 28, 28, 0.5);
+      color: #fee2e2;
+    }
+
+    /* 卜算单次控制按钮 */
+    .gacha-action-btns {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+    }
+    .gacha-btn-single {
+      background: rgba(230, 161, 23, 0.16);
+      border: 1.5px solid var(--bf-gold-blood);
+      color: var(--bf-gold-sacred);
+      padding: 13px 36px;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.25s;
+      min-height: 48px;
+    }
+    .gacha-btn-single:hover {
+      background: var(--bf-gold-blood);
+      color: #000;
+      box-shadow: 0 0 24px rgba(230, 161, 23, 0.7);
+      transform: translateY(-2px);
+    }
+    .gacha-btn-single:active {
+      transform: translateY(0) scale(0.98);
+    }
+
+    /* 全屏吉凶特效遮罩 */
+    .gacha-burst-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      z-index: 1000;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.4s ease-out;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .gacha-burst-overlay.burst-hongyun {
+      opacity: 1;
+      background: radial-gradient(circle at 50% 50%, rgba(245, 158, 11, 0.35) 0%, rgba(180, 83, 9, 0.18) 50%, transparent 80%);
+      animation: goldFlare 1.8s ease-out forwards;
+    }
+    .gacha-burst-overlay.burst-daji {
+      opacity: 1;
+      background: radial-gradient(circle at 50% 50%, rgba(230, 161, 23, 0.25) 0%, rgba(200, 130, 15, 0.12) 50%, transparent 80%);
+      animation: goldFlare 1.5s ease-out forwards;
+    }
+    .gacha-burst-overlay.burst-xiong {
+      opacity: 1;
+      background: radial-gradient(circle at 50% 50%, rgba(220, 38, 38, 0.38) 0%, rgba(158, 28, 28, 0.22) 50%, transparent 80%);
+      animation: bloodFlood 1.8s ease-out forwards;
+    }
+    @keyframes goldFlare {
+      0% { opacity: 0; transform: scale(0.9); }
+      30% { opacity: 1; transform: scale(1.05); }
+      100% { opacity: 0; transform: scale(1); }
+    }
+    @keyframes bloodFlood {
+      0% { opacity: 0; filter: contrast(150%); }
+      30% { opacity: 1; filter: contrast(200%); }
+      100% { opacity: 0; filter: contrast(100%); }
+    }
+
+    /* ==========================================================================
+       8. LIGHTBOX MODAL (无损放大灯箱)
+       ========================================================================== */
+    .lightbox-modal {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      z-index: 900;
+      background: rgba(3, 6, 5, 0.94);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      cursor: zoom-out;
+    }
+    .lightbox-modal.active { display: flex; }
+    .lightbox-wrapper {
+      position: relative;
+      max-width: 96vw;
+      max-height: 92vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .lightbox-content {
+      max-width: 95vw;
+      max-height: 90vh;
+      object-fit: contain;
+      border: 1px solid var(--bf-gold-blood);
+      box-shadow: 0 0 35px rgba(0, 0, 0, 0.9);
+      cursor: default;
+      border-radius: 3px;
+    }
+    .lightbox-close-btn {
+      position: absolute;
+      top: -14px;
+      right: -14px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #09110e;
+      border: 1.5px solid var(--bf-gold-blood);
+      color: var(--bf-gold-sacred);
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(0,0,0,0.8);
+      z-index: 10;
+    }
+
+    /* ==========================================================================
+       9. FOOTER
+       ========================================================================== */
+    .footer-bar {
+      position: relative;
+      z-index: 10;
+      margin-top: auto;
+      background: rgba(6, 10, 8, 0.94);
+      border-top: 1px solid var(--bf-chalk-border);
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--bf-chalk-dim);
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .footer-brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .footer-links {
+      display: flex;
+      gap: 16px;
+    }
+    .footer-link-btn {
+      color: var(--bf-gold-sacred);
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .footer-link-btn:hover { text-decoration: underline; }
+
+    /* 管理台浮标：常驻右下角，但压得很低调（半透明，悬停/聚焦才亮起来）。
+       用 fixed 而不是只放页脚，是因为手机端页脚要滚很久才够得着；
+       z-index 压在 800 —— 低于余额提示气泡(1200)与灯箱(900)，不会被它们盖住主角。 */
+    .admin-fab {
+      position: fixed;
+      right: 14px;
+      bottom: 16px;
+      z-index: 800;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 9px 13px;
+      min-height: 38px;
+      border-radius: 999px;
+      background: rgba(9, 17, 14, 0.92);
+      border: 1px solid var(--bf-chalk-border);
+      color: var(--bf-chalk-dim);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-decoration: none;
+      opacity: 0.5;
+      transition: opacity 0.22s, color 0.22s, border-color 0.22s, box-shadow 0.22s;
+    }
+    .admin-fab:hover,
+    .admin-fab:focus-visible {
+      opacity: 1;
+      color: var(--bf-gold-sacred);
+      border-color: rgba(230, 161, 23, 0.55);
+      box-shadow: 0 0 16px rgba(230, 161, 23, 0.28);
+    }
+    .admin-fab svg { width: 15px; height: 15px; fill: currentColor; flex-shrink: 0; }
+    /* 手机端收成一个 44×44 的圆钮，刚好是能舒服点到的下限，也不挡内容 */
+    @media (max-width: 480px) {
+      .admin-fab { width: 44px; height: 44px; padding: 0; gap: 0; }
+      .admin-fab-text { display: none; }
+    }
+
+    /* ==========================================================================
+       10. 黑流搏浪 · 沉沦打捞小游戏 (THE BLACK FLOW SALVAGE)
+       ========================================================================== */
+    .game-stage { position: relative; }
+
+    .game-header { text-align: center; margin-bottom: 14px; }
+    .game-rule-strip {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 6px;
+      margin: 12px 0 0;
+    }
+    .game-rule-tag {
+      font-size: 11.5px;
+      letter-spacing: 0.06em;
+      color: var(--bf-chalk-dim);
+      border: 1px solid var(--bf-chalk-border);
+      border-radius: 2px;
+      padding: 3px 9px;
+      background: rgba(224, 228, 221, 0.03);
+    }
+    .game-rule-tag b { color: var(--bf-gold-sacred); font-weight: 700; }
+    .game-rule-tag.thorn b { color: #ef7a7a; }
+
+    /* ---- 状态条 ---- */
+    .game-hud {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .hud-cell {
+      flex: 1 1 0;
+      min-width: 0;
+      background: rgba(9, 17, 14, 0.72);
+      border: 1px solid var(--bf-chalk-border);
+      border-left: 2px solid var(--bf-gold-dim);
+      border-radius: 3px;
+      padding: 6px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+    .hud-label {
+      font-size: 10.5px;
+      letter-spacing: 0.12em;
+      color: var(--bf-chalk-dim);
+      white-space: nowrap;
+    }
+    .hud-val {
+      font-size: 17px;
+      font-weight: 800;
+      font-family: var(--font-serif);
+      line-height: 1.15;
+      color: var(--bf-gold-sacred);
+      white-space: nowrap;
+    }
+    .hud-cell.hud-combo { border-left-color: var(--bf-cyan-embryo); }
+    .hud-cell.hud-combo .hud-val { color: var(--bf-cyan-embryo); }
+    .hud-cell.hud-life { border-left-color: var(--bf-red-carne); }
+    .hud-cell.hud-life .hud-val {
+      color: #ef7a7a;
+      letter-spacing: 0.08em;
+      font-size: 15px;
+    }
+    /* 层数格里的第二行：这一层值多少票 */
+    .hud-sub {
+      font-size: 10.5px;
+      letter-spacing: 0.06em;
+      color: var(--bf-chalk-dim);
+      white-space: nowrap;
+    }
+    .hud-sub b { color: var(--bf-gold-sacred); font-weight: 700; }
+
+    /* ---- 画布 ---- */
+    .game-canvas-wrap {
+      position: relative;
+      border: 1px solid var(--bf-chalk-border);
+      border-radius: 4px;
+      overflow: hidden;
+      background: radial-gradient(ellipse at 50% 0%, #0a1714 0%, #040706 72%);
+      box-shadow: inset 0 0 70px rgba(0, 0, 0, 0.85);
+    }
+    #gameCanvas {
+      display: block;
+      width: 100%;
+      height: clamp(300px, 58vh, 470px);
+      touch-action: none;
+      -webkit-tap-highlight-color: transparent;
+      cursor: crosshair;
+    }
+
+    /* ---- 层数横幅 ---- */
+    .game-layer-banner {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 40%;
+      text-align: center;
+      font-family: var(--font-serif);
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: 0.3em;
+      color: var(--bf-gold-sacred);
+      text-shadow: 0 0 18px rgba(230, 161, 23, 0.85), 0 0 44px rgba(230, 161, 23, 0.4);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.35s;
+    }
+    .game-layer-banner.show { opacity: 1; }
+
+    /* ---- 黑流侵蚀条（连续 6 秒没有收获 → 扣一条命）---- */
+    .game-idle-bar {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      height: 3px;
+      background: rgba(220, 38, 38, 0.10);
+      pointer-events: none;
+    }
+    .game-idle-bar i {
+      display: block;
+      height: 100%;
+      width: 0;
+      background: linear-gradient(90deg, rgba(220, 38, 38, 0.12), rgba(220, 38, 38, 0.85));
+      box-shadow: 0 0 10px rgba(220, 38, 38, 0.55);
+    }
+    .game-idle-hint {
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      color: #ef7a7a;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s;
+      text-shadow: 0 0 10px rgba(220, 38, 38, 0.7);
+    }
+    .game-idle-hint.show { opacity: 1; }
+    .game-idle-hint b { font-weight: 800; font-family: var(--font-serif); }
+    .game-idle-hint.danger { color: #ff9b9b; animation: idlePulse 0.7s ease-in-out infinite; }
+    @keyframes idlePulse {
+      0%, 100% { opacity: 1; }
+      50%      { opacity: 0.4; }
+    }
+
+    /* ---- 覆盖层（开始 / 结算）---- */
+    .game-overlay {
+      position: absolute;
+      left: 0;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(4, 7, 6, 0.94);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      z-index: 5;
+    }
+    .game-overlay-inner {
+      width: 100%;
+      max-width: 460px;
+      text-align: center;
+    }
+    .game-overlay-title {
+      font-family: var(--font-serif);
+      font-size: 21px;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      color: var(--bf-gold-sacred);
+      margin-bottom: 10px;
+    }
+    .game-overlay-desc {
+      font-size: 13px;
+      line-height: 1.9;
+      color: var(--bf-chalk-dim);
+      margin-bottom: 18px;
+    }
+    .game-overlay-desc em { color: var(--bf-gold-sacred); font-style: normal; }
+    .game-overlay-desc .warn { color: #ef7a7a; }
+    .game-overlay-desc .loading { color: var(--bf-gold-sacred); }
+
+    /* ---- 结算卡 ---- */
+    .game-result-rating {
+      font-family: var(--font-serif);
+      font-size: 30px;
+      font-weight: 800;
+      letter-spacing: 0.2em;
+      color: var(--bf-gold-sacred);
+      text-shadow: 0 0 26px rgba(230, 161, 23, 0.55);
+    }
+    .game-result-score {
+      font-size: 14px;
+      color: var(--bf-chalk-dim);
+      margin: 2px 0 16px;
+    }
+    .game-result-score b {
+      font-family: var(--font-serif);
+      font-size: 27px;
+      color: var(--bf-chalk-white);
+      margin-right: 4px;
+    }
+    .game-result-stats {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .game-result-stats > div {
+      flex: 1;
+      background: rgba(224, 228, 221, 0.045);
+      border: 1px solid var(--bf-chalk-border);
+      border-radius: 3px;
+      padding: 7px 4px;
+    }
+    .game-result-stats b {
+      display: block;
+      font-family: var(--font-serif);
+      font-size: 17px;
+      color: var(--bf-chalk-white);
+    }
+    .game-result-stats span {
+      font-size: 10.5px;
+      letter-spacing: 0.06em;
+      color: var(--bf-chalk-dim);
+    }
+    .game-result-votes {
+      text-align: center;
+      font-size: 12.5px;
+      letter-spacing: 0.06em;
+      color: var(--bf-chalk-dim);
+      margin: -4px 0 12px;
+    }
+    .game-result-votes b {
+      font-family: var(--font-serif);
+      font-size: 15px;
+      color: var(--bf-gold-sacred);
+      margin: 0 3px;
+    }
+    .game-reward-box {
+      border: 1px solid rgba(230, 161, 23, 0.45);
+      background: rgba(230, 161, 23, 0.1);
+      border-radius: 3px;
+      padding: 10px 12px;
+      margin-bottom: 14px;
+      text-align: left;
+      font-size: 13px;
+      line-height: 1.75;
+      color: #e8cd85;
+    }
+    .game-reward-box b {
+      font-family: var(--font-serif);
+      font-size: 16px;
+      color: var(--bf-gold-sacred);
+    }
+    .game-reward-box.pending {
+      border-color: var(--bf-chalk-border);
+      background: rgba(224, 228, 221, 0.04);
+      color: var(--bf-chalk-dim);
+    }
+    .game-reward-box.failed {
+      border-color: rgba(220, 38, 38, 0.5);
+      background: rgba(220, 38, 38, 0.1);
+      color: #f0a5a5;
+    }
+    .game-loot-title {
+      text-align: left;
+      font-size: 11.5px;
+      letter-spacing: 0.18em;
+      color: var(--bf-chalk-dim);
+      margin-bottom: 8px;
+    }
+    .game-loot-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+    .game-loot-item {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 1.5px solid var(--bf-gold-dim);
+      background: rgba(230, 161, 23, 0.08);
+    }
+    .game-loot-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .game-loot-item.tier-hongyun { border-color: var(--bf-gold-sacred); box-shadow: 0 0 10px rgba(255, 209, 102, 0.7); }
+    .game-loot-item.tier-daji { border-color: var(--bf-gold-blood); }
+    .game-loot-item.tier-zhongji,
+    .game-loot-item.tier-xiaoji { border-color: rgba(20, 184, 166, 0.7); }
+    .game-loot-item.tier-ping { border-color: rgba(224, 228, 221, 0.5); }
+
+    /* ---- 底部控制 ---- */
+    .game-foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 12px;
+    }
+    .game-bonus-line {
+      font-size: 12.5px;
+      line-height: 1.75;
+      color: var(--bf-chalk-dim);
+    }
+    .game-bonus-line b { color: var(--bf-gold-sacred); }
+    .game-btn-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+    .game-btn {
+      background: rgba(230, 161, 23, 0.16);
+      border: 1.5px solid var(--bf-gold-blood);
+      color: var(--bf-gold-sacred);
+      padding: 11px 28px;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      border-radius: 4px;
+      cursor: pointer;
+      min-height: 46px;
+      white-space: nowrap;
+      transition: all 0.25s;
+    }
+    .game-btn:hover {
+      background: var(--bf-gold-blood);
+      color: #000;
+      box-shadow: 0 0 20px rgba(230, 161, 23, 0.6);
+    }
+    .game-btn:active { transform: scale(0.97); }
+    .game-btn.ghost {
+      background: transparent;
+      border-color: var(--bf-chalk-border);
+      color: var(--bf-chalk-dim);
+      letter-spacing: 0.08em;
+    }
+    .game-btn.ghost:hover {
+      background: rgba(224, 228, 221, 0.08);
+      color: var(--bf-chalk-white);
+      box-shadow: none;
+    }
+    .game-btn.small {
+      padding: 9px 16px;
+      font-size: 12.5px;
+      letter-spacing: 0.1em;
+      min-height: 40px;
+      flex: 0 0 auto;
+    }
+    .game-btn:disabled {
+      opacity: 0.45;
+      cursor: default;
+      background: rgba(230, 161, 23, 0.16);
+      color: var(--bf-gold-sacred);
+      box-shadow: none;
+      transform: none;
+    }
+
+    /* ---- 结算卡：昵称留名 ---- */
+    .game-name-block {
+      border: 1px solid var(--bf-chalk-border);
+      background: rgba(224, 228, 221, 0.035);
+      border-radius: 3px;
+      padding: 10px 12px;
+      margin-bottom: 14px;
+      text-align: left;
+    }
+    .game-name-hint {
+      font-size: 11.5px;
+      line-height: 1.7;
+      color: var(--bf-chalk-dim);
+      margin-bottom: 8px;
+    }
+    .game-name-hint b { color: var(--bf-gold-sacred); }
+    .game-name-row { display: flex; gap: 8px; }
+    .game-name-input {
+      flex: 1;
+      min-width: 0;
+      background: rgba(4, 7, 6, 0.85);
+      border: 1.5px solid var(--bf-chalk-border);
+      border-radius: 3px;
+      color: var(--bf-chalk-white);
+      font-size: 14px;
+      font-family: inherit;
+      padding: 9px 11px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .game-name-input::placeholder { color: var(--bf-chalk-muted); }
+    .game-name-input:focus {
+      border-color: var(--bf-gold-blood);
+      box-shadow: 0 0 0 3px rgba(230, 161, 23, 0.16);
+    }
+    .game-name-done {
+      border: 1px solid rgba(20, 184, 166, 0.45);
+      background: rgba(20, 184, 166, 0.1);
+      border-radius: 3px;
+      padding: 9px 12px;
+      margin-bottom: 14px;
+      text-align: left;
+      font-size: 12.5px;
+      line-height: 1.75;
+      color: #8fd9cf;
+    }
+    .game-name-done b { font-family: var(--font-serif); color: var(--bf-gold-sacred); }
+    .game-name-done.muted {
+      border-color: var(--bf-chalk-border);
+      background: rgba(224, 228, 221, 0.04);
+      color: var(--bf-chalk-dim);
+    }
+
+    /* ---- 打捞排行榜 ---- */
+    .game-board {
+      margin-top: 14px;
+      border: 1px solid var(--bf-chalk-border);
+      border-radius: 4px;
+      background: rgba(224, 228, 221, 0.025);
+      overflow: hidden;
+    }
+    .game-board-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 13px;
+      border-bottom: 1px solid var(--bf-chalk-border);
+      background: rgba(230, 161, 23, 0.05);
+    }
+    .game-board-title {
+      font-family: var(--font-serif);
+      font-size: 13.5px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      color: var(--bf-gold-sacred);
+    }
+    .game-board-meta { flex: 1; font-size: 11.5px; color: var(--bf-chalk-dim); }
+    .game-board-refresh {
+      background: transparent;
+      border: 1px solid var(--bf-chalk-border);
+      border-radius: 3px;
+      color: var(--bf-chalk-dim);
+      font-size: 11.5px;
+      font-family: inherit;
+      letter-spacing: 0.08em;
+      padding: 4px 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .game-board-refresh:hover { border-color: var(--bf-gold-blood); color: var(--bf-gold-sacred); }
+    .game-board-list { padding: 6px 0; }
+    .game-board-empty {
+      padding: 22px 13px;
+      text-align: center;
+      font-size: 12.5px;
+      line-height: 1.8;
+      color: var(--bf-chalk-dim);
+    }
+    .game-board-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 7px 13px;
+      border-bottom: 1px solid rgba(224, 228, 221, 0.06);
+    }
+    .game-board-row:last-child { border-bottom: none; }
+    .game-board-row.is-self { background: rgba(230, 161, 23, 0.09); }
+    .game-board-rank {
+      flex: 0 0 30px;
+      font-family: var(--font-serif);
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--bf-chalk-dim);
+      text-align: center;
+    }
+    .game-board-row.top1 .game-board-rank { color: var(--bf-gold-sacred); text-shadow: 0 0 14px rgba(255, 209, 102, 0.7); }
+    .game-board-row.top2 .game-board-rank { color: #dfe6e0; }
+    .game-board-row.top3 .game-board-rank { color: #d09a5a; }
+    /* 名称完整显示，不做省略号截断 */
+    .game-board-name {
+      flex: 1;
+      min-width: 0;
+      font-size: 13px;
+      color: var(--bf-chalk-white);
+      word-break: break-word;
+      overflow-wrap: anywhere;
+    }
+    .game-board-sub { display: block; font-size: 10.5px; color: var(--bf-chalk-dim); margin-top: 1px; }
+    .game-board-score {
+      flex: 0 0 auto;
+      font-family: var(--font-serif);
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--bf-gold-sacred);
+    }
+    .game-board-score small {
+      font-family: inherit;
+      font-size: 10px;
+      font-weight: 400;
+      color: var(--bf-chalk-dim);
+      margin-left: 2px;
+    }
+
+    /* ==========================================================================
+       11. 当前总台直播间直播条 (LIVE ROOM BAR)
+       —— 与页头同处一个吸顶容器：不论翻到哪一屏，都能一眼看到「现在去哪儿看」
+       —— 内容由云端 live_get() 下发（房间号/标题/备注/开关），
+          开播状态由云函数实时向 B 站拉取；页面自带兜底链接，后端挂了也不会丢入口
+       ========================================================================== */
+    .live-bar {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px 16px;
+      padding: 7px 24px;
+      background: rgba(9, 17, 14, 0.97);
+      border-top: 1px solid rgba(224, 228, 221, 0.08);
+      border-bottom: 1px solid var(--bf-chalk-border);
+      overflow: hidden;
+      transition: border-color 0.4s;
+    }
+    .live-bar[hidden] { display: none; }
+
+    /* 开播中：红色光源 + 一道缓慢横扫的高光 */
+    .live-bar[data-state="live"] {
+      background:
+        linear-gradient(90deg, rgba(220, 38, 38, 0.26) 0%, rgba(220, 38, 38, 0.06) 46%, rgba(4, 7, 6, 0.2) 100%),
+        rgba(9, 17, 14, 0.97);
+      border-bottom-color: rgba(220, 38, 38, 0.45);
+    }
+    .live-bar[data-state="live"]::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 150px;
+      left: -160px;
+      background: linear-gradient(90deg, transparent, rgba(255, 209, 102, 0.14), transparent);
+      animation: liveSheen 4.6s linear infinite;
+      pointer-events: none;
+    }
+    @keyframes liveSheen {
+      0%   { left: -160px; }
+      100% { left: 101%; }
+    }
+
+    .live-anchor {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1 1 auto;
+      min-width: 0;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .live-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      background: var(--bf-chalk-muted);
+    }
+    .live-bar[data-state="live"] .live-dot {
+      background: #ff4d4d;
+      animation: livePulse 1.6s ease-out infinite;
+    }
+    @keyframes livePulse {
+      0%   { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.6); }
+      70%  { box-shadow: 0 0 0 9px rgba(220, 38, 38, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
+    }
+
+    .live-face {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      border: 1px solid var(--bf-chalk-border);
+      object-fit: cover;
+      display: none;
+      flex-shrink: 0;
+      background: var(--bf-bg-card);
+    }
+    .live-face.show { display: block; }
+
+    .live-texts {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+    .live-line1 {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .live-badge {
+      font-size: 10.5px;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      padding: 2px 7px;
+      border-radius: 3px;
+      flex-shrink: 0;
+      background: rgba(224, 228, 221, 0.12);
+      color: var(--bf-chalk-dim);
+      border: 1px solid var(--bf-chalk-border);
+    }
+    .live-bar[data-state="live"] .live-badge {
+      background: linear-gradient(135deg, #ef4444, var(--bf-red-carne));
+      color: #fff;
+      border-color: rgba(255, 255, 255, 0.2);
+      box-shadow: 0 0 10px rgba(220, 38, 38, 0.4);
+    }
+    /* 名称 / 标题一律完整显示，不截断（与选手名同一条规矩） */
+    .live-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: 0.02em;
+      word-break: break-word;
+    }
+    .live-line2 {
+      font-size: 11.5px;
+      color: var(--bf-chalk-dim);
+      word-break: break-word;
+    }
+    /* 管理员备注（如「第一场 20:00 开打」）：金色小签，跟标题同一行 */
+    .live-note {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--bf-gold-sacred);
+      background: rgba(230, 161, 23, 0.12);
+      border: 1px solid rgba(230, 161, 23, 0.4);
+      padding: 1px 7px;
+      border-radius: 3px;
+      word-break: break-word;
+    }
+
+    .live-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .live-btn {
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      padding: 6px 14px;
+      border-radius: 3px;
+      cursor: pointer;
+      text-decoration: none;
+      white-space: nowrap;
+      border: 1px solid transparent;
+      transition: all 0.25s;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .live-btn-go {
+      background: linear-gradient(135deg, #ef4444, var(--bf-red-carne));
+      color: #fff;
+      border-color: rgba(255, 255, 255, 0.18);
+      box-shadow: 0 0 12px rgba(220, 38, 38, 0.4);
+    }
+    .live-btn-go:hover {
+      box-shadow: 0 0 20px rgba(220, 38, 38, 0.65);
+      transform: translateY(-1px);
+    }
+    .live-btn-ghost {
+      background: rgba(224, 228, 221, 0.06);
+      color: var(--bf-chalk-dim);
+      border-color: var(--bf-chalk-border);
+    }
+    .live-btn-ghost:hover {
+      color: var(--bf-chalk-white);
+      background: rgba(224, 228, 221, 0.12);
+    }
+    .live-btn-ghost.copied {
+      color: var(--bf-cyan-embryo);
+      border-color: var(--bf-cyan-embryo);
+      background: rgba(20, 184, 166, 0.12);
+    }
+    /* 未开播 / 取不到状态：整体退成安静的中性色，不再抢视觉 */
+    .live-bar:not([data-state="live"]) .live-btn-go {
+      background: rgba(224, 228, 221, 0.10);
+      color: var(--bf-chalk-white);
+      box-shadow: none;
+      border-color: var(--bf-chalk-border);
+    }
+
+    /* ==========================================================================
+       12. 移动端自适应优化 (MOBILE RESPONSIVE STYLES)
+       ========================================================================== */
+    @media (max-width: 768px) {
+      .top-nav {
+        padding: 6px 12px;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+        min-height: auto;
+      }
+      /* 手机端关键修复：品牌区与两枚统计胶囊都是 flex-shrink:0，
+         一行塞不下时旧写法会把「今日剩余」整体顶出视口（要靠横向拖动才能看见）。
+         这里允许整行换行 —— 塞不下就把两枚胶囊一起落到第二行，永远不会溢出。 */
+      .top-nav-row1 {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 6px 10px;
+        width: 100%;
+      }
+      .brand-logo-badge { width: 32px; height: 32px; }
+      .brand-logo-badge svg { width: 18px; height: 18px; }
+      .brand-section { gap: 10px; }
+      /* 换行之后仍贴右，视觉锚点不跑位 */
+      .nav-right {
+        margin-left: auto;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+      }
+      /* 总台直播条：手机上压成一行，标题/备注一律完整显示，不截断 */
+      .live-bar {
+        padding: 6px 12px;
+        gap: 8px;
+        flex-wrap: nowrap;
+      }
+      .live-anchor { gap: 8px; }
+      .live-face { width: 22px; height: 22px; }
+      .live-badge { font-size: 9.5px; padding: 1px 5px; letter-spacing: 0.08em; }
+      .live-title { font-size: 12.5px; }
+      .live-note { font-size: 10px; padding: 1px 5px; }
+      /* 主播 / 分区 / 人气是锦上添花，窄屏让位给标题与按钮 */
+      .live-line2 { display: none; }
+      .live-btn { padding: 5px 9px; font-size: 11px; letter-spacing: 0.04em; }
+      .live-btn-go { padding: 5px 11px; }
+      .brand-title {
+        font-size: 15px;
+      }
+      .brand-sub {
+        font-size: 12px;
+      }
+      .total-likes-pill {
+        padding: 4px 10px;
+        font-size: 11px;
+      }
+      .nav-tabs {
+        width: 100%;
+        display: flex;
+        gap: 4px;
+        padding: 2px;
+        justify-content: space-between;
+      }
+      .nav-tab {
+        flex: 1;
+        justify-content: center;
+        padding: 7px 3px;
+        font-size: 11.5px;
+        letter-spacing: 0.02em;
+        gap: 4px;
+        min-height: 40px;
+      }
+      .nav-tab svg {
+        width: 12px;
+        height: 12px;
+      }
+      .nav-tab span {
+        font-size: 11.5px;
+      }
+      .main-container {
+        padding: 0 12px;
+        margin: 16px auto 40px;
+      }
+      .hero-banner {
+        min-height: 150px;
+        padding: 20px 14px;
+      }
+      .roster-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+        padding: 14px;
+      }
+      .filter-group {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 8px;
+        width: 100%;
+      }
+      .search-input, .filter-select {
+        width: 100%;
+        min-height: 40px;
+        font-size: 14px;
+      }
+      .players-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+      .cheer-rank-strip {
+        padding: 8px 10px;
+        gap: 8px;
+      }
+      .cheer-rank-label { width: 100%; }
+      /* 手机端：前三名改竖排，每人独占整行，名称有足够宽度 */
+      .cheer-rank-list {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 6px;
+        width: 100%;
+      }
+      .cheer-rank-item {
+        flex: 1 1 auto;
+        width: 100%;
+        max-width: none;
+        padding: 5px 10px 5px 5px;
+        gap: 8px;
+      }
+      .cheer-rank-name {
+        font-size: 13px;
+        text-align: left;
+      }
+      .cheer-btn {
+        min-height: 42px;
+        padding: 8px 18px;
+      }
+      .rules-nav-card {
+        padding: 12px 14px;
+      }
+      .rule-set-switch-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .rule-set-tabs {
+        width: 100%;
+      }
+      .rule-set-btn {
+        flex: 1;
+        justify-content: center;
+      }
+      .rule-viewmode-toggle {
+        justify-content: flex-end;
+      }
+      .rules-viewer-card {
+        padding: 14px 10px;
+      }
+      .chapter-header-banner {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .gacha-altar {
+        padding: 20px 12px;
+        margin-bottom: 18px;
+      }
+      .gacha-display-zone {
+        min-height: 330px;
+        margin-bottom: 20px;
+      }
+      .altar-desc {
+        margin-bottom: 16px;
+      }
+      .continuous-slice-title {
+        font-size: 13px;
+        gap: 6px;
+      }
+      .gacha-btn-single {
+        width: 100%;
+        justify-content: center;
+        padding: 12px 24px;
+        font-size: 14px;
+      }
+      /* 黑流搏浪：手机端收紧状态条、按钮铺满、画布略降高 */
+      .game-hud { gap: 5px; }
+      .hud-cell { padding: 5px 7px; }
+      .hud-label { font-size: 9.5px; letter-spacing: 0.06em; }
+      .hud-val { font-size: 15px; }
+      .hud-cell.hud-life .hud-val { font-size: 13px; }
+      .hud-sub { font-size: 9.5px; letter-spacing: 0.02em; }
+      .game-idle-hint { font-size: 10px; top: 8px; right: 9px; }
+      #gameCanvas { height: clamp(280px, 52vh, 400px); }
+      .game-foot {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .game-btn { width: 100%; }
+      .game-btn-row { width: 100%; }
+      .game-btn-row .game-btn { flex: 1; padding: 11px 10px; letter-spacing: 0.08em; }
+      .game-result-rating { font-size: 24px; letter-spacing: 0.14em; }
+      .game-result-score b { font-size: 23px; }
+      .game-result-stats b { font-size: 15px; }
+      .game-name-row { flex-direction: column; }
+      .game-name-row .game-btn.small { width: 100%; }
+      .game-board-row { padding: 7px 10px; gap: 8px; }
+      .game-board-rank { flex-basis: 24px; font-size: 13px; }
+      .game-board-name { font-size: 12.5px; }
+      .game-loot-item { width: 38px; height: 38px; }
+      .game-layer-banner { font-size: 18px; letter-spacing: 0.22em; }
+      .game-overlay { padding: 14px; }
+    }
+
+    @media (max-width: 480px) {
+      .hero-title {
+        letter-spacing: 0.15em;
+        font-size: 22px;
+      }
+      .hero-banner {
+        min-height: 130px;
+        padding: 16px 12px;
+      }
+      .brand-sub {
+        display: none; /* 极窄屏幕下隐藏冗长副标题，确保主标题与应援胶囊从容并排 */
+      }
+      .rule-set-btn {
+        font-size: 12px;
+        padding: 6px 10px;
+        text-align: center;
+      }
+      .rule-viewmode-toggle {
+        width: 100%;
+        justify-content: center;
+        margin-top: 4px;
+      }
+      .nav-tab span {
+        font-size: 12px;
+      }
+      .player-group-name {
+        font-size: 16px;
+      }
+      /* 极窄屏再收一档，尽量让品牌与胶囊挤回同一行 */
+      .brand-logo-badge { width: 28px; height: 28px; }
+      .brand-logo-badge svg { width: 16px; height: 16px; }
+      .brand-title {
+        font-size: 14px;
+        letter-spacing: 0.1em;
+      }
+      .brand-tag {
+        font-size: 10px;
+        padding: 1px 4px;
+      }
+      .nav-right { gap: 8px 10px; }
+      .total-likes-pill {
+        padding: 3px 8px;
+        font-size: 10.5px;
+        gap: 5px;
+      }
+      .total-likes-pill svg { width: 13px; height: 13px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==========================================================================
+       吸顶区：页头 + 当前总台直播条（同一 sticky 容器，滚动时一起钉在视口顶端）
+       ========================================================================== -->
+  <div class="sticky-top">
+  <header class="top-nav">
+    <div class="top-nav-row1">
+      <div class="brand-section" onclick="switchNavTab('roster')">
+        <div class="brand-logo-badge">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+          </svg>
+        </div>
+        <div class="brand-texts">
+          <div class="brand-title">豆猫杯 <span class="brand-tag">黑流树海</span></div>
+          <div class="brand-sub">The Black Flow of the Drowning Seekers</div>
+        </div>
+      </div>
+
+      <!-- 右侧同步统计：全站总应援 + 本设备今日剩余 -->
+      <div class="nav-right">
+        <div class="total-likes-pill" title="全站累计应援次数（所有访客共享同一份数据）">
+          <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+          <span>总应援:</span>
+          <span class="total-likes-num" id="globalTotalLikes">—</span>
+        </div>
+        <div class="total-likes-pill quota-pill" id="quotaPill" title="你今天剩余的应援次数（基础 50 次 + 黑流搏浪最多 50 次）">
+          <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+          <span>今日剩余:</span>
+          <span class="total-likes-num" id="myQuotaLeft">—</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 模式选项卡 -->
+    <nav class="nav-tabs">
+      <button class="nav-tab active" id="tabBtn_roster" onclick="switchNavTab('roster')">
+        <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+        <span>选手名录</span>
+      </button>
+
+      <button class="nav-tab" id="tabBtn_rules" onclick="switchNavTab('rules')">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+        <span>赛事规程</span>
+      </button>
+
+      <button class="nav-tab" id="tabBtn_gacha" onclick="switchNavTab('gacha')">
+        <svg viewBox="0 0 24 24"><path d="M12 2l2.4 7.2h7.6l-6 4.8 2.4 7.2-6.4-4.8-6.4 4.8 2.4-7.2-6-4.8h7.6z"/></svg>
+        <span>命运卜算</span>
+      </button>
+
+      <button class="nav-tab" id="tabBtn_game" onclick="switchNavTab('game')">
+        <svg viewBox="0 0 24 24"><path d="M12 2a3 3 0 0 1 1 5.83V10h3a1 1 0 0 1 0 2h-3v7.9c3.4-.5 6-3.4 6-6.9a1 1 0 0 1 2 0c0 5-4 9-9 9s-9-4-9-9a1 1 0 0 1 2 0c0 3.5 2.6 6.4 6 6.9V12H8a1 1 0 0 1 0-2h3V7.83A3 3 0 0 1 12 2zm0 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/></svg>
+        <span>黑流搏浪</span>
+      </button>
+    </nav>
+  </header>
+
+  <!-- 当前总台直播间
+       · 房间号 / 标题 / 备注 / 开关都来自云端配置（可在 admin.html 自助改）
+       · 开播状态由云函数实时向 B 站拉取；拉不到就降级成只显示配置
+       · 这里写死的 href 是兜底值：后端全挂时入口依然点得动 -->
+  <div class="live-bar" id="liveBar" data-state="loading" hidden>
+    <a class="live-anchor" id="liveAnchor" href="#"
+       target="_blank" rel="noopener noreferrer">
+      <span class="live-dot" aria-hidden="true"></span>
+      <img class="live-face" id="liveFace" alt="" referrerpolicy="no-referrer">
+      <span class="live-texts">
+        <span class="live-line1">
+          <span class="live-badge" id="liveBadge">连接中</span>
+          <span class="live-title" id="liveTitle">正在获取当前总台…</span>
+          <span class="live-note" id="liveNote" style="display:none;"></span>
+        </span>
+        <span class="live-line2" id="liveMeta">正在连接总台直播间…</span>
+      </span>
+    </a>
+    <div class="live-actions">
+      <button type="button" class="live-btn live-btn-ghost" id="liveCopyBtn"
+              onclick="copyLiveLink(event)">复制链接</button>
+      <a class="live-btn live-btn-go" id="liveGoBtn" href="#"
+         target="_blank" rel="noopener noreferrer">进入直播间</a>
+    </div>
+  </div>
+  </div><!-- /.sticky-top -->
+
+  <!-- ==========================================================================
+       HERO BANNER
+       ========================================================================= -->
+  <section class="hero-banner">
+    <h1 class="hero-title">豆 猫 杯</h1>
+    <div class="hero-subtitle">沉沦者的黑流树海 · 同人赛事规程与命运卜算</div>
+    <div class="hero-tags">
+      <div class="hero-tag">21位先锋探索者</div>
+      <div class="hero-tag">N15 / N12 双难度鏖战</div>
+      <div class="hero-tag">9大规程细则切片</div>
+      <div class="hero-tag">票数实时同步 · 每天 50 次 + 打捞奖励</div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       MAIN CONTENT CONTAINER
+       ========================================================================== -->
+  <main class="main-container">
+
+    <!-- ------------------------------------------------------------------------
+         TAB 1: 选手信息与应援 (ROSTER & CHEER)
+         ------------------------------------------------------------------------ -->
+    <div class="tab-content-panel active" id="view_roster">
+      
+      <!-- 选手列表与筛选栏 -->
+      <div class="roster-header">
+        <div class="roster-summary-text">
+          选手名单归档 (<span id="playerCountLabel">21</span> 名) · <strong style="font-size:12px;">点击右侧「为Ta应援」投递神血金辉</strong> · <span id="syncStatus" style="font-size:12px; opacity:.75;">连接中…</span>
+        </div>
+
+        <div class="filter-group">
+          <input type="text" id="playerSearchInput" class="search-input" placeholder="搜索选手 / 群名 / B站..." oninput="filterPlayers()">
+          <select id="squadFilterSelect" class="filter-select" onchange="filterPlayers()">
+            <option value="ALL">全部分队 (All Squads)</option>
+            <option value="多边贸易">多边贸易 (8人)</option>
+            <option value="术特">术特分队 (3人)</option>
+            <option value="重辅">重辅分队 (3人)</option>
+            <option value="近锋">近锋分队 (3人)</option>
+            <option value="狙医">狙医分队 (2人)</option>
+            <option value="野蛮退化">野蛮退化 (1人)</option>
+            <option value="本源研修">本源研修 (1人)</option>
+          </select>
+          <select id="diffFilterSelect" class="filter-select" onchange="filterPlayers()">
+            <option value="ALL">全部难度</option>
+            <option value="N15">N15 难度 (高危)</option>
+            <option value="N12">N12 难度</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- 应援排行 TOP3（紧凑横条，全站实时） -->
+      <div class="cheer-rank-strip" id="cheerRankStrip">
+        <div class="cheer-rank-label">
+          <svg viewBox="0 0 24 24"><path d="M5 3h14v2h3v5a4 4 0 0 1-4 4h-.6A6 6 0 0 1 13 17.9V20h4v2H7v-2h4v-2.1A6 6 0 0 1 6.6 14H6a4 4 0 0 1-4-4V5h3V3zm2 4H4v3a2 2 0 0 0 2 2h1V7zm13 0h-3v5h1a2 2 0 0 0 2-2V7z"/></svg>
+          <span>应援排行 TOP3</span>
+        </div>
+        <div class="cheer-rank-list" id="cheerRankList">
+          <span class="cheer-rank-empty">等待同步…</span>
+        </div>
+      </div>
+
+      <!-- 选手卡片网格 -->
+      <div class="players-grid" id="playersGrid">
+        <!-- 由 JS 动态渲染 -->
+      </div>
+    </div>
+
+    <!-- ------------------------------------------------------------------------
+         TAB 2: 赛事规则画廊与章节切片 (RULES SLICES VIEWER)
+         ------------------------------------------------------------------------ -->
+    <div class="tab-content-panel" id="view_rules">
+      <div class="rules-wrapper">
+        
+        <!-- 规程导航卡片 -->
+        <div class="rules-nav-card">
+          <div class="rule-set-switch-row">
+            <div class="rule-set-tabs">
+              <button class="rule-set-btn active" id="ruleSetBtn_1" onclick="switchRuleSet(1)">
+                <span>规则一：总规与计分细则 (7 章)</span>
+              </button>
+              <button class="rule-set-btn" id="ruleSetBtn_2" onclick="switchRuleSet(2)">
+                <span>规则二：可选挑战赛道 (2 赛道)</span>
+              </button>
+            </div>
+
+            <div class="rule-viewmode-toggle">
+              <button class="viewmode-btn active" id="modeBtn_paged" onclick="setSliceViewMode('paged')">📑 分页精读</button>
+              <button class="viewmode-btn" id="modeBtn_continuous" onclick="setSliceViewMode('continuous')">📜 连续阅读</button>
+            </div>
+          </div>
+
+          <!-- 章节药丸滚动栏 -->
+          <div class="chapter-pills-scroll" id="chapterPillsScroll">
+            <!-- 由 JS 动态渲染 -->
+          </div>
+        </div>
+
+        <!-- 规程切片阅览区 -->
+        <div class="rules-viewer-card">
+          
+          <!-- 分页模式下的标题与控制器 -->
+          <div class="chapter-header-banner" id="chapterHeaderBanner">
+            <div class="chapter-badge-title">
+              <span class="chapter-seq-badge" id="currentChapterBadge">第 1 章</span>
+              <span class="chapter-main-title" id="currentChapterTitle">限制规则</span>
+            </div>
+            <span class="chapter-summary-tag" id="currentChapterSummary">难度选择、奖励禁用、沙盘要求与干员限制</span>
+          </div>
+
+          <div class="chapter-pager-bar" id="chapterPagerBar">
+            <button class="pager-nav-btn" id="prevChapterBtn" onclick="navigateChapter(-1)">
+              ◀ 上一章
+            </button>
+            <span class="pager-indicator" id="pagerIndicator">第 1 / 7 章</span>
+            <button class="pager-nav-btn" id="nextChapterBtn" onclick="navigateChapter(1)">
+              下一章 ▶
+            </button>
+          </div>
+
+          <!-- 单切片主图片容器 (分页模式) -->
+          <div class="slice-img-frame" id="pagedSliceFrame">
+            <img id="sliceImageDisplay" class="slice-img-element" src="" alt="规程切片" onclick="openLightbox(this.src)">
+            <div class="slice-zoom-hint">🔍 点击唤起全屏无损原图</div>
+          </div>
+
+          <!-- 连续阅读模式容器 (平铺展示) -->
+          <div class="continuous-slices-container" id="continuousSlicesContainer" style="display:none;">
+            <!-- 由 JS 动态装载该规则所有切片 -->
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ------------------------------------------------------------------------
+         TAB 3: 命运藏品卜算台 (RELIC GACHA & DIVINATION)
+         ------------------------------------------------------------------------ -->
+    <div class="tab-content-panel" id="view_gacha">
+      <div class="gacha-stage">
+        
+        <div class="gacha-altar">
+          <h2 class="altar-title">黑流树海 · 命运之流占卜</h2>
+          <p class="altar-desc">掷出赤金古币，翻阅新大陆被切开的神圣藏品</p>
+
+          <!-- 抽奖展示台 -->
+          <div class="gacha-display-zone" id="gachaDisplayZone">
+            <div class="gacha-placeholder">
+              —— 凝视深渊黑流，点击下方按钮开始卜算 ——<br>
+              <span style="font-size:12px; opacity:0.75;">遵循沉沦者的黑流树海命定之律，每次卜算将显现一件神圣藏品</span>
+            </div>
+          </div>
+
+          <!-- 单次卜算按钮 -->
+          <div class="gacha-action-btns">
+            <button class="gacha-btn-single" onclick="performGacha()">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>
+              <span>单次卜算 (Single Draw)</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ------------------------------------------------------------------------
+         TAB 4: 黑流搏浪 · 沉沦打捞 (THE BLACK FLOW SALVAGE)
+         ------------------------------------------------------------------------ -->
+    <div class="tab-content-panel" id="view_game">
+      <div class="game-stage">
+
+        <div class="game-header">
+          <h2 class="altar-title">黑流搏浪 · 沉沦打捞</h2>
+          <p class="altar-desc">黑流自深渊涌出，沉没的藏品顺流漂过 —— 伸出手，把它们捞回岸边</p>
+          <div class="game-rule-strip">
+            <span class="game-rule-tag">点中<b>藏品</b>即打捞得分</span>
+            <span class="game-rule-tag thorn">点中<b>黑棘</b>扣一条命</span>
+            <span class="game-rule-tag thorn"><b>6 秒</b>没有收获 → 被黑流侵蚀，扣一条命</span>
+            <span class="game-rule-tag">连击越高<b>倍率越高</b></span>
+            <span class="game-rule-tag">每晋 <b>1</b> 层 = <b>+5</b> 次应援（上限 +50）</span>
+          </div>
+        </div>
+
+        <div class="game-hud">
+          <div class="hud-cell">
+            <span class="hud-label">打捞分</span>
+            <span class="hud-val" id="gameScore">0</span>
+          </div>
+          <div class="hud-cell hud-combo">
+            <span class="hud-label">连击倍率</span>
+            <span class="hud-val" id="gameCombo">×1.0</span>
+          </div>
+          <div class="hud-cell">
+            <span class="hud-label">抵达层数</span>
+            <span class="hud-val" id="gameLayer">第 1 层</span>
+            <span class="hud-sub" id="gameLayerVotes">值 <b>+5</b> 次应援</span>
+          </div>
+          <div class="hud-cell hud-life">
+            <span class="hud-label">生命游戏</span>
+            <span class="hud-val" id="gameLives">◆◆◆</span>
+          </div>
+        </div>
+
+        <div class="game-canvas-wrap" id="gameCanvasWrap">
+          <canvas id="gameCanvas"></canvas>
+          <div class="game-layer-banner" id="gameLayerBanner"></div>
+          <div class="game-idle-bar" aria-hidden="true"><i id="gameIdleFill"></i></div>
+          <div class="game-idle-hint" id="gameIdleHint">黑流侵蚀 · <b id="gameIdleSec">6.0</b>s</div>
+
+          <!-- 开始层 -->
+          <div class="game-overlay" id="gameStartOverlay">
+            <div class="game-overlay-inner">
+              <div class="game-overlay-title">沉 沦 打 捞</div>
+              <p class="game-overlay-desc" id="gameStartDesc">
+                黑流会带走一切。<br>
+                <em>点中漂流而过的藏品</em>即可打捞，连续命中会累积倍率；<br>
+                <span class="warn">黑棘是凶兆的碎片，碰一下就碎一条命。</span><br>
+                <span class="warn">停手超过 6 秒，黑流会自己找上门 —— 也会碎一条命。</span><br>
+                每打捞 6 件晋一层，<em>每晋一层当天多赢 5 次应援</em>（上限 +50）。
+              </p>
+              <div class="game-btn-row">
+                <button class="game-btn" id="gameStartBtn" onclick="startSalvage()">开 始 探 索</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 结算层 -->
+          <div class="game-overlay" id="gameResultOverlay" style="display:none;">
+            <div class="game-overlay-inner">
+              <div class="game-result-rating" id="grRating">迷途的沉沦者</div>
+              <div class="game-result-score"><b id="grScore">0</b>打捞分</div>
+              <div class="game-result-stats">
+                <div><b id="grRelics">0</b><span>打捞藏品</span></div>
+                <div><b id="grCombo">0</b><span>最高连击</span></div>
+                <div><b id="grLayer">1</b><span>抵达层数</span></div>
+              </div>
+              <div class="game-result-votes" id="grVotesLine">
+                抵达第 <b id="grVotesLayer">1</b> 层 · 价值 <b id="grVotes">+5</b> 次应援
+              </div>
+              <div class="game-reward-box pending" id="grReward">正在向深渊结算…</div>
+
+              <div class="game-name-block" id="grNameBlock">
+                <div class="game-name-hint">
+                  留下名字，成绩会记入<b>打捞排行榜</b>；不填则只领奖励、不上榜。
+                </div>
+                <div class="game-name-row">
+                  <input class="game-name-input" id="grNameInput" type="text" maxlength="16"
+                         placeholder="输入昵称，最多 16 字" autocomplete="off" autocorrect="off"
+                         autocapitalize="off" spellcheck="false" onkeydown="onNameKeydown(event)" />
+                  <button class="game-btn small" id="grNameBtn" onclick="submitSalvageWithName()">记 录 成 绩</button>
+                </div>
+              </div>
+              <div class="game-name-done" id="grNameDone" style="display:none;"></div>
+
+              <div class="game-loot-title">本局打捞记录</div>
+              <div class="game-loot-grid" id="grLoot"></div>
+              <div class="game-btn-row">
+                <button class="game-btn" onclick="startSalvage()">再 捞 一 次</button>
+                <button class="game-btn ghost" onclick="switchNavTab('roster')">去 应 援</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 打捞排行榜 -->
+        <div class="game-board" id="gameBoard">
+          <div class="game-board-head">
+            <span class="game-board-title">打捞排行榜</span>
+            <span class="game-board-meta" id="gameBoardMeta">正在连接深渊…</span>
+            <button class="game-board-refresh" onclick="loadLeaderboard(true)">刷 新</button>
+          </div>
+          <div class="game-board-list" id="gameBoardList">
+            <div class="game-board-empty">正在连接深渊…</div>
+          </div>
+        </div>
+
+        <div class="game-foot">
+          <div class="game-bonus-line" id="gameBonusLine">
+            今日打捞奖励：<b>—</b>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <!-- 全屏吉凶特效遮罩 -->
+  <div class="gacha-burst-overlay" id="gachaBurstOverlay"></div>
+
+  <!-- 无损放大灯箱 -->
+  <div class="lightbox-modal" id="lightboxModal" onclick="closeLightbox()">
+    <div class="lightbox-wrapper" onclick="event.stopPropagation()">
+      <button class="lightbox-close-btn" onclick="closeLightbox()">✕</button>
+      <img id="lightboxImg" class="lightbox-content" src="" alt="放大预览">
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       FOOTER
+       ========================================================================== -->
+  <footer class="footer-bar">
+    <div class="footer-brand">
+      <span>豆猫杯 · 沉沦者的黑流树海赛事委员会</span>
+    </div>
+    <div class="footer-links">
+      <span style="opacity:0.6;">Powered by Static Vercel Engine</span>
+      <span class="footer-link-btn" onclick="switchNavTab('rules')">赛事规程</span>
+      <span class="footer-link-btn" onclick="switchNavTab('gacha')">命运占卜</span>
+      <a class="footer-link-btn" href="./admin.html" title="管理台：当前总台直播间 + 选手标签（需要管理密钥）">管理台</a>
+    </div>
+  </footer>
+
+  <!-- 管理台入口。点开的是独立页面（noindex），进去还要过一道密钥门，
+       所以这里只是个「门铃」，本身不泄露任何东西。 -->
+  <a class="admin-fab" href="./admin.html" title="打开管理台（需要管理密钥）" aria-label="打开管理台">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1a5 5 0 0 0-5 5v3H6a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-9a2 2 0 0 0-2-2h-1V6a5 5 0 0 0-5-5zm-3 8V6a3 3 0 0 1 6 0v3H9zm3 4a1.6 1.6 0 0 1 .9 2.93V18a1 1 0 0 1-2 0v-2.07A1.6 1.6 0 0 1 12 13z"/></svg>
+    <span class="admin-fab-text">管理台</span>
+  </a>
+
+  <!-- ==========================================================================
+       JAVASCRIPT: 数据层、交互状态机、点赞持久化与切片阅览器
+       ========================================================================== -->
+  <script>
+    /* --------------------------------------------------------------------------
+       1. 选手报名数据 (全量 21 位选手)
+       -------------------------------------------------------------------------- */
+    const PLAYERS_DATA = [
+      { id: 1, group_nickname: "选手01", game_bili_nickname: "选手01（B站同名）", difficulty: "N15", squad: "术特", tags: [] },
+      { id: 2, group_nickname: "选手02", game_bili_nickname: "选手02（B站同名）", difficulty: "N15", squad: "多边贸易", tags: [] },
+      { id: 3, group_nickname: "选手03", game_bili_nickname: "选手03（B站同名）", difficulty: "N15", squad: "多边贸易", tags: [] },
+      { id: 4, group_nickname: "选手04", game_bili_nickname: "选手04（B站同名）", difficulty: "N15", squad: "野蛮退化", tags: [] },
+      { id: 5, group_nickname: "选手05", game_bili_nickname: "选手05（B站同名）", difficulty: "N15", squad: "多边贸易", tags: [] },
+      { id: 6, group_nickname: "选手06", game_bili_nickname: "选手06（B站同名）", difficulty: "N15", squad: "重辅", tags: [] },
+      { id: 7, group_nickname: "选手07", game_bili_nickname: "选手07（B站同名）", difficulty: "N15", squad: "多边贸易", tags: [] },
+      { id: 8, group_nickname: "选手08", game_bili_nickname: "选手08（B站同名）", difficulty: "N12", squad: "本源研修", tags: [] },
+      { id: 9, group_nickname: "选手09", game_bili_nickname: "选手09（B站同名）", difficulty: "N12", squad: "术特", tags: [] },
+      { id: 10, group_nickname: "选手10", game_bili_nickname: "选手10（B站同名）", difficulty: "N15", squad: "多边贸易", tags: [] },
+      { id: 11, group_nickname: "选手11", game_bili_nickname: "选手11（B站同名）", difficulty: "N15", squad: "重辅", tags: [] },
+      { id: 12, group_nickname: "选手12", game_bili_nickname: "选手12（B站同名）", difficulty: "N15", squad: "近锋", tags: [] },
+      { id: 13, group_nickname: "选手13", game_bili_nickname: "选手13（B站同名）", difficulty: "N15", squad: "近锋", tags: [] },
+      { id: 14, group_nickname: "选手14", game_bili_nickname: "选手14（B站同名）", difficulty: "N15", squad: "狙医", tags: [] },
+      { id: 15, group_nickname: "选手15", game_bili_nickname: "选手15（B站同名）", difficulty: "N15", squad: "近锋", tags: [] },
+      { id: 16, group_nickname: "选手16", game_bili_nickname: "选手16（B站同名）", difficulty: "N15", squad: "多边贸易", tags: [] },
+      { id: 17, group_nickname: "选手17", game_bili_nickname: "选手17（B站同名）", difficulty: "N12", squad: "术特", tags: [] },
+      { id: 18, group_nickname: "选手18", game_bili_nickname: "选手18（B站同名）", difficulty: "N15", squad: "重辅", tags: [] },
+      { id: 19, group_nickname: "选手19", game_bili_nickname: "选手19（B站同名）", difficulty: "N15", squad: "多边贸易", tags: [] },
+      { id: 20, group_nickname: "选手20", game_bili_nickname: "选手20（B站同名）", difficulty: "N15", squad: "多边贸易", tags: [] },
+      { id: 21, group_nickname: "选手21", game_bili_nickname: "选手21（B站同名）", difficulty: "N12", squad: "术特", tags: [] }
+    ];
+
+    /* --------------------------------------------------------------------------
+       2. 藏品抽奖池数据（占位示例：48 件、6 档吉凶；
+          名称 / 效果 / 说明均为原创占位文本，请替换为你自己的内容）
+       -------------------------------------------------------------------------- */
+    const RELICS_DATA = [
+      { id: 1,  name: "藏品01",                tier: "鸿运", tier_code: "hongyun", img: "assets/relics/relic_11_hongyun.jpg" },
+      { id: 2,  name: "藏品02",            tier: "大吉", tier_code: "daji",    img: "assets/relics/relic_08_daji.jpg" },
+      { id: 3,  name: "藏品03",            tier: "大吉", tier_code: "daji",    img: "assets/relics/relic_09_daji.jpg" },
+      { id: 4,  name: "藏品04",            tier: "大吉", tier_code: "daji",    img: "assets/relics/relic_12_daji.jpg" },
+      { id: 5,  name: "藏品05",              tier: "大吉", tier_code: "daji",    img: "assets/relics/relic_18_daji.jpg" },
+      { id: 6,  name: "藏品06",          tier: "大吉", tier_code: "daji",    img: "assets/relics/relic_20_daji.jpg" },
+      { id: 7,  name: "藏品07",            tier: "大吉", tier_code: "daji",    img: "assets/relics/relic_26_daji.jpg" },
+      { id: 8,  name: "藏品08",          tier: "大吉", tier_code: "daji",    img: "assets/relics/relic_28_daji.jpg" },
+      { id: 9,  name: "藏品09",              tier: "中吉", tier_code: "zhongji", img: "assets/relics/relic_01_zhongji.jpg" },
+      { id: 10, name: "藏品10",          tier: "中吉", tier_code: "zhongji", img: "assets/relics/relic_03_zhongji.jpg" },
+      { id: 11, name: "藏品11",              tier: "中吉", tier_code: "zhongji", img: "assets/relics/relic_05_zhongji.jpg" },
+      { id: 12, name: "藏品12",            tier: "中吉", tier_code: "zhongji", img: "assets/relics/relic_06_zhongji.jpg" },
+      { id: 13, name: "藏品13",              tier: "中吉", tier_code: "zhongji", img: "assets/relics/relic_07_zhongji.jpg" },
+      { id: 14, name: "藏品14",            tier: "中吉", tier_code: "zhongji", img: "assets/relics/relic_10_zhongji.jpg" },
+      { id: 15, name: "藏品15",              tier: "中吉", tier_code: "zhongji", img: "assets/relics/relic_13_zhongji.jpg" },
+      { id: 16, name: "藏品16",            tier: "中吉", tier_code: "zhongji", img: "assets/relics/relic_14_zhongji.jpg" },
+      { id: 17, name: "藏品17",              tier: "中吉", tier_code: "zhongji", img: "assets/relics/relic_16_zhongji.jpg" },
+      { id: 18, name: "藏品18",            tier: "中吉", tier_code: "zhongji", img: "assets/relics/relic_17_zhongji.jpg" },
+      { id: 19, name: "藏品19",            tier: "中吉", tier_code: "zhongji", img: "assets/relics/relic_21_zhongji.jpg" },
+      { id: 20, name: "藏品20",            tier: "中吉", tier_code: "zhongji", img: "assets/relics/relic_23_zhongji.jpg" },
+      { id: 21, name: "藏品21",                tier: "中吉", tier_code: "zhongji", img: "assets/relics/relic_24_zhongji.jpg" },
+      { id: 22, name: "藏品22",                tier: "中吉", tier_code: "zhongji", img: "assets/relics/relic_27_zhongji.jpg" },
+      { id: 23, name: "藏品23",            tier: "小吉", tier_code: "xiaoji",  img: "assets/relics/relic_02_xiaoji.jpg" },
+      { id: 24, name: "藏品24",      tier: "小吉", tier_code: "xiaoji",  img: "assets/relics/relic_22_xiaoji.jpg" },
+      { id: 25, name: "藏品25",              tier: "小吉", tier_code: "xiaoji",  img: "assets/relics/relic_25_xiaoji.jpg" },
+      { id: 26, name: "藏品26",            tier: "平",   tier_code: "ping",    img: "assets/relics/relic_15_ping.jpg" },
+      { id: 27, name: "藏品27",            tier: "凶",   tier_code: "xiong",   img: "assets/relics/relic_04_xiong.png" },
+      { id: 28, name: "藏品28",  tier: "凶",   tier_code: "xiong",   img: "assets/relics/relic_19_xiong.png" },
+
+      /* --- 第二批藏品 (No.29~48)：方形图标 + 作用 + 说明 三件套 --- */
+      { id: 29, name: "藏品29", tier: "大吉", tier_code: "daji", kind: "icon",
+        img: "assets/relics/relic_29_daji.png",
+        effect: "示例效果：占位文本，请替换为你自己的藏品效果",
+        desc: "示例说明：占位文本，请替换为你自己的藏品描述。" },
+      { id: 30, name: "藏品30", tier: "大吉", tier_code: "daji", kind: "icon",
+        img: "assets/relics/relic_30_daji.png",
+        effect: "示例效果：占位文本，请替换为你自己的藏品效果",
+        desc: "示例说明：占位文本，请替换为你自己的藏品描述。" },
+      { id: 31, name: "藏品31", tier: "大吉", tier_code: "daji", kind: "icon",
+        img: "assets/relics/relic_31_daji.png",
+        effect: "示例效果：占位文本，请替换为你自己的藏品效果",
+        desc: "示例说明：占位文本，请替换为你自己的藏品描述。" },
+      { id: 32, name: "藏品32", tier: "大吉", tier_code: "daji", kind: "icon",
+        img: "assets/relics/relic_32_daji.png",
+        effect: "示例效果：占位文本，请替换为你自己的藏品效果",
+        desc: "示例说明：占位文本，请替换为你自己的藏品描述。" },
+      { id: 33, name: "藏品33", tier: "大吉", tier_code: "daji", kind: "icon",
+        img: "assets/relics/relic_33_daji.png",
+        effect: "示例效果：占位文本，请替换为你自己的藏品效果",
+        desc: "示例说明：占位文本，请替换为你自己的藏品描述。" },
+      { id: 34, name: "藏品34", tier: "鸿运", tier_code: "hongyun", kind: "icon",
+        img: "assets/relics/relic_34_hongyun.png",
+        effect: "示例效果：占位文本，请替换为你自己的藏品效果",
+        desc: "示例说明：占位文本，请替换为你自己的藏品描述。" },
+      { id: 35, name: "藏品35", tier: "中吉", tier_code: "zhongji", kind: "icon",
+        img: "assets/relics/relic_35_zhongji.png",
+        effect: "示例效果：占位文本，请替换为你自己的藏品效果",
+        desc: "示例说明：占位文本，请替换为你自己的藏品描述。" },
+      { id: 36, name: "藏品36", tier: "中吉", tier_code: "zhongji", kind: "icon",
+        img: "assets/relics/relic_36_zhongji.png",
+        effect: "示例效果：占位文本，请替换为你自己的藏品效果",
+        desc: "示例说明：占位文本，请替换为你自己的藏品描述。" },
+      { id: 37, name: "藏品37", tier: "中吉", tier_code: "zhongji", kind: "icon",
+        img: "assets/relics/relic_37_zhongji.png",
+        effect: "示例效果：占位文本，请替换为你自己的藏品效果",
+        desc: "示例说明：占位文本，请替换为你自己的藏品描述。" },
+      { id: 38, name: "藏品38", tier: "中吉", tier_code: "zhongji", kind: "icon",
+        img: "assets/relics/relic_38_zhongji.png",
+        effect: "示例效果：占位文本，请替换为你自己的藏品效果",
+        desc: "示例说明：占位文本，请替换为你自己的藏品描述。" },
+      { id: 39, name: "藏品39", tier: "中吉", tier_code: "zhongji", kind: "icon",
+        img: "assets/relics/relic_39_zhongji.png",
+        effect: "示例效果：占位文本，请替换为你自己的藏品效果",
+        desc: "示例说明：占位文本，请替换为你自己的藏品描述。" },
+      { id: 40, name: "藏品40", tier: "中吉", tier_code: "zhongji", kind: "icon",
+        img: "assets/relics/relic_40_zhongji.png",
+        effect: "示例效果：占位文本，请替换为你自己的藏品效果",
+        desc: "示例说明：占位文本，请替换为你自己的藏品描述。" },
+      { id: 41, name: "藏品41", tier: "中吉", tier_code: "zhongji", kind: "icon",
+        img: "assets/relics/relic_41_zhongji.png",
+        effect: "示例效果：占位文本，请替换为你自己的藏品效果",
+        desc: "示例说明：占位文本，请替换为你自己的藏品描述。" },
+      { id: 42, name: "藏品42", tier: "中吉", tier_code: "zhongji", kind: "icon",
+        img: "assets/relics/relic_42_zhongji.png",
+        effect: "示例效果：占位文本，请替换为你自己的藏品效果",
+        desc: "示例说明：占位文本，请替换为你自己的藏品描述。" },
+      { id: 43, name: "藏品43", tier: "大吉", tier_code: "daji", kind: "icon",
+        img: "assets/relics/relic_43_daji.png",
+        effect: "示例效果：占位文本，请替换为你自己的藏品效果",
+        desc: "示例说明：占位文本，请替换为你自己的藏品描述。" },
+      { id: 44, name: "藏品44", tier: "小吉", tier_code: "xiaoji", kind: "icon",
+        img: "assets/relics/relic_44_xiaoji.png",
+        effect: "示例效果：占位文本，请替换为你自己的藏品效果",
+        desc: "示例说明：占位文本，请替换为你自己的藏品描述。" },
+      { id: 45, name: "藏品45", tier: "小吉", tier_code: "xiaoji", kind: "icon",
+        img: "assets/relics/relic_45_xiaoji.png",
+        effect: "示例效果：占位文本，请替换为你自己的藏品效果",
+        desc: "示例说明：占位文本，请替换为你自己的藏品描述。" },
+      { id: 46, name: "藏品46", tier: "小吉", tier_code: "xiaoji", kind: "icon",
+        img: "assets/relics/relic_46_xiaoji.png",
+        effect: "示例效果：占位文本，请替换为你自己的藏品效果",
+        desc: "示例说明：占位文本，请替换为你自己的藏品描述。" },
+      { id: 47, name: "藏品47", tier: "平", tier_code: "ping", kind: "icon",
+        img: "assets/relics/relic_47_ping.png",
+        effect: "示例效果：占位文本，请替换为你自己的藏品效果",
+        desc: "示例说明：占位文本，请替换为你自己的藏品描述。" },
+      { id: 48, name: "藏品48", tier: "凶", tier_code: "xiong", kind: "icon",
+        img: "assets/relics/relic_48_xiong.png",
+        effect: "示例效果：占位文本，请替换为你自己的藏品效果",
+        desc: "示例说明：占位文本，请替换为你自己的藏品描述。" }
+    ];
+
+    /* --------------------------------------------------------------------------
+       3. 规程切片结构化数据 (Rule 1: 7章节, Rule 2: 2赛道)
+       -------------------------------------------------------------------------- */
+    const RULES_DATA = {
+      1: {
+        title: "规则一：总规与计分细则 (Rule 1)",
+        sections: [
+          {
+            id: 1,
+            chapter: "第 1 章",
+            title: "限制规则",
+            summary: "难度选择、奖励禁用、沙盘要求与干员限制",
+            img: "assets/rules/slices/rule1_sec01_limitations.jpg"
+          },
+          {
+            id: 2,
+            chapter: "第 2 章",
+            title: "分数总览",
+            summary: "总分计算公式、N12/N15 生还结算与逃课扣分",
+            img: "assets/rules/slices/rule1_sec02_scoring_base.jpg"
+          },
+          {
+            id: 3,
+            chapter: "第 3 章",
+            title: "分队与临时招募",
+            summary: "文明开化分队奖励、六星及以下临时招募加分",
+            img: "assets/rules/slices/rule1_sec03_squad_recruits.jpg"
+          },
+          {
+            id: 4,
+            chapter: "第 4 章",
+            title: "藏品路线加分",
+            summary: "双沙盘携带、神明/光明/文明三件套与特色藏品加分",
+            img: "assets/rules/slices/rule1_sec04_relics_routes.jpg"
+          },
+          {
+            id: 5,
+            chapter: "第 5 章",
+            title: "关卡与追猎加分",
+            summary: "赤金厄运、哀悼铁腕、冰冷流亡等追猎关卡高额加分",
+            img: "assets/rules/slices/rule1_sec05_stages_hunts.jpg"
+          },
+          {
+            id: 6,
+            chapter: "第 6 章",
+            title: "不期而遇特殊战",
+            summary: "闹乐/灭身/纵怒、源流交汇处作战与特殊实托邦",
+            img: "assets/rules/slices/rule1_sec06_encounters.jpg"
+          },
+          {
+            id: 7,
+            chapter: "第 7 章",
+            title: "紧急与违规条例",
+            summary: "紧急关卡加分、违规扣分/取消成绩及录屏提交须知",
+            img: "assets/rules/slices/rule1_sec07_penalties_submission.jpg"
+          }
+        ]
+      },
+      2: {
+        title: "规则二：可选挑战赛道 (Rule 2)",
+        sections: [
+          {
+            id: 1,
+            chapter: "赛道 1",
+            title: "职业队赛道",
+            summary: "近锋/术特/狙医/重辅最强挑战、非本家干员限制与奖金",
+            img: "assets/rules/slices/rule2_sec01_prof_squads.jpg"
+          },
+          {
+            id: 2,
+            chapter: "赛道 2",
+            title: "特色队赛道",
+            summary: "野人开智(文明开化双盘三供全追猎)、赛前声明与终极大奖",
+            img: "assets/rules/slices/rule2_sec02_special_squads.jpg"
+          }
+        ]
+      }
+    };
+
+    /* --------------------------------------------------------------------------
+       4. 云端同步层 (替代此前的 localStorage 本地存储)
+          - 票数由服务端 PostgreSQL 统一维护，全站共享同一份数据
+          - 每人每天最多 50 次，额度由服务端裁定，前端无法绕过
+          - DEVICE_ID 仅用于额度计数，不采集任何个人信息
+       -------------------------------------------------------------------------- */
+    const CHEER_API = 'https://YOUR_ENV_ID-YOUR_APP_ID.REGION.app.tcloudbase.com/cheer';
+    const DEVICE_STORAGE_KEY = 'doumao_device_id_v1';
+    const NICK_STORAGE_KEY = 'doumao_game_nick_v1';
+    const DAILY_LIMIT = 50;
+    const SYNC_INTERVAL_MS = 20000;
+
+    let likesStore = {};                  // playerId -> 全站票数（云端下发）
+    let myQuota = { used: 0, limit: DAILY_LIMIT, remaining: DAILY_LIMIT, bonus: 0 };
+    let cloudReady = false;
+
+    /* 统一额度对象：limit 已含「黑流搏浪」赢来的额外额度，bonus 为其增量 */
+    function normalizeQuota(q) {
+      if (!q) return { used: 0, limit: DAILY_LIMIT, remaining: DAILY_LIMIT, bonus: 0 };
+      const limit = Number(q.limit) || DAILY_LIMIT;
+      const used = Number(q.used) || 0;
+      const remaining = (typeof q.remaining === 'number') ? q.remaining : Math.max(0, limit - used);
+      return {
+        used: used,
+        limit: limit,
+        remaining: remaining,
+        bonus: Math.max(0, limit - DAILY_LIMIT)
+      };
+    }
+
+    // 内置浏览器（QQ / 微信 / X5 内核）可能禁用 localStorage，做三层兜底：localStorage → sessionStorage → Cookie
+    function recallDeviceId() {
+      try { const v = localStorage.getItem(DEVICE_STORAGE_KEY); if (v) return v; } catch (e) {}
+      try { const v = sessionStorage.getItem(DEVICE_STORAGE_KEY); if (v) return v; } catch (e) {}
+      try {
+        const m = document.cookie.match(new RegExp('(?:^|;\\s*)' + DEVICE_STORAGE_KEY + '=([^;]+)'));
+        if (m) return decodeURIComponent(m[1]);
+      } catch (e) {}
+      return null;
+    }
+
+    function rememberDeviceId(v) {
+      try { localStorage.setItem(DEVICE_STORAGE_KEY, v); } catch (e) {}
+      try { sessionStorage.setItem(DEVICE_STORAGE_KEY, v); } catch (e) {}
+      try { document.cookie = DEVICE_STORAGE_KEY + '=' + v + ';path=/;max-age=31536000;SameSite=Lax'; } catch (e) {}
+    }
+
+    function genDeviceId() {
+      return 'd' + Math.random().toString(36).slice(2, 12) + Date.now().toString(36);
+    }
+
+    function getDeviceId() {
+      let v = recallDeviceId();
+      if (!v || !/^[A-Za-z0-9_-]{8,64}$/.test(v)) {
+        v = genDeviceId();
+        rememberDeviceId(v);
+      }
+      return v;
+    }
+
+    const DEVICE_ID = getDeviceId();
+
+    /* 上次用过的打捞昵称，同样三层兜底（localStorage → sessionStorage） */
+    function recallNickname() {
+      try { const v = localStorage.getItem(NICK_STORAGE_KEY); if (v) return v; } catch (e) {}
+      try { const v = sessionStorage.getItem(NICK_STORAGE_KEY); if (v) return v; } catch (e) {}
+      return '';
+    }
+
+    function rememberNickname(v) {
+      try { localStorage.setItem(NICK_STORAGE_KEY, v); } catch (e) {}
+      try { sessionStorage.setItem(NICK_STORAGE_KEY, v); } catch (e) {}
+    }
+
+    function seedZeroLikes() {
+      PLAYERS_DATA.forEach(p => {
+        if (typeof likesStore[p.id] !== 'number') likesStore[p.id] = 0;
+      });
+    }
+
+    function setSyncStatus(text, isError) {
+      const el = document.getElementById('syncStatus');
+      if (el) {
+        el.innerText = text;
+        el.style.color = isError ? '#ff8a80' : '';
+      }
+    }
+
+    /* 传输层：优先 XMLHttpRequest
+       —— QQ / 微信 / QQ浏览器使用的 X5 内核对 fetch + AbortController 支持不稳定，
+          会出现「连不上服务器」，所以改用兼容性最好的 XHR。 */
+    function httpJson(method, url, body, ms) {
+      return new Promise(function (resolve, reject) {
+        var xhr;
+        try { xhr = new XMLHttpRequest(); } catch (e) { reject(new Error('no_xhr')); return; }
+        var settled = false;
+        function done(fn, arg) { if (settled) return; settled = true; fn(arg); }
+        try {
+          xhr.open(method, url, true);
+          try { xhr.timeout = ms || 12000; } catch (e) {}
+          if (method !== 'GET') xhr.setRequestHeader('Content-Type', 'application/json');
+          xhr.onreadystatechange = function () {
+            if (xhr.readyState !== 4) return;
+            if (xhr.status >= 200 && xhr.status < 300) {
+              var d = null;
+              try { d = JSON.parse(xhr.responseText); } catch (e) {}
+              if (d) done(resolve, d); else done(reject, new Error('bad_json'));
+            } else {
+              done(reject, new Error('http_' + xhr.status));
+            }
+          };
+          xhr.ontimeout = function () { done(reject, new Error('timeout')); };
+          xhr.onerror = function () { done(reject, new Error('network')); };
+          xhr.onabort = function () { done(reject, new Error('abort')); };
+          xhr.send(body ? JSON.stringify(body) : null);
+        } catch (e) { done(reject, e); }
+      });
+    }
+
+    // JSONP 兜底：用 <script> 标签取数，完全不走 CORS，内置浏览器几乎不会拦
+    function jsonpGet(qs, ms) {
+      return new Promise(function (resolve, reject) {
+        var name = 'cheerCb' + Math.floor(Math.random() * 1e9);
+        var script = document.createElement('script');
+        var kept = true;
+        var timer = setTimeout(function () { cleanup(); reject(new Error('jsonp_timeout')); }, ms || 12000);
+        function cleanup() {
+          clearTimeout(timer);
+          try { window[name] = undefined; } catch (e) {}
+          if (kept && script.parentNode) { script.parentNode.removeChild(script); kept = false; }
+        }
+        window[name] = function (d) { cleanup(); resolve(d); };
+        script.onerror = function () { cleanup(); reject(new Error('jsonp_error')); };
+        script.src = CHEER_API + '?' + qs + '&callback=' + name + '&_t=' + Date.now();
+        try { document.body.appendChild(script); }
+        catch (e) { cleanup(); reject(e); }
+      });
+    }
+
+    function absorbCounts(counts) {
+      if (!Array.isArray(counts)) return;
+      counts.forEach(row => {
+        const pid = Number(row.player_id);
+        if (pid) likesStore[pid] = Number(row.count) || 0;
+      });
+    }
+
+    let lastSyncError = '';
+
+    async function loadFromCloud(showStatus) {
+      const qs = 'deviceId=' + encodeURIComponent(DEVICE_ID);
+      try {
+        if (showStatus) setSyncStatus('同步中…');
+        let data = null;
+        try {
+          data = await httpJson('GET', CHEER_API + '?' + qs + '&_t=' + Date.now(), null, 12000);
+        } catch (e1) {
+          // XHR 被内置浏览器拦截时，退回 JSONP（<script> 标签不受 CORS 限制）
+          console.warn('[cheer] XHR 失败，改用 JSONP:', e1);
+          data = await jsonpGet(qs, 12000);
+        }
+        if (!data || !data.ok) throw new Error((data && data.reason) || 'bad_response');
+        absorbCounts(data.counts);
+        if (data.status) myQuota = normalizeQuota(data.status);
+        cloudReady = true;
+        lastSyncError = '';
+        refreshAllCounters();
+        updateGameBonusLine();
+        setSyncStatus('已同步');
+      } catch (err) {
+        seedZeroLikes();
+        lastSyncError = (err && err.message) || String(err);
+        setSyncStatus('同步失败(' + lastSyncError + ')', true);
+        console.warn('[cheer] 拉取失败:', err);
+      }
+    }
+
+    function refreshAllCounters() {
+      PLAYERS_DATA.forEach(p => {
+        const el = document.getElementById(`likeCount_${p.id}`);
+        if (el) el.innerText = likesStore[p.id] || 0;
+      });
+      updateTotalLikes();
+      renderCheerRank();
+    }
+
+    /* 应援排行：按票数取前 N 名（票数相同则编号靠前者在前） */
+    function getTopRanked(n) {
+      return PLAYERS_DATA
+        .map(p => ({ p: p, count: Number(likesStore[p.id]) || 0 }))
+        .sort((a, b) => (b.count - a.count) || (a.p.id - b.p.id))
+        .slice(0, n);
+    }
+
+    const RANK_LABELS = ['TOP1', 'TOP2', 'TOP3'];
+
+    function renderCheerRank() {
+      const listEl = document.getElementById('cheerRankList');
+      const top = getTopRanked(3);
+
+      // 票数为 0 不上榜，避免开局所有人都挂 TOP 角标
+      const landed = {};
+      top.forEach((r, i) => { if (r.count > 0) landed[r.p.id] = i + 1; });
+
+      if (listEl) {
+        if (!cloudReady) {
+          listEl.innerHTML = '<span class="cheer-rank-empty">等待同步…</span>';
+        } else {
+          // 0 票不上榜：只有 1 人有票就只显示 1 位，不凑数
+          const shown = top.filter(r => r.count > 0);
+          if (!shown.length) {
+            listEl.innerHTML = '<span class="cheer-rank-empty">暂无应援，快来抢占首位</span>';
+          } else {
+            listEl.innerHTML = shown.map((r, i) =>
+              '<div class="cheer-rank-item rank-' + (i + 1) + '" title="' + escapeHtml(r.p.game_bili_nickname) + '">'
+              + '<span class="cheer-rank-no">' + (i + 1) + '</span>'
+              + '<span class="cheer-rank-name">' + escapeHtml(r.p.group_nickname) + '</span>'
+              + '<span class="cheer-rank-count">' + r.count + '<em>票</em></span>'
+              + '</div>'
+            ).join('');
+          }
+        }
+      }
+
+      // 卡片上的 TOP1/2/3 小角标
+      PLAYERS_DATA.forEach(p => {
+        const el = document.getElementById('rankMark_' + p.id);
+        if (!el) return;
+        const rk = cloudReady ? (landed[p.id] || 0) : 0;
+        el.innerText = rk ? RANK_LABELS[rk - 1] : '';
+        el.className = 'rank-mark' + (rk ? ' rank-mark-' + rk : '');
+        el.style.display = rk ? '' : 'none';
+      });
+    }
+
+    /* --------------------------------------------------------------------------
+       5. 选手列表渲染与应援逻辑
+       -------------------------------------------------------------------------- */
+    function renderPlayers(playersToRender) {
+      const grid = document.getElementById('playersGrid');
+      grid.innerHTML = "";
+
+      if (playersToRender.length === 0) {
+        grid.innerHTML = `
+          <div style="grid-column: 1 / -1; text-align: center; padding: 48px 16px; color: var(--bf-chalk-dim); font-size: 14px; background: rgba(9, 17, 14, 0.4); border: 1px dashed var(--bf-chalk-border); border-radius: 4px;">
+            <div style="font-size: 24px; margin-bottom: 8px;">🔍</div>
+            未检索到匹配的探索者档案，请调整搜索词或重置分队/难度筛选
+          </div>
+        `;
+        document.getElementById('playerCountLabel').innerText = 0;
+        updateTotalLikes();
+        renderCheerRank();
+        return;
+      }
+
+      playersToRender.forEach(p => {
+        const likes = likesStore[p.id] || 0;
+        const diffClass = p.difficulty.toLowerCase().includes('15') ? 'n15' : 'n12';
+
+        const card = document.createElement('div');
+        card.className = "player-card";
+        card.id = `playerCard_${p.id}`;
+        card.innerHTML = `
+          <div>
+            <div class="player-top-row">
+              <div class="player-badge-group">
+                <span class="diff-badge ${diffClass}">${p.difficulty}</span>
+                <span class="squad-badge">${p.squad}</span>${playerTagBadges(p)}
+              </div>
+              <span class="player-id-label">#${String(p.id).padStart(2, '0')}</span>
+            </div>
+            <div class="player-group-name"><span class="rank-mark" id="rankMark_${p.id}" style="display:none;"></span>${escapeHtml(p.group_nickname)}</div>
+            <div class="player-game-name">${escapeHtml(p.game_bili_nickname)}</div>
+          </div>
+          <div class="player-bottom-row">
+            <div class="like-counter-display">
+              <span>应援数:</span>
+              <strong id="likeCount_${p.id}">${likes}</strong>
+            </div>
+            <button class="cheer-btn" onclick="cheerPlayer(${p.id}, event)">
+              <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+              <span>为Ta应援</span>
+            </button>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+
+      document.getElementById('playerCountLabel').innerText = playersToRender.length;
+      updateTotalLikes();
+      renderCheerRank();
+    }
+
+    // 提交队列：连点时串行发送，避免并发把额度算乱
+    let cheerQueue = [];
+    let cheerBusy = false;
+
+    function spawnCheerFloat(event) {
+      if (!event || !event.currentTarget) return;
+      const rect = event.currentTarget.getBoundingClientRect();
+      const floatEl = document.createElement('div');
+      floatEl.className = 'cheer-float-num';
+      floatEl.innerText = '+1 命运应援';
+      const targetLeft = rect.left + rect.width / 2 - 40;
+      const clampedLeft = Math.max(12, Math.min(window.innerWidth - 100, targetLeft));
+      floatEl.style.left = `${clampedLeft}px`;
+      floatEl.style.top = `${Math.max(20, rect.top - 12)}px`;
+      document.body.appendChild(floatEl);
+      setTimeout(() => floatEl.remove(), 800);
+    }
+
+    /* 应援失败的提示气泡（额度耗尽 / 未连上服务器）：
+       锚定在被点的那枚按钮旁边，并强制落在吸顶页头下沿与视口之内 ——
+       旧实现固定在 top:92px，手机上既可能被页头压住，也离手指太远，常常看不见。 */
+    const QUOTA_FULL_SUB = '去「黑流搏浪」打捞，每晋一层 +5 次';
+
+    function showCheerNotice(anchorEl, mainHtml, subHtml) {
+      const old = document.getElementById('cheerQuotaToast');
+      if (old && old.parentNode) old.parentNode.removeChild(old);
+
+      const el = document.createElement('div');
+      el.className = 'cheer-quota-toast';
+      el.id = 'cheerQuotaToast';
+      el.innerHTML = '<span class="cheer-quota-main">' + mainHtml + '</span>'
+        + (subHtml ? '<span class="cheer-quota-sub">' + subHtml + '</span>' : '');
+
+      // 先钉死宽度再插入：宽度一确定，后面无论把 left/top 放到哪里都不会被压扁换行
+      const w = Math.min(Math.round(window.innerWidth * 0.86), 300);
+      el.style.width = w + 'px';
+      document.body.appendChild(el);
+      const h = el.offsetHeight || 52;
+
+      let rect = null;
+      if (anchorEl && anchorEl.getBoundingClientRect) {
+        try { rect = anchorEl.getBoundingClientRect(); } catch (e) { rect = null; }
+      }
+
+      // 吸顶页头会遮住视口顶部，提示一律落在页头下沿之下
+      const headerEl = document.querySelector('.sticky-top');
+      const safeTop = (headerEl ? headerEl.getBoundingClientRect().bottom : 0) + 8;
+
+      let left, top;
+      if (rect && rect.width) {
+        left = rect.left + rect.width / 2;
+        top = rect.top - h - 10;                     // 默认浮在按钮上方
+        if (top < safeTop) top = rect.bottom + 10;   // 上方放不下就落到按钮下方
+      } else {
+        left = window.innerWidth / 2;
+        top = Math.max(safeTop, window.innerHeight / 2 - h / 2);
+      }
+      left = Math.max(w / 2 + 8, Math.min(window.innerWidth - w / 2 - 8, left));
+      top = Math.max(safeTop, Math.min(window.innerHeight - h - 10, top));
+
+      el.style.left = left + 'px';
+      el.style.top = top + 'px';
+
+      setTimeout(function () { if (el.parentNode) el.parentNode.removeChild(el); }, 2400);
+    }
+
+    function quotaFullNotice(anchorEl) {
+      showCheerNotice(
+        anchorEl,
+        '今日 <b>' + (Number(myQuota.limit) || DAILY_LIMIT) + '</b> 次应援已用完',
+        QUOTA_FULL_SUB
+      );
+    }
+
+    // 卡片在筛选/重渲染后会被替换，用 id 兜底找回按钮，保证提示锚得住
+    function cheerButtonOf(playerId) {
+      return document.querySelector('#playerCard_' + playerId + ' .cheer-btn');
+    }
+
+    function cheerPlayer(playerId, event) {
+      const btn = (event && event.currentTarget) || cheerButtonOf(playerId);
+
+      // 先校验、后表现：扣不到额度就绝不飘 +1（此前先飘 +1 再看额度，耗尽时全是假的）
+      if (!cloudReady) {
+        showCheerNotice(btn, '尚未连接服务器', '请稍候几秒再试，或刷新页面');
+        setSyncStatus('尚未连接服务器，请稍候…', true);
+        loadFromCloud(true);
+        return;
+      }
+      if (myQuota.remaining <= 0) {
+        quotaFullNotice(btn);
+        applyQuotaToCheerButtons();
+        return;
+      }
+
+      // 乐观更新：先让手感跟得上，票数最终以服务端返回为准
+      spawnCheerFloat(event);
+      likesStore[playerId] = (likesStore[playerId] || 0) + 1;
+      myQuota.remaining = Math.max(0, myQuota.remaining - 1);
+      myQuota.used = (myQuota.used || 0) + 1;
+      refreshAllCounters();
+
+      cheerQueue.push(playerId);
+      flushCheerQueue();
+    }
+
+    async function flushCheerQueue() {
+      if (cheerBusy) return;
+      cheerBusy = true;
+      while (cheerQueue.length > 0) {
+        const pid = cheerQueue.shift();
+        try {
+          const data = await httpJson('POST', CHEER_API,
+            { deviceId: DEVICE_ID, playerId: pid }, 12000);
+
+          if (data && data.ok) {
+            absorbCounts(data.counts);
+            if (data.result && typeof data.result.remaining === 'number') {
+              myQuota = normalizeQuota(data.result);
+            }
+          }
+
+          // 服务端裁定「额度已满」（本地额度是陈旧的，例如同一设备另开了一个页面）：
+          // 上面的 absorbCounts 已经把乐观 +1 撤回，这里再停队列 + 就地给可见提示。
+          const res = data && data.result;
+          if (res && res.ok === false && res.reason === 'limit') {
+            cheerQueue.length = 0;
+            myQuota.remaining = 0;
+            quotaFullNotice(cheerButtonOf(pid));
+          } else if (data && data.ok) {
+            setSyncStatus('已同步');
+          }
+
+          refreshAllCounters();
+          updateGameBonusLine();
+        } catch (err) {
+          // 兜底：改用 <img> 信标发投票请求（不受 CORS 限制，票数仍由服务端裁定）
+          console.warn('[cheer] POST 失败，改用信标兜底:', err);
+          try {
+            const beacon = (typeof Image !== 'undefined') ? new Image() : document.createElement('img');
+            beacon.src = CHEER_API + '?deviceId=' + encodeURIComponent(DEVICE_ID)
+                    + '&vote=' + pid + '&_t=' + Date.now();
+            setSyncStatus('网络不稳，改用备用通道提交…', true);
+            setTimeout(function () { loadFromCloud(false); }, 900);
+          } catch (e2) {
+            setSyncStatus('提交失败(' + ((err && err.message) || err) + ')', true);
+          }
+        }
+      }
+      cheerBusy = false;
+    }
+
+    function updateTotalLikes() {
+      let sum = 0;
+      Object.values(likesStore).forEach(v => sum += (Number(v) || 0));
+
+      const totalEl = document.getElementById('globalTotalLikes');
+      if (totalEl) totalEl.innerText = cloudReady ? sum : '—';
+
+      const leftEl = document.getElementById('myQuotaLeft');
+      if (leftEl) {
+        if (!cloudReady) {
+          leftEl.innerText = '—';
+        } else {
+          const bonus = Number(myQuota.bonus) || 0;
+          leftEl.innerText = bonus > 0
+            ? myQuota.remaining + ' (+' + bonus + ')'
+            : String(myQuota.remaining);
+        }
+      }
+
+      const pill = document.getElementById('quotaPill');
+      if (pill) {
+        pill.classList.toggle('quota-empty', cloudReady && myQuota.remaining <= 0);
+        const bonus = Number(myQuota.bonus) || 0;
+        pill.title = cloudReady
+          ? ('今日剩余 ' + myQuota.remaining + ' 次（已用 ' + (Number(myQuota.used) || 0)
+              + ' / 共 ' + (Number(myQuota.limit) || DAILY_LIMIT) + ' 次'
+              + (bonus > 0 ? '，其中打捞奖励 +' + bonus : '') + '）')
+          : '今日剩余应援次数（每人每天 ' + DAILY_LIMIT + ' 次，打捞小游戏最多再赢 +50 次）';
+      }
+
+      applyQuotaToCheerButtons();
+    }
+
+    /* 额度耗尽时把卡片上的应援按钮切成「今日已用完」：用户一眼就知道该去
+       「黑流搏浪」赢额度，而不是对着一个必然失败的按钮连点。额度回补后自动复原。 */
+    function applyQuotaToCheerButtons() {
+      const depleted = cloudReady && myQuota.remaining <= 0;
+      const btns = document.querySelectorAll('.cheer-btn');
+      for (let i = 0; i < btns.length; i++) {
+        const btn = btns[i];
+        btn.classList.toggle('is-empty', depleted);
+        const label = btn.querySelector('span');
+        if (label) {
+          const want = depleted ? '今日已用完' : '为Ta应援';
+          if (label.innerText !== want) label.innerText = want;
+        }
+      }
+      return depleted;
+    }
+
+    function filterPlayers() {
+      const q = document.getElementById('playerSearchInput').value.trim().toLowerCase();
+      const squad = document.getElementById('squadFilterSelect').value;
+      const diff = document.getElementById('diffFilterSelect').value;
+
+      const filtered = PLAYERS_DATA.filter(p => {
+        const matchesQ = !q || p.group_nickname.toLowerCase().includes(q) || p.game_bili_nickname.toLowerCase().includes(q);
+        const matchesSquad = (squad === "ALL") || (p.squad === squad);
+        const matchesDiff = (diff === "ALL") || (p.difficulty === diff);
+        return matchesQ && matchesSquad && matchesDiff;
+      });
+
+      renderPlayers(filtered);
+    }
+
+    /* --------------------------------------------------------------------------
+       6. 规程切片阅览器核心状态机
+       -------------------------------------------------------------------------- */
+    let currentRuleSet = 1;
+    let currentChapterIndex = 0;
+    let currentViewMode = 'paged'; // 'paged' or 'continuous'
+
+    function switchRuleSet(ruleId) {
+      currentRuleSet = ruleId;
+      currentChapterIndex = 0;
+      document.getElementById('ruleSetBtn_1').classList.toggle('active', ruleId === 1);
+      document.getElementById('ruleSetBtn_2').classList.toggle('active', ruleId === 2);
+      renderChapterPills();
+      updateSliceDisplay();
+    }
+
+    function setSliceViewMode(mode) {
+      currentViewMode = mode;
+      document.getElementById('modeBtn_paged').classList.toggle('active', mode === 'paged');
+      document.getElementById('modeBtn_continuous').classList.toggle('active', mode === 'continuous');
+
+      const isPaged = mode === 'paged';
+      document.getElementById('chapterHeaderBanner').style.display = isPaged ? 'flex' : 'none';
+      document.getElementById('chapterPagerBar').style.display = isPaged ? 'flex' : 'none';
+      document.getElementById('pagedSliceFrame').style.display = isPaged ? 'block' : 'none';
+      document.getElementById('continuousSlicesContainer').style.display = isPaged ? 'none' : 'flex';
+
+      updateSliceDisplay();
+    }
+
+    function renderChapterPills() {
+      const scrollBar = document.getElementById('chapterPillsScroll');
+      scrollBar.innerHTML = "";
+      const sections = RULES_DATA[currentRuleSet].sections;
+
+      sections.forEach((sec, idx) => {
+        const pill = document.createElement('button');
+        pill.className = `chapter-pill ${idx === currentChapterIndex ? 'active' : ''}`;
+        pill.innerText = `${sec.chapter} · ${sec.title}`;
+        pill.onclick = () => {
+          currentChapterIndex = idx;
+          renderChapterPills();
+          updateSliceDisplay();
+          // 若在连续模式下点击药丸，自动滚动到对应锚点
+          if (currentViewMode === 'continuous') {
+            const el = document.getElementById(`continuousSec_${sec.id}`);
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        };
+        scrollBar.appendChild(pill);
+      });
+    }
+
+    function navigateChapter(delta) {
+      const sections = RULES_DATA[currentRuleSet].sections;
+      const nextIdx = currentChapterIndex + delta;
+      if (nextIdx >= 0 && nextIdx < sections.length) {
+        currentChapterIndex = nextIdx;
+        renderChapterPills();
+        updateSliceDisplay();
+        
+        // 自动将对应 pill 滚动进视口
+        const pills = document.querySelectorAll('.chapter-pill');
+        if (pills[currentChapterIndex]) {
+          pills[currentChapterIndex].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+        }
+      }
+    }
+
+    function updateSliceDisplay() {
+      const sections = RULES_DATA[currentRuleSet].sections;
+
+      if (currentViewMode === 'paged') {
+        const sec = sections[currentChapterIndex];
+        if (!sec) return;
+
+        document.getElementById('currentChapterBadge').innerText = sec.chapter;
+        document.getElementById('currentChapterTitle').innerText = sec.title;
+        document.getElementById('currentChapterSummary').innerText = sec.summary;
+        document.getElementById('pagerIndicator').innerText = `${sec.chapter} / 共 ${sections.length} 章`;
+
+        document.getElementById('prevChapterBtn').disabled = currentChapterIndex === 0;
+        document.getElementById('nextChapterBtn').disabled = currentChapterIndex === sections.length - 1;
+
+        const img = document.getElementById('sliceImageDisplay');
+        img.style.opacity = '0.4';
+        img.src = sec.img;
+        img.onload = () => { img.style.opacity = '1'; };
+      } else {
+        // 连续阅读模式
+        const container = document.getElementById('continuousSlicesContainer');
+        container.innerHTML = "";
+
+        sections.forEach(sec => {
+          const item = document.createElement('div');
+          item.className = 'continuous-slice-item';
+          item.id = `continuousSec_${sec.id}`;
+          item.innerHTML = `
+            <div class="continuous-slice-title">
+              <span class="chapter-seq-badge">${sec.chapter}</span>
+              <strong>${sec.title}</strong>
+              <span style="font-size:12px; color:var(--bf-chalk-dim);">${sec.summary}</span>
+            </div>
+            <div class="slice-img-frame">
+              <img class="slice-img-element" src="${sec.img}" alt="${sec.title}" onclick="openLightbox(this.src)" loading="lazy">
+              <div class="slice-zoom-hint">🔍 点击放大</div>
+            </div>
+          `;
+          container.appendChild(item);
+        });
+      }
+    }
+
+    // 触控滑动手势支持 (在分页模式下滑动切换章节，智能规避纵向滚动误触)
+    let touchStartX = 0;
+    let touchEndX = 0;
+    let touchStartY = 0;
+    let touchEndY = 0;
+    const sliceFrameEl = document.getElementById('pagedSliceFrame');
+    if (sliceFrameEl) {
+      sliceFrameEl.addEventListener('touchstart', e => {
+        touchStartX = e.changedTouches[0].screenX;
+        touchStartY = e.changedTouches[0].screenY;
+      }, { passive: true });
+      sliceFrameEl.addEventListener('touchend', e => {
+        touchEndX = e.changedTouches[0].screenX;
+        touchEndY = e.changedTouches[0].screenY;
+        handleSwipe();
+      }, { passive: true });
+    }
+    function handleSwipe() {
+      const diffX = touchEndX - touchStartX;
+      const diffY = touchEndY - touchStartY;
+      // 仅当横向滑动距离明显（>45px）且横向位移大于纵向位移 1.4 倍时判定为翻页手势
+      if (Math.abs(diffX) > 45 && Math.abs(diffX) > 1.4 * Math.abs(diffY)) {
+        if (diffX < 0) {
+          navigateChapter(1); // 向左滑，看下一章
+        } else {
+          navigateChapter(-1); // 向右滑，看上一章
+        }
+      }
+    }
+
+    // 键盘左右键支持
+    window.addEventListener('keydown', e => {
+      const rulesTab = document.getElementById('view_rules');
+      if (rulesTab && rulesTab.classList.contains('active') && currentViewMode === 'paged') {
+        if (e.key === 'ArrowLeft') navigateChapter(-1);
+        if (e.key === 'ArrowRight') navigateChapter(1);
+      }
+      if (e.key === 'Escape') closeLightbox();
+    });
+
+    /* --------------------------------------------------------------------------
+       7. 命运藏品单次卜算核心逻辑 (仅单抽，保留5档吉凶特效)
+       -------------------------------------------------------------------------- */
+    function performGacha() {
+      // 随机抽取一件
+      const picked = RELICS_DATA[Math.floor(Math.random() * RELICS_DATA.length)];
+
+      const displayZone = document.getElementById('gachaDisplayZone');
+      displayZone.innerHTML = "";
+
+      const isIcon = picked.kind === 'icon';
+      const card = document.createElement('div');
+      card.className = `divined-relic-card tier-${picked.tier_code}` + (isIcon ? ' is-text' : '');
+      card.onclick = () => openLightbox(picked.img);
+
+      let dangerAlertHtml = '';
+      if (picked.tier === '凶') {
+        dangerAlertHtml = `
+          <div class="xiong-danger-desc">
+            ⚠️ <strong>【凶兆 · 禁忌异相】</strong> 黑流暴涨，深渊蔓延！需高度警惕战局倾覆
+          </div>
+        `;
+      }
+
+      // 「作用」与「说明」：仅第二批藏品携带，缺失时不渲染对应区块
+      const effectHtml = picked.effect
+        ? `<div class="card-relic-effect"><span class="label">作用</span>${escapeHtml(picked.effect)}</div>`
+        : '';
+      const descHtml = picked.desc
+        ? `<div class="card-relic-desc"><span class="label">说明</span>${escapeHtml(picked.desc)}</div>`
+        : '';
+
+      card.innerHTML = `
+        <div class="card-tier-banner">
+          <div class="card-tier-badge">
+            <span>${getTierSymbol(picked.tier)}</span>
+            <span>【${picked.tier}】</span>
+            <span>${escapeHtml(picked.name)}</span>
+          </div>
+          <span class="card-zoom-tag">🔍 点击放大</span>
+        </div>
+        <div class="card-img-window${isIcon ? ' is-icon' : ''}">
+          <img src="${picked.img}" alt="${escapeHtml(picked.name)}">
+        </div>
+        ${dangerAlertHtml}
+        ${effectHtml}
+        ${descHtml}
+      `;
+
+      displayZone.appendChild(card);
+
+      // 触发全屏吉凶氛围特效
+      triggerSpecialEffect(picked.tier_code);
+    }
+
+    function getTierSymbol(tier) {
+      switch(tier) {
+        case '鸿运': return '✦✦✦';
+        case '大吉': return '✦✦';
+        case '中吉': return '◆';
+        case '小吉': return '◇';
+        case '平':   return '○';
+        case '凶':   return '☠';
+        default:     return '★';
+      }
+    }
+
+    function triggerSpecialEffect(tier_code) {
+      const overlay = document.getElementById('gachaBurstOverlay');
+      overlay.className = "gacha-burst-overlay";
+
+      if (tier_code === 'hongyun') {
+        overlay.classList.add('burst-hongyun');
+        setTimeout(() => overlay.className = "gacha-burst-overlay", 1800);
+      } else if (tier_code === 'daji') {
+        overlay.classList.add('burst-daji');
+        setTimeout(() => overlay.className = "gacha-burst-overlay", 1500);
+      } else if (tier_code === 'xiong') {
+        overlay.classList.add('burst-xiong');
+        setTimeout(() => overlay.className = "gacha-burst-overlay", 1800);
+      }
+    }
+
+    /* --------------------------------------------------------------------------
+       7.5 黑流搏浪 · 沉沦打捞（小游戏核心）
+           - 纯 Canvas + 触摸/鼠标事件，不依赖 fetch / ES 新特性，X5 内核可跑
+           - 分数由前端统计，但「换取多少应援额度」完全由服务端裁定：
+             开局领一局令牌 → 局末持令牌兑奖，服务端校验令牌时效与单次使用
+           - 兑奖档位看「抵达层数」而不是分数：第 N 层 = N×5 次，封顶 50
+           - 连续 6 秒没有打捞到任何藏品 → 黑流侵蚀，扣一条命（防止龟缩不打）
+       -------------------------------------------------------------------------- */
+    const GAME_LIVES_START = 3;
+    const GAME_LIVES_MAX = 5;
+    const GAME_LAYER_STEP = 6;                 // 每打捞 6 件藏品升一层
+    const GAME_BONUS_CAP = 50;                 // 每日打捞奖励上限（服务端同样硬卡）
+    const GAME_VOTES_PER_LAYER = 5;            // 每晋一层 = 当天多 5 次应援（与服务端同一张表）
+    const GAME_IDLE_LIMIT = 6;                 // 连续多少秒没有收获 → 被侵蚀扣命
+    const GAME_IDLE_HINT_AT = 3;               // 剩余多少秒开始给提示
+
+    /**
+     * 层数 → 当日额外应援次数。
+     * 必须与服务端 public.game_layer_tier(p_layer) 对齐：
+     *   LEAST(50, GREATEST(0, p_layer) * 5)
+     */
+    function gameLayerVotes(layer) {
+      const n = Math.max(0, Math.floor(Number(layer) || 0));
+      return Math.min(GAME_BONUS_CAP, n * GAME_VOTES_PER_LAYER);
+    }
+
+    // 各吉凶档的基础分值
+    const GAME_TIER_SCORE = {
+      hongyun: 300,
+      daji:    150,
+      zhongji: 90,
+      xiaoji:  70,
+      ping:    50
+    };
+    // 生成权重（合计 100）：鸿运稀少，中吉最多
+    const GAME_TIER_WEIGHT = [
+      ['hongyun', 4],
+      ['daji',   20],
+      ['zhongji', 45],
+      ['xiaoji', 22],
+      ['ping',    9]
+    ];
+    const GAME_TIER_RING = {
+      hongyun: '#ffd166',
+      daji:    '#e6a117',
+      zhongji: '#14b8a6',
+      xiaoji:  '#14b8a6',
+      ping:    '#e0e4dd'
+    };
+    // 结算评级（分数由低到高匹配）
+    const GAME_RATINGS = [
+      [12000, '黑流之主'],
+      [7000,  '树海拾遗者'],
+      [3500,  '深渊打捞人'],
+      [1500,  '沉沦见习者'],
+      [0,     '迷途的沉沦者']
+    ];
+
+    const game = {
+      state: 'idle',        // idle | loading | running | over
+      canvas: null,
+      ctx: null,
+      wrap: null,
+      dpr: 1,
+      w: 0,
+      h: 0,
+      pool: [],
+      poolByTier: {},
+      images: {},           // 图片路径 -> Image
+      imagesReady: false,
+      objects: [],
+      particles: [],
+      floats: [],
+      motes: [],
+      elapsed: 0,
+      lastTs: 0,
+      rafId: null,
+      spawnTimer: 0,
+      spawnInterval: 1.15,
+      score: 0,
+      combo: 0,
+      bestCombo: 0,
+      mult: 1,
+      lives: GAME_LIVES_START,
+      layer: 1,
+      salvaged: 0,
+      idle: 0,             // 距上次成功打捞经过的秒数（≥GAME_IDLE_LIMIT 扣命）
+      idleTick: -1,        // 侵蚀条刷新节流用的十分位
+      idleHits: 0,         // 本局被黑流侵蚀扣掉的生命数（结算展示用）
+      loot: [],
+      token: '',
+      submitting: false,
+      limitBeforeSubmit: 0
+    };
+
+    function gameNow() {
+      return (typeof performance !== 'undefined' && performance.now)
+        ? performance.now() : Date.now();
+    }
+
+    function gameInt(v, fallback) {
+      const n = parseInt(v, 10);
+      return isNaN(n) ? fallback : n;
+    }
+
+    /* ---------- 尺寸自适应 ---------- */
+    function gameResize() {
+      const c = game.canvas;
+      const wrapEl = game.wrap;
+      if (!c || !wrapEl || !game.ctx) return;
+      const dpr = Math.min((typeof window !== 'undefined' && window.devicePixelRatio) || 1, 2);
+      const w = wrapEl.clientWidth || 0;
+      const h = wrapEl.clientHeight || 0;
+      // 面板处于隐藏状态时量到 0，此时保留上一次的有效尺寸
+      if (!w || !h) return;
+      game.dpr = dpr;
+      game.w = w;
+      game.h = h;
+      c.width = Math.round(w * dpr);
+      c.height = Math.round(h * dpr);
+      c.style.width = w + 'px';
+      c.style.height = h + 'px';
+      game.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      seedMotes();
+    }
+
+    function seedMotes() {
+      const n = Math.max(26, Math.round((game.w * game.h) / 16000));
+      game.motes = [];
+      for (let i = 0; i < n; i++) {
+        game.motes.push({
+          x: Math.random() * game.w,
+          y: Math.random() * game.h,
+          r: 0.7 + Math.random() * 1.8,
+          sp: 12 + Math.random() * 40,
+          a: 0.10 + Math.random() * 0.3
+        });
+      }
+    }
+
+    /* ---------- 素材预载（只用方形图标，共 19 件，约 700KB） ---------- */
+    function buildGamePool() {
+      const icons = RELICS_DATA.filter(function (r) {
+        return r.kind === 'icon' && r.tier_code !== 'xiong';
+      });
+      game.pool = icons;
+      game.poolByTier = {};
+      icons.forEach(function (r) {
+        if (!game.poolByTier[r.tier_code]) game.poolByTier[r.tier_code] = [];
+        game.poolByTier[r.tier_code].push(r);
+      });
+    }
+
+    function preloadGameImages(cb) {
+      if (game.imagesReady) { cb(); return; }
+      buildGamePool();
+      const srcs = game.pool.map(function (r) { return r.img; });
+      if (!srcs.length) { game.imagesReady = true; cb(); return; }
+
+      let left = srcs.length;
+      let fired = false;
+      function finish() {
+        if (fired) return;
+        fired = true;
+        game.imagesReady = true;
+        cb();
+      }
+      srcs.forEach(function (src) {
+        const img = new Image();
+        img.onload = img.onerror = function () {
+          left--;
+          if (left <= 0) finish();
+        };
+        img.src = src;
+        game.images[src] = img;
+      });
+      // 兜底：网络太差也不让玩家干等
+      setTimeout(finish, 3000);
+    }
+
+    /* ---------- 开局令牌（服务端签发，局末兑奖要用） ---------- */
+    function fetchGameToken() {
+      game.token = '';
+      const qs = 'deviceId=' + encodeURIComponent(DEVICE_ID) + '&gameStart=1&_t=' + Date.now();
+      return httpJson('GET', CHEER_API + '?' + qs, null, 12000)
+        .then(function (d) {
+          if (d && d.ok && d.session && d.session.token) game.token = d.session.token;
+          if (d && d.ok && d.counts) absorbCounts(d.counts);
+          if (d && d.ok && d.status) myQuota = normalizeQuota(d.status);
+          return game.token;
+        })
+        .catch(function () {
+          return jsonpGet(qs, 12000).then(function (d) {
+            if (d && d.ok && d.session && d.session.token) game.token = d.session.token;
+            return game.token;
+          }).catch(function () { return ''; });
+        });
+    }
+
+    /* ---------- 生成漂流物 ---------- */
+    function pickTier() {
+      let r = Math.random() * 100;
+      for (let i = 0; i < GAME_TIER_WEIGHT.length; i++) {
+        r -= GAME_TIER_WEIGHT[i][1];
+        if (r <= 0) return GAME_TIER_WEIGHT[i][0];
+      }
+      return 'zhongji';
+    }
+
+    function spawnObject() {
+      const h = game.h;
+      const w = game.w;
+      const layerBoost = game.layer - 1;
+
+      // 黑棘密度随层数上涨：第 1 层约 20%，第 6 层约 32%，封顶 45%
+      const thornP = Math.min(0.45, 0.20 + layerBoost * 0.025);
+      const isThorn = Math.random() < thornP;
+
+      const r = Math.max(18, Math.min(32, h * 0.072)) * (0.9 + Math.random() * 0.24);
+      const speed = (130 + layerBoost * 30) * (0.85 + Math.random() * 0.4);
+      const baseY = h * 0.12 + Math.random() * h * 0.76;
+
+      const obj = {
+        kind: isThorn ? 'thorn' : 'relic',
+        x: w + r + Math.random() * 40,
+        baseY: baseY,
+        y: baseY,
+        r: r,
+        vx: -speed,
+        phase: Math.random() * Math.PI * 2,
+        amp: 6 + Math.random() * 10,
+        wob: 0.9 + Math.random() * 0.9,
+        rot: Math.random() * Math.PI,
+        spin: (Math.random() - 0.5) * 1.2,
+        hit: false
+      };
+
+      if (!isThorn) {
+        const tier = pickTier();
+        let bucket = game.poolByTier[tier];
+        if (!bucket || !bucket.length) bucket = game.pool;
+        if (!bucket || !bucket.length) return;   // 素材异常时不生成，避免崩溃
+        const relic = bucket[Math.floor(Math.random() * bucket.length)];
+        obj.tier = relic.tier;
+        obj.tier_code = relic.tier_code;
+        obj.img = relic.img;
+        obj.name = relic.name;
+        obj.base = GAME_TIER_SCORE[tier] || 60;
+      } else {
+        obj.base = 0;
+      }
+
+      game.objects.push(obj);
+    }
+
+    /* ---------- 命中特效 ---------- */
+    function burstParticles(x, y, color, n, strong) {
+      for (let i = 0; i < n; i++) {
+        const ang = Math.random() * Math.PI * 2;
+        const sp = (strong ? 70 : 40) + Math.random() * (strong ? 190 : 110);
+        game.particles.push({
+          x: x, y: y,
+          vx: Math.cos(ang) * sp,
+          vy: Math.sin(ang) * sp - 30,
+          life: 0.45 + Math.random() * 0.45,
+          age: 0,
+          r: 1.2 + Math.random() * 2.2,
+          color: color
+        });
+      }
+    }
+
+    function pushFloat(x, y, text, color) {
+      game.floats.push({ x: x, y: y, text: text, color: color || '#ffd166', age: 0, life: 0.85 });
+    }
+
+    /* ---------- 输入 ---------- */
+    function gameTap(clientX, clientY) {
+      if (game.state !== 'running') return;
+      const rect = game.canvas.getBoundingClientRect();
+      const x = clientX - rect.left;
+      const y = clientY - rect.top;
+
+      let best = null;
+      let bestD = Infinity;
+      for (let i = 0; i < game.objects.length; i++) {
+        const o = game.objects[i];
+        if (o.hit) continue;
+        const dx = o.x - x;
+        const dy = o.y - y;
+        const d = Math.sqrt(dx * dx + dy * dy);
+        const tol = o.r * (o.kind === 'thorn' ? 1.1 : 1.25);
+        if (d <= tol && d < bestD) { best = o; bestD = d; }
+      }
+
+      if (!best) {
+        // 扑空：水面涟漪，连击中断
+        if (game.combo > 0) pushFloat(x, y, '扑空', 'rgba(138, 148, 140, 0.95)');
+        game.combo = 0;
+        game.mult = 1;
+        burstParticles(x, y, 'rgba(20, 184, 166, 0.85)', 6, false);
+        syncGameHud();
+        return;
+      }
+
+      best.hit = true;
+      // 立即出队，避免被多画一帧造成"残影"
+      const bi = game.objects.indexOf(best);
+      if (bi >= 0) game.objects.splice(bi, 1);
+
+      if (best.kind === 'thorn') {
+        game.lives -= 1;
+        game.combo = 0;
+        game.mult = 1;
+        burstParticles(best.x, best.y, '#dc2626', 26, true);
+        pushFloat(best.x, best.y, '黑棘 · 生命 -1', '#f87171');
+        triggerSpecialEffect('xiong');
+        syncGameHud();
+        if (game.lives <= 0) endSalvage();
+        return;
+      }
+
+      // 打捞成功
+      game.combo += 1;
+      if (game.combo > game.bestCombo) game.bestCombo = game.combo;
+      game.mult = 1 + Math.min(4, Math.floor(game.combo / 5)) * 0.5;
+      // 有收获 → 黑流侵蚀进度清空
+      game.idle = 0;
+      game.idleTick = -1;
+
+      const gain = Math.round(best.base * game.mult);
+      game.score += gain;
+      game.salvaged += 1;
+      if (game.loot.indexOf(best.img) < 0) game.loot.push(best.img);
+
+      const strong = best.tier_code === 'hongyun' || best.tier_code === 'daji';
+      burstParticles(best.x, best.y, GAME_TIER_RING[best.tier_code] || '#ffd166',
+        strong ? 30 : 16, strong);
+      pushFloat(best.x, best.y, '+' + gain, GAME_TIER_RING[best.tier_code] || '#ffd166');
+      if (best.tier_code === 'hongyun') triggerSpecialEffect('hongyun');
+      else if (best.tier_code === 'daji') triggerSpecialEffect('daji');
+
+      if (game.salvaged % GAME_LAYER_STEP === 0) levelUp();
+      syncGameHud();
+    }
+
+    function levelUp() {
+      game.layer += 1;
+      game.spawnInterval = Math.max(0.40, 1.05 - (game.layer - 1) * 0.085);
+      let text = '第 ' + game.layer + ' 层 · 黑流加剧';
+      if (game.layer % 3 === 0 && game.lives < GAME_LIVES_MAX) {
+        game.lives += 1;
+        text = '深渊馈赠 · 生命 +1';
+      }
+      showLayerBanner(text);
+      syncGameHud();
+    }
+
+    function showLayerBanner(text) {
+      const el = document.getElementById('gameLayerBanner');
+      if (!el) return;
+      el.innerText = text;
+      el.classList.add('show');
+      if (el._hideTimer) clearTimeout(el._hideTimer);
+      el._hideTimer = setTimeout(function () { el.classList.remove('show'); }, 1250);
+    }
+
+    /* ---------- 主循环 ---------- */
+    function gameLoop() {
+      if (game.state !== 'running') { game.rafId = null; return; }
+      const now = gameNow();
+      let dt = (now - game.lastTs) / 1000;
+      game.lastTs = now;
+      if (!isFinite(dt) || dt < 0) dt = 0;
+      dt = Math.min(dt, 0.05);
+      game.elapsed += dt;
+
+      updateGame(dt);
+      drawGame();
+      game.rafId = requestAnimationFrame(gameLoop);
+    }
+
+    function updateGame(dt) {
+      // 生成
+      game.spawnTimer -= dt;
+      if (game.spawnTimer <= 0) {
+        game.spawnTimer = game.spawnInterval * (0.75 + Math.random() * 0.6);
+        spawnObject();
+        // 第 3 层起开始成对涌出，密度随层数继续上涨
+        if (game.layer >= 3 && Math.random() < Math.min(0.55, 0.18 + (game.layer - 3) * 0.07)) {
+          spawnObject();
+        }
+      }
+
+      // 漂流物
+      const objs = game.objects;
+      for (let i = objs.length - 1; i >= 0; i--) {
+        const o = objs[i];
+        o.wob += dt * o.wob * 1.4;
+        o.x += o.vx * dt;
+        o.y = o.baseY + Math.sin(o.wob + o.phase) * o.amp;
+        o.rot += o.spin * dt;
+
+        if (o.hit) { objs.splice(i, 1); continue; }
+
+        if (o.x < -o.r - 30) {
+          objs.splice(i, 1);
+          if (o.kind === 'relic') {
+            // 让藏品漂走 = 连击中断（逼你主动出手）
+            game.combo = 0;
+            game.mult = 1;
+            syncGameHud();
+          }
+          continue;
+        }
+      }
+
+      // 粒子
+      for (let i = game.particles.length - 1; i >= 0; i--) {
+        const p = game.particles[i];
+        p.age += dt;
+        if (p.age >= p.life) { game.particles.splice(i, 1); continue; }
+        p.x += p.vx * dt;
+        p.y += p.vy * dt;
+        p.vy += 240 * dt;
+        p.vx *= 0.98;
+      }
+
+      // 飘字
+      for (let i = game.floats.length - 1; i >= 0; i--) {
+        const f = game.floats[i];
+        f.age += dt;
+        if (f.age >= f.life) { game.floats.splice(i, 1); continue; }
+        f.y -= 34 * dt;
+      }
+
+      // 微尘
+      for (let i = 0; i < game.motes.length; i++) {
+        const m = game.motes[i];
+        m.x -= m.sp * dt;
+        if (m.x < -4) { m.x = game.w + 4; m.y = Math.random() * game.h; }
+      }
+
+      // 黑流侵蚀：连续 GAME_IDLE_LIMIT 秒没有打捞到任何藏品 → 扣一条命
+      if (game.lives > 0) {
+        game.idle += dt;
+        if (game.idle >= GAME_IDLE_LIMIT) {
+          game.idle = 0;
+          game.idleHits += 1;
+          game.lives -= 1;
+          const cx = game.w / 2;
+          const cy = game.h / 2;
+          burstParticles(cx, cy, '#dc2626', 30, true);
+          pushFloat(cx, cy - 16, '黑流侵蚀 · 生命 -1', '#f87171');
+          triggerSpecialEffect('xiong');
+          syncGameHud();
+          syncIdleUi(true);
+          if (game.lives <= 0) { endSalvage(); return; }
+        }
+      }
+
+      // 侵蚀条按十分位刷新，避免每帧写 DOM
+      const idleDec = Math.floor(game.idle * 10);
+      if (idleDec !== game.idleTick) { game.idleTick = idleDec; syncIdleUi(false); }
+    }
+
+    /** 黑流侵蚀条 + 倒计时提示（游戏未运行时整体归零收起）。 */
+    function syncIdleUi(force) {
+      const running = game.state === 'running';
+      const elapsed = running ? Math.min(game.idle, GAME_IDLE_LIMIT) : 0;
+      const fill = document.getElementById('gameIdleFill');
+      if (fill) fill.style.width = ((elapsed / GAME_IDLE_LIMIT) * 100).toFixed(1) + '%';
+
+      const left = Math.max(0, GAME_IDLE_LIMIT - elapsed);
+      const hint = document.getElementById('gameIdleHint');
+      const show = running && left <= GAME_IDLE_HINT_AT;
+      if (hint) {
+        const cls = 'game-idle-hint' + (show ? ' show' : '') + (show && left <= 2 ? ' danger' : '');
+        if (force || hint.className !== cls) hint.className = cls;
+      }
+      const sec = document.getElementById('gameIdleSec');
+      if (sec && (show || force)) {
+        const txt = left.toFixed(1);
+        if (sec.innerText !== txt) sec.innerText = txt;
+      }
+    }
+
+    /* ---------- 绘制 ---------- */
+    function drawGame() {
+      const ctx = game.ctx;
+      if (!ctx || !game.w || !game.h) return;
+      const w = game.w;
+      const h = game.h;
+      const t = game.elapsed;
+
+      ctx.clearRect(0, 0, w, h);
+
+      // 背景：深渊底色
+      const bg = ctx.createLinearGradient(0, 0, 0, h);
+      bg.addColorStop(0, '#071310');
+      bg.addColorStop(0.55, '#050d0b');
+      bg.addColorStop(1, '#030806');
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, w, h);
+
+      // 黑流：多条流动水线
+      const lines = 9;
+      for (let i = 0; i < lines; i++) {
+        const baseY = (i + 0.5) * (h / lines);
+        const amp = 5 + (i % 3) * 5;
+        const spd = 22 + (i % 4) * 16;
+        const off = t * (spd / 60) + i * 1.7;
+        ctx.beginPath();
+        for (let x = -40; x <= w + 40; x += 16) {
+          const y = baseY + Math.sin(x / 105 + off) * amp;
+          if (x === -40) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+        }
+        ctx.strokeStyle = (i % 3 === 0)
+          ? 'rgba(20, 184, 166, 0.085)'
+          : 'rgba(150, 175, 165, 0.055)';
+        ctx.lineWidth = (i % 3 === 0) ? 1.5 : 1;
+        ctx.stroke();
+      }
+
+      // 金色暗涌（给水面一点神血赤金的余温）
+      ctx.beginPath();
+      for (let x = -40; x <= w + 40; x += 18) {
+        const y = h * 0.78 + Math.sin(x / 160 - t * 0.5) * 10;
+        if (x === -40) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      }
+      ctx.strokeStyle = 'rgba(230, 161, 23, 0.10)';
+      ctx.lineWidth = 1.6;
+      ctx.stroke();
+
+      // 微尘
+      for (let i = 0; i < game.motes.length; i++) {
+        const m = game.motes[i];
+        ctx.beginPath();
+        ctx.arc(m.x, m.y, m.r, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(200, 220, 210, ' + m.a.toFixed(3) + ')';
+        ctx.fill();
+      }
+
+      // 漂流物
+      for (let i = 0; i < game.objects.length; i++) {
+        drawObject(game.objects[i]);
+      }
+
+      // 粒子
+      for (let i = 0; i < game.particles.length; i++) {
+        const p = game.particles[i];
+        const k = 1 - p.age / p.life;
+        ctx.globalAlpha = Math.max(0, k);
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r * (0.4 + k * 0.9), 0, Math.PI * 2);
+        ctx.fillStyle = p.color;
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+
+      // 飘字
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      for (let i = 0; i < game.floats.length; i++) {
+        const f = game.floats[i];
+        const k = 1 - f.age / f.life;
+        ctx.globalAlpha = Math.max(0, Math.min(1, k * 1.6));
+        ctx.font = '700 15px "Source Han Serif SC", "Noto Serif SC", Georgia, serif';
+        ctx.fillStyle = f.color;
+        ctx.fillText(f.text, f.x, f.y);
+      }
+      ctx.globalAlpha = 1;
+
+      // 连击提示（画布左上，避免被 HUD 挡住时也能看到）
+      if (game.combo >= 3) {
+        ctx.textAlign = 'left';
+        ctx.font = '700 13px "Source Han Serif SC", "Noto Serif SC", Georgia, serif';
+        ctx.fillStyle = 'rgba(20, 184, 166, 0.92)';
+        ctx.fillText('连击 ' + game.combo + '  ×' + game.mult.toFixed(1), 12, 20);
+      }
+
+      // 暗角
+      const vg = ctx.createRadialGradient(w / 2, h / 2, Math.min(w, h) * 0.28, w / 2, h / 2, Math.max(w, h) * 0.72);
+      vg.addColorStop(0, 'rgba(0,0,0,0)');
+      vg.addColorStop(1, 'rgba(0,0,0,0.55)');
+      ctx.fillStyle = vg;
+      ctx.fillRect(0, 0, w, h);
+    }
+
+    function drawObject(o) {
+      const ctx = game.ctx;
+      const r = o.r;
+
+      if (o.kind === 'thorn') {
+        // 黑棘：暗红多角棘刺
+        ctx.save();
+        ctx.translate(o.x, o.y);
+        ctx.rotate(o.rot);
+        const spikes = 9;
+        ctx.beginPath();
+        for (let i = 0; i < spikes * 2; i++) {
+          const ang = (i * Math.PI) / spikes;
+          const rad = (i % 2 === 0) ? r * 1.1 : r * 0.5;
+          const px = Math.cos(ang) * rad;
+          const py = Math.sin(ang) * rad;
+          if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+        }
+        ctx.closePath();
+        ctx.fillStyle = 'rgba(90, 16, 16, 0.92)';
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(220, 38, 38, 0.9)';
+        ctx.lineWidth = 1.6;
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.arc(0, 0, r * 0.32, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255, 90, 90, 0.55)';
+        ctx.fill();
+        ctx.restore();
+
+        // 危险光晕
+        ctx.beginPath();
+        ctx.arc(o.x, o.y, r * 1.3, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(220, 38, 38, 0.22)';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+        return;
+      }
+
+      const ring = GAME_TIER_RING[o.tier_code] || '#e6a117';
+      const isHigh = (o.tier_code === 'hongyun' || o.tier_code === 'daji');
+      const img = game.images[o.img];
+
+      // 外圈光晕
+      ctx.beginPath();
+      ctx.arc(o.x, o.y, r * (isHigh ? 1.35 : 1.18), 0, Math.PI * 2);
+      ctx.fillStyle = isHigh ? 'rgba(230, 161, 23, 0.16)' : 'rgba(20, 184, 166, 0.10)';
+      ctx.fill();
+
+      // 圆形画窗
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(o.x, o.y, r, 0, Math.PI * 2);
+      ctx.closePath();
+      ctx.fillStyle = '#0a1512';
+      ctx.fill();
+      ctx.clip();
+      if (img && img.width) {
+        ctx.drawImage(img, o.x - r, o.y - r, r * 2, r * 2);
+      } else {
+        ctx.fillStyle = 'rgba(230, 161, 23, 0.25)';
+        ctx.fillRect(o.x - r, o.y - r, r * 2, r * 2);
+      }
+      // 内部压暗，让金色描边更跳
+      const sh = ctx.createRadialGradient(o.x, o.y, r * 0.35, o.x, o.y, r);
+      sh.addColorStop(0, 'rgba(0,0,0,0)');
+      sh.addColorStop(1, 'rgba(0,0,0,0.42)');
+      ctx.fillStyle = sh;
+      ctx.fillRect(o.x - r, o.y - r, r * 2, r * 2);
+      ctx.restore();
+
+      // 描边
+      ctx.beginPath();
+      ctx.arc(o.x, o.y, r, 0, Math.PI * 2);
+      ctx.strokeStyle = ring;
+      ctx.lineWidth = isHigh ? 2.6 : 1.8;
+      ctx.stroke();
+
+      if (o.tier_code === 'hongyun') {
+        ctx.beginPath();
+        ctx.arc(o.x, o.y, r + 4, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(255, 209, 102, 0.45)';
+        ctx.lineWidth = 1.2;
+        ctx.stroke();
+      }
+    }
+
+    /* ---------- HUD ---------- */
+    function syncGameHud() {
+      const s = document.getElementById('gameScore');
+      if (s) s.innerText = game.score;
+      const c = document.getElementById('gameCombo');
+      if (c) c.innerText = '×' + game.mult.toFixed(1);
+      const l = document.getElementById('gameLayer');
+      if (l) l.innerText = '第 ' + game.layer + ' 层';
+      const lv2 = document.getElementById('gameLayerVotes');
+      if (lv2) {
+        const v = gameLayerVotes(game.layer);
+        lv2.innerHTML = '值 <b>+' + v + '</b> 次应援'
+          + (v >= GAME_BONUS_CAP && game.layer * GAME_VOTES_PER_LAYER > GAME_BONUS_CAP ? ' · 已封顶' : '');
+      }
+      const lv = document.getElementById('gameLives');
+      if (lv) {
+        let marks = '';
+        for (let i = 0; i < GAME_LIVES_MAX; i++) marks += (i < game.lives ? '◆' : '◇');
+        lv.innerText = marks;
+      }
+    }
+
+    function updateGameBonusLine() {
+      const el = document.getElementById('gameBonusLine');
+      if (!el) return;
+      const bonus = cloudReady ? (Number(myQuota.bonus) || 0) : 0;
+      if (!cloudReady) {
+        el.innerHTML = '今日打捞奖励：<b>—</b>（正在连接服务器）';
+        return;
+      }
+      const left = Math.max(0, GAME_BONUS_CAP - bonus);
+      el.innerHTML = '今日打捞奖励：<b>+' + bonus + ' 次应援</b>'
+        + '（每晋 1 层 +' + GAME_VOTES_PER_LAYER + '，上限 +' + GAME_BONUS_CAP + '，还可再赢 +' + left + '）'
+        + '　·　今日总应援额度 <b>' + (Number(myQuota.limit) || DAILY_LIMIT) + ' 次</b>';
+    }
+
+    /* ---------- 打捞排行榜 ---------- */
+    const BOARD_MEDALS = ['①', '②', '③'];
+    let boardLoading = false;
+
+    function renderLeaderboard(board) {
+      const list = document.getElementById('gameBoardList');
+      const meta = document.getElementById('gameBoardMeta');
+      if (!list) return;
+
+      const top = (board && Array.isArray(board.top)) ? board.top : [];
+      const total = Number(board && board.total) || 0;
+      if (meta) meta.innerText = total > 0 ? ('共 ' + total + ' 人上榜') : '虚位以待';
+
+      if (!top.length) {
+        list.innerHTML = '<div class="game-board-empty">还没有人留下名字。<br>成为第一个被黑流记住的人。</div>';
+        return;
+      }
+
+      list.innerHTML = top.map(function (row, i) {
+        const rank = i + 1;
+        const isSelf = !!myNickname && row.nickname === myNickname;
+        const cls = 'game-board-row' + (rank <= 3 ? ' top' + rank : '') + (isSelf ? ' is-self' : '');
+        const sub = [];
+        if (Number(row.relics) > 0) sub.push('打捞 ' + row.relics + ' 件');
+        if (Number(row.layer) > 0) sub.push('第 ' + row.layer + ' 层');
+        if (Number(row.combo) > 0) sub.push('最高连击 ' + row.combo);
+        return '<div class="' + cls + '">'
+          + '<span class="game-board-rank">' + (rank <= 3 ? BOARD_MEDALS[rank - 1] : rank) + '</span>'
+          + '<span class="game-board-name">' + escapeHtml(row.nickname || '无名者')
+          + (sub.length ? '<span class="game-board-sub">' + escapeHtml(sub.join(' · ')) + '</span>' : '')
+          + '</span>'
+          + '<span class="game-board-score">' + (Number(row.score) || 0) + '<small>分</small></span>'
+          + '</div>';
+      }).join('');
+    }
+
+    async function loadLeaderboard(force) {
+      if (boardLoading) return;
+      const list = document.getElementById('gameBoardList');
+      const meta = document.getElementById('gameBoardMeta');
+      boardLoading = true;
+      if (force && list) list.innerHTML = '<div class="game-board-empty">正在连接深渊…</div>';
+
+      const qs = 'leaderboard=1&limit=20';
+      try {
+        let d = null;
+        try {
+          d = await httpJson('GET', CHEER_API + '?' + qs + '&_t=' + Date.now(), null, 12000);
+        } catch (e1) {
+          // 内置浏览器拦截 XHR 时退回 JSONP
+          d = await jsonpGet(qs, 12000);
+        }
+        if (!d || !d.ok) throw new Error((d && d.reason) || 'bad_response');
+        renderLeaderboard(d.board);
+      } catch (e) {
+        if (meta) meta.innerText = '连接失败';
+        if (list) {
+          list.innerHTML = '<div class="game-board-empty">排行榜加载失败，稍后重试。<br>'
+            + '<span style="font-size:11px;color:var(--bf-chalk-muted);">'
+            + escapeHtml((e && e.message) || String(e)) + '</span></div>';
+        }
+      }
+      boardLoading = false;
+    }
+
+    /* ---------- 开始 / 结束 ---------- */
+    function resetSalvageState() {
+      game.objects = [];
+      game.particles = [];
+      game.floats = [];
+      game.elapsed = 0;
+      game.spawnTimer = 0.35;
+      game.spawnInterval = 1.05;
+      game.score = 0;
+      game.combo = 0;
+      game.bestCombo = 0;
+      game.mult = 1;
+      game.lives = GAME_LIVES_START;
+      game.layer = 1;
+      game.salvaged = 0;
+      game.idle = 0;
+      game.idleTick = -1;
+      game.idleHits = 0;
+      game.loot = [];
+      game.limitBeforeSubmit = Number(myQuota.limit) || DAILY_LIMIT;
+      game.pendingSubmit = null;
+      buildGamePool();
+      syncIdleUi(true);
+    }
+
+    function startSalvage() {
+      const startOverlay = document.getElementById('gameStartOverlay');
+      const resultOverlay = document.getElementById('gameResultOverlay');
+      const startBtn = document.getElementById('gameStartBtn');
+
+      // 上一局还没结算就点了「再捞一次」→ 静默补交，奖励不丢
+      flushPendingScore(true);
+
+      if (resultOverlay) resultOverlay.style.display = 'none';
+
+      // 已经在跑 / 正在载入就别重复开
+      if (game.state === 'running' || game.state === 'loading') return;
+
+      // 清掉可能残留的暂停遮罩
+      if (game.wrap && game.wrap._pauseMask) {
+        try { game.wrap.removeChild(game.wrap._pauseMask); } catch (e) {}
+        game.wrap._pauseMask = null;
+      }
+
+      if (!game.canvas) {
+        game.canvas = document.getElementById('gameCanvas');
+        game.wrap = document.getElementById('gameCanvasWrap');
+        if (!game.canvas || !game.wrap) return;
+        try { game.ctx = game.canvas.getContext('2d'); } catch (e) { game.ctx = null; }
+        if (!game.ctx) {
+          if (startOverlay) {
+            const desc = document.getElementById('gameStartDesc');
+            if (desc) desc.innerHTML = '<span class="warn">当前浏览器不支持 Canvas，无法进行打捞。请换用系统浏览器打开。</span>';
+          }
+          return;
+        }
+        bindGameInput();
+        if (typeof window !== 'undefined' && window.addEventListener) {
+          window.addEventListener('resize', function () {
+            if (game.state === 'running' || game.state === 'idle') gameResize();
+          });
+        }
+        document.addEventListener('visibilitychange', function () {
+          if (document.hidden && game.state === 'running') pauseSalvage(true);
+          else if (!document.hidden && game.state === 'running') resumeSalvage();
+        });
+      }
+
+      gameResize();
+
+      if (!game.imagesReady) {
+        game.state = 'loading';
+        if (startBtn) { startBtn.disabled = true; startBtn.innerText = '正在潜入黑流…'; }
+        const desc = document.getElementById('gameStartDesc');
+        if (desc) desc.innerHTML = '<span class="loading">正在打捞沉没的藏品素材…</span>';
+        preloadGameImages(function () {
+          if (startBtn) { startBtn.disabled = false; startBtn.innerText = '开 始 探 索'; }
+          if (desc) {
+            desc.innerHTML = '黑流会带走一切。<br>'
+              + '<em>点中漂流而过的藏品</em>即可打捞，连续命中会累积倍率；<br>'
+              + '<span class="warn">黑棘是凶兆的碎片，碰一下就碎一条命。</span><br>'
+              + '<span class="warn">停手超过 6 秒，黑流会自己找上门 —— 也会碎一条命。</span><br>'
+              + '每打捞 6 件晋一层，<em>每晋一层当天多赢 5 次应援</em>（上限 +50）。';
+          }
+          beginSalvage(startOverlay);
+        });
+        return;
+      }
+      beginSalvage(startOverlay);
+    }
+
+    function beginSalvage(startOverlay) {
+      resetSalvageState();
+      syncGameHud();
+      if (startOverlay) startOverlay.style.display = 'none';
+      game.state = 'running';
+      game.lastTs = gameNow();
+      syncIdleUi(true);
+      if (game.rafId) cancelAnimationFrame(game.rafId);
+      game.rafId = requestAnimationFrame(gameLoop);
+      // 令牌异步领取，几秒内必到，不影响开局
+      fetchGameToken().then(function () { game.limitBeforeSubmit = Number(myQuota.limit) || DAILY_LIMIT; });
+    }
+
+    let gamePausedAt = 0;
+    function pauseSalvage(hide) {
+      if (game.state !== 'running') return;
+      gamePausedAt = game.elapsed;
+      game.state = 'paused';
+      if (game.rafId) { cancelAnimationFrame(game.rafId); game.rafId = null; }
+      syncIdleUi(true);
+      if (hide) {
+        const wrapEl = game.wrap;
+        if (wrapEl && !wrapEl._pauseMask) {
+          const mask = document.createElement('div');
+          mask.className = 'game-overlay';
+          mask._isPauseMask = true;
+          mask.innerHTML = '<div class="game-overlay-inner">'
+            + '<div class="game-overlay-title">黑 流 暂 歇</div>'
+            + '<p class="game-overlay-desc">页面切走了，深渊也暂停了。<br>回来继续打捞。</p>'
+            + '<div class="game-btn-row"><button class="game-btn" onclick="resumeSalvage()">继 续</button></div>'
+            + '</div>';
+          wrapEl.appendChild(mask);
+          wrapEl._pauseMask = mask;
+        }
+      }
+    }
+
+    function resumeSalvage() {
+      if (game.state !== 'paused') return;
+      if (game.wrap && game.wrap._pauseMask) {
+        game.wrap.removeChild(game.wrap._pauseMask);
+        game.wrap._pauseMask = null;
+      }
+      game.state = 'running';
+      game.lastTs = gameNow();
+      if (game.rafId) cancelAnimationFrame(game.rafId);
+      game.rafId = requestAnimationFrame(gameLoop);
+    }
+
+    function endSalvage() {
+      game.state = 'over';
+      if (game.rafId) { cancelAnimationFrame(game.rafId); game.rafId = null; }
+      syncIdleUi(true);
+      drawGame();
+      // 结算推迟到玩家决定是否留名，避免「想留名却已经提交过了」
+      game.pendingSubmit = {
+        score: game.score,
+        layer: game.layer,
+        relics: game.salvaged,
+        combo: game.bestCombo
+      };
+      game.submitting = false;
+      renderGameResult();
+    }
+
+    function gameRating(score) {
+      for (let i = 0; i < GAME_RATINGS.length; i++) {
+        if (score >= GAME_RATINGS[i][0]) return GAME_RATINGS[i][1];
+      }
+      return GAME_RATINGS[GAME_RATINGS.length - 1][1];
+    }
+
+    function renderGameResult() {
+      const overlay = document.getElementById('gameResultOverlay');
+      const rating = document.getElementById('grRating');
+      const score = document.getElementById('grScore');
+      const relics = document.getElementById('grRelics');
+      const combo = document.getElementById('grCombo');
+      const layer = document.getElementById('grLayer');
+      const loot = document.getElementById('grLoot');
+      const reward = document.getElementById('grReward');
+
+      if (rating) rating.innerText = gameRating(game.score);
+      if (score) score.innerText = game.score;
+      if (relics) relics.innerText = game.salvaged;
+      if (combo) combo.innerText = game.bestCombo;
+      if (layer) layer.innerText = game.layer;
+
+      const lv = gameLayerVotes(game.layer);
+      const vLayer = document.getElementById('grVotesLayer');
+      const vVal = document.getElementById('grVotes');
+      if (vLayer) vLayer.innerText = game.layer;
+      if (vVal) vVal.innerText = '+' + lv;
+
+      if (loot) {
+        if (!game.loot.length) {
+          loot.innerHTML = '<span style="font-size:12px;color:var(--bf-chalk-dim);">这一趟什么都没捞到…</span>';
+        } else {
+          loot.innerHTML = game.loot.slice(0, 19).map(function (src) {
+            const relic = game.pool.filter(function (r) { return r.img === src; })[0] || {};
+            return '<span class="game-loot-item tier-' + (relic.tier_code || 'ping') + '" title="'
+              + escapeHtml(relic.name || '') + '"><img src="' + src + '" alt=""></span>';
+          }).join('');
+        }
+      }
+
+      if (reward) {
+        reward.className = 'game-reward-box pending';
+        reward.innerHTML = '待结算 · 抵达第 <b>' + game.layer + '</b> 层，本局价值 <b>+' + lv + '</b> 次应援'
+          + (game.idleHits > 0
+            ? '<br><span style="font-size:12px;">其中被黑流侵蚀扣命 <b>' + game.idleHits + '</b> 次</span>'
+            : '')
+          + '<br><span style="font-size:12px;">记录成绩后按今日最好的一局发放。</span>';
+      }
+      resetNameRow();
+      if (overlay) overlay.style.display = 'flex';
+    }
+
+    function setRewardBox(cls, html) {
+      const reward = document.getElementById('grReward');
+      if (!reward) return;
+      reward.className = 'game-reward-box' + (cls ? ' ' + cls : '');
+      reward.innerHTML = html;
+    }
+
+    /* ---------- 结算卡：昵称留名 ---------- */
+    let myNickname = '';
+
+    function resetNameRow() {
+      const block = document.getElementById('grNameBlock');
+      const done = document.getElementById('grNameDone');
+      const input = document.getElementById('grNameInput');
+      const btn = document.getElementById('grNameBtn');
+      if (block) block.style.display = '';
+      if (done) { done.style.display = 'none'; done.className = 'game-name-done'; done.innerHTML = ''; }
+      if (input) {
+        input.disabled = false;
+        input.value = myNickname || recallNickname() || '';
+      }
+      if (btn) { btn.disabled = false; btn.innerText = '记 录 成 绩'; }
+    }
+
+    function currentNickInput() {
+      const input = document.getElementById('grNameInput');
+      if (!input || input.disabled) return '';
+      return String(input.value || '').trim();
+    }
+
+    /** 结算完成后收起留名区，换成一句结果说明。 */
+    function markNameSubmitted(rw) {
+      const block = document.getElementById('grNameBlock');
+      const done = document.getElementById('grNameDone');
+      const input = document.getElementById('grNameInput');
+      const btn = document.getElementById('grNameBtn');
+      if (block) block.style.display = 'none';
+      if (input) input.disabled = true;
+      if (btn) { btn.disabled = true; btn.innerText = '已 结 算'; }
+      if (!done) return;
+      done.style.display = '';
+      if (rw && rw.ranked) {
+        myNickname = rw.nickname || '';
+        rememberNickname(myNickname);
+        done.className = 'game-name-done';
+        done.innerHTML = '已记入排行榜：<b>' + escapeHtml(myNickname) + '</b>'
+          + '　·　<b>' + (Number(rw.score) || 0) + '</b> 分'
+          + (Number(rw.rank) > 0 ? '，当前第 <b>' + Number(rw.rank) + '</b> 名' : '');
+      } else {
+        done.className = 'game-name-done muted';
+        done.innerHTML = '未填写昵称，本局成绩没有记入排行榜（奖励已照常发放）。';
+      }
+    }
+
+    function onNameKeydown(e) {
+      if (e && (e.key === 'Enter' || e.keyCode === 13)) {
+        if (e.preventDefault) e.preventDefault();
+        submitSalvageWithName();
+      }
+    }
+
+    function submitSalvageWithName() {
+      if (!game.pendingSubmit || game.submitting) return;
+      const btn = document.getElementById('grNameBtn');
+      if (btn) { btn.disabled = true; btn.innerText = '记 录 中…'; }
+      return submitSalvage(game.pendingSubmit.score, currentNickInput(), false);
+    }
+
+    /** 没点「记录成绩」就离开结算页 / 关页面时，静默补交，奖励不丢。 */
+    function flushPendingScore(silent) {
+      if (!game.pendingSubmit || game.submitting) return;
+      return submitSalvage(game.pendingSubmit.score, currentNickInput(), silent !== false);
+    }
+
+    /** 关页面时用 <img> 信标兜底 —— 此时 Promise 已经来不及回结果了。 */
+    function beaconPendingScore() {
+      if (!game.pendingSubmit) return;
+      const p = game.pendingSubmit;
+      const qs = 'deviceId=' + encodeURIComponent(DEVICE_ID)
+        + '&score=' + p.score + '&token=' + encodeURIComponent(game.token)
+        + '&nickname=' + encodeURIComponent(currentNickInput())
+        + '&layer=' + p.layer + '&relics=' + p.relics + '&combo=' + p.combo
+        + '&_t=' + Date.now();
+      try {
+        const img = new Image();
+        img.src = CHEER_API + '?' + qs;
+      } catch (e) {}
+      game.pendingSubmit = null;
+    }
+
+    function submitSalvage(score, nickname, silent) {
+      if (game.submitting) return;
+      game.submitting = true;
+
+      const pend = game.pendingSubmit || {};
+      const nick = (nickname === undefined || nickname === null) ? '' : String(nickname).trim();
+      const layer = Number(pend.layer) || 1;
+      const relics = Number(pend.relics) || 0;
+      const combo = Number(pend.combo) || 0;
+
+      const payload = {
+        deviceId: DEVICE_ID, score: score, token: game.token,
+        nickname: nick, layer: layer, relics: relics, combo: combo
+      };
+      const qs = 'deviceId=' + encodeURIComponent(DEVICE_ID)
+        + '&score=' + score + '&token=' + encodeURIComponent(game.token)
+        + '&nickname=' + encodeURIComponent(nick)
+        + '&layer=' + layer + '&relics=' + relics + '&combo=' + combo
+        + '&_t=' + Date.now();
+
+      function restoreNameBtn() {
+        const btn = document.getElementById('grNameBtn');
+        if (btn) { btn.disabled = false; btn.innerText = '记 录 成 绩'; }
+      }
+
+      function handleOk(d) {
+        if (d && d.counts) absorbCounts(d.counts);
+        if (d && d.status) myQuota = normalizeQuota(d.status);
+        refreshAllCounters();
+        updateGameBonusLine();
+
+        const rw = d && d.reward;
+        if (rw && rw.ok) {
+          if (!silent) {
+            const rl = Number(rw.layer) || layer;
+            const rvRaw = Number(rw.votes);
+            const votes = isNaN(rvRaw) ? gameLayerVotes(rl) : rvRaw;
+            const bestL = Math.max(Number(rw.bestLayer) || rl, rl);
+            if (rw.gained > 0) {
+              setRewardBox('', '本局抵达第 <b>' + rl + '</b> 层 → 为今日赢得 <b>+' + rw.gained + '</b> 次额外应援！<br>'
+                + '今日打捞奖励累计 <b>+' + rw.bonus + '</b> 次，总应援额度 <b>' + (50 + rw.bonus) + '</b> 次。'
+                + (rw.bonus >= GAME_BONUS_CAP ? '<br>已达今日上限（+' + GAME_BONUS_CAP + '），明天再来。' : ''));
+            } else {
+              setRewardBox('', '本局抵达第 <b>' + rl + '</b> 层（价值 +' + votes + ' 次），'
+                + '未超过今日最深的 <b>第 ' + bestL + '</b> 层，奖励仍是 <b>+' + rw.bonus + '</b> 次。<br>'
+                + '再往深处潜一层，就能多赢 ' + GAME_VOTES_PER_LAYER + ' 次。');
+            }
+            markNameSubmitted(rw);
+          } else if (rw.ranked) {
+            myNickname = rw.nickname || '';
+            rememberNickname(myNickname);
+          }
+          setSyncStatus('已同步');
+          game.pendingSubmit = null;
+          if (rw.ranked) loadLeaderboard(false);
+        } else {
+          game.pendingSubmit = null;
+          if (!silent) {
+            const reason = (rw && rw.reason) || 'unknown';
+            const map = {
+              no_session: '本局未能与服务器建立对局记录，成绩未计入奖励。请检查网络后重试。',
+              session_used: '这一局的令牌已经用过了，成绩未重复计入。',
+              session_mismatch: '对局记录与设备不匹配，成绩未计入。',
+              too_fast: '本局不足 8 秒，未被计入奖励。'
+            };
+            setRewardBox('failed', map[reason] || ('成绩已记录，但奖励未能发放（' + reason + '）。'));
+            restoreNameBtn();
+          }
+        }
+        game.submitting = false;
+      }
+
+      return httpJson('POST', CHEER_API, payload, 12000)
+        .then(function (d) {
+          if (!d || !d.ok) throw new Error((d && d.reason) || 'bad_response');
+          handleOk(d);
+        })
+        .catch(function () {
+          // 兜底 1：GET 通道（同样走服务端校验，返回值可读）
+          return httpJson('GET', CHEER_API + '?' + qs, null, 12000)
+            .then(function (d) {
+              if (!d || !d.ok) throw new Error('bad_response');
+              handleOk(d);
+            })
+            .catch(function () {
+              // 兜底 2：<img> 信标（拿不到返回值，靠重新拉状态反推）
+              return new Promise(function (resolve) {
+                try {
+                  const beacon = (typeof Image !== 'undefined') ? new Image() : document.createElement('img');
+                  beacon.src = CHEER_API + '?' + qs;
+                } catch (e) {}
+                if (silent) {
+                  game.pendingSubmit = null;
+                  game.submitting = false;
+                  resolve();
+                  return;
+                }
+                setRewardBox('pending', '网络不稳，已改用备用通道提交成绩…');
+                setTimeout(function () {
+                  loadFromCloud(false).then(function () {
+                    const gained = Math.max(0, (Number(myQuota.limit) || DAILY_LIMIT) - game.limitBeforeSubmit);
+                    if (gained > 0) {
+                      setRewardBox('', '本局抵达第 <b>' + layer + '</b> 层 → 为今日赢得 <b>+' + gained + '</b> 次额外应援！<br>'
+                        + '今日打捞奖励累计 <b>+' + (Number(myQuota.bonus) || 0) + '</b> 次。');
+                    } else {
+                      setRewardBox('', '本局抵达第 <b>' + layer + '</b> 层（价值 +' + gameLayerVotes(layer)
+                        + ' 次），已通过备用通道提交。<br>今日打捞奖励累计 <b>+'
+                        + (Number(myQuota.bonus) || 0) + '</b> 次。');
+                    }
+                    markNameSubmitted({ ranked: !!nick, nickname: nick, score: score, rank: 0 });
+                    updateGameBonusLine();
+                    game.pendingSubmit = null;
+                    game.submitting = false;
+                    if (nick) loadLeaderboard(false);
+                    resolve();
+                  });
+                }, 1400);
+              });
+            });
+        });
+    }
+
+    /* ---------- 输入绑定 ---------- */
+    function bindGameInput() {
+      const c = game.canvas;
+      let lastTouch = 0;
+
+      const onTouch = function (e) {
+        if (!e.changedTouches || !e.changedTouches.length) return;
+        lastTouch = Date.now();
+        const t = e.changedTouches[0];
+        gameTap(t.clientX, t.clientY);
+        if (e.cancelable) e.preventDefault();
+      };
+      const onMouse = function (e) {
+        if (Date.now() - lastTouch < 900) return;   // 触摸后浏览器补发的 mousedown，忽略
+        gameTap(e.clientX, e.clientY);
+      };
+
+      try {
+        c.addEventListener('touchstart', onTouch, { passive: false });
+      } catch (e) {
+        c.addEventListener('touchstart', onTouch, false);
+      }
+      c.addEventListener('mousedown', onMouse);
+    }
+
+    // 关页面 / 切到后台被丢弃时，把还没结算的成绩用信标补交出去
+    if (typeof window !== 'undefined' && window.addEventListener) {
+      try {
+        window.addEventListener('pagehide', beaconPendingScore);
+        window.addEventListener('beforeunload', beaconPendingScore);
+      } catch (e) {}
+    }
+
+    // 在 Node 测试环境下也能拿到内部状态
+    if (typeof window !== 'undefined') {
+      window.__doumaoGame = game;
+      window.__doumaoGameApi = {
+        startSalvage: startSalvage,
+        gameTap: gameTap,
+        updateGame: updateGame,
+        drawGame: drawGame,
+        resetSalvageState: resetSalvageState,
+        syncGameHud: syncGameHud,
+        spawnObject: spawnObject,
+        gameRating: gameRating,
+        gameResize: gameResize,
+        seedMotes: seedMotes,
+        endSalvage: endSalvage,
+        submitSalvage: submitSalvage,
+        submitSalvageWithName: submitSalvageWithName,
+        flushPendingScore: flushPendingScore,
+        beaconPendingScore: beaconPendingScore,
+        loadLeaderboard: loadLeaderboard,
+        renderLeaderboard: renderLeaderboard,
+        resetNameRow: resetNameRow,
+        currentNickInput: currentNickInput,
+        renderGameResult: renderGameResult
+      };
+    }
+
+
+    /* --------------------------------------------------------------------------
+       8. 页面 Tab 切换逻辑
+       -------------------------------------------------------------------------- */
+    function switchNavTab(tabName) {
+      document.querySelectorAll('.nav-tab').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-content-panel').forEach(panel => panel.classList.remove('active'));
+
+      const activeBtn = document.getElementById(`tabBtn_${tabName}`);
+      const activePanel = document.getElementById(`view_${tabName}`);
+      if (activeBtn) activeBtn.classList.add('active');
+      if (activePanel) activePanel.classList.add('active');
+
+      // 离开「黑流搏浪」页：暂停本局避免后台空转掉命；还没结算的成绩静默补交
+      if (tabName !== 'game') {
+        if (game.state === 'running') pauseSalvage(true);
+        flushPendingScore(true);
+      }
+      // 进入游戏页：重新量一次画布尺寸（面板隐藏时拿到的尺寸不可靠）
+      if (tabName === 'game') {
+        setTimeout(function () {
+          gameResize();
+          updateGameBonusLine();
+          if (game.state === 'idle') drawGame();
+        }, 30);
+        loadLeaderboard(false);
+      }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    /* --------------------------------------------------------------------------
+       9. 灯箱放大与工具函数
+       -------------------------------------------------------------------------- */
+    function openLightbox(imgSrc) {
+      const modal = document.getElementById('lightboxModal');
+      const img = document.getElementById('lightboxImg');
+      img.src = imgSrc;
+      modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+      document.getElementById('lightboxModal').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    function escapeHtml(str) {
+      if (!str) return "";
+      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    }
+
+    /* --------------------------------------------------------------------------
+       10. 选手标签 (PLAYER TAGS)
+          —— 「完赛」这类金色小徽章，接在难度 / 分队徽章后面
+          —— 数据源是云端 tag_get()：在管理页改一次，所有访客下次刷新即可看到，
+             页面本身不用重发。管理页：admin.html（总台 + 标签都在这一页）
+          —— PLAYERS_DATA 里的 tags 只是**离线兜底**：接口不通时至少还有内置那几个
+       -------------------------------------------------------------------------- */
+    let TAG_STORE = {};       // { playerId: [tag, ...] } —— 从云端读到的最新一份
+    let tagsLoaded = false;   // 是否成功读到过云端标签；没读到就一直用内置兜底
+
+    /** 某位选手该显示哪些标签：读到云端就完全听云端的，读不到才回落到内置值。 */
+    function tagsOf(p) {
+      if (tagsLoaded) return TAG_STORE[p.id] || [];
+      return (p && Array.isArray(p.tags)) ? p.tags : [];
+    }
+
+    /** 生成标签徽章 HTML；没有标签就返回空串，一个多余节点都不插。 */
+    function playerTagBadges(p) {
+      const list = tagsOf(p);
+      if (!list || !list.length) return '';
+      return list
+        .map(function (t) {
+          return '<span class="tag-badge">' + escapeHtml(String(t)) + '</span>';
+        })
+        .join('');
+    }
+
+    /** 拉一次全部选手标签；成功就重画名册，失败静默保留内置兜底（页面照常可用）。 */
+    async function loadPlayerTags() {
+      let data = null;
+      try {
+        data = await httpJson('GET', CHEER_API + '?tags=1&_t=' + Date.now(), null, 12000);
+      } catch (e1) {
+        try {
+          data = await jsonpGet('tags=1', 12000);
+        } catch (e2) {
+          return;
+        }
+      }
+      if (!data || !data.ok || !data.tags || typeof data.tags !== 'object') return;
+
+      const next = {};
+      Object.keys(data.tags).forEach(function (k) {
+        const id = parseInt(k, 10);
+        const arr = data.tags[k];
+        if (!id || !Array.isArray(arr)) return;
+        const clean = [];
+        arr.forEach(function (t) {
+          const s = String(t == null ? '' : t).trim();
+          if (s && clean.indexOf(s) < 0) clean.push(s);
+        });
+        if (clean.length) next[id] = clean;
+      });
+
+      TAG_STORE = next;
+      tagsLoaded = true;
+      filterPlayers();
+    }
+
+    // Node 测试环境下也能直接驱动
+    if (typeof window !== 'undefined') {
+      window.__doumaoTags = {
+        store: function () { return TAG_STORE; },
+        loaded: function () { return tagsLoaded; },
+        reset: function () { TAG_STORE = {}; tagsLoaded = false; },
+        set: function (store) { TAG_STORE = store || {}; tagsLoaded = true; },
+        tagsOf: tagsOf,
+        playerTagBadges: playerTagBadges,
+        loadPlayerTags: loadPlayerTags
+      };
+    }
+
+    /* --------------------------------------------------------------------------
+       11. 当前总台直播间 (CURRENT MAIN STAGE / LIVE ROOM)
+          —— 房间号、标题、备注、开关都来自云端 live_get()：
+             改总台只要写一次配置，页面不用重发
+          —— 开播状态由云函数实时向 B 站拉取（服务端做，绕开 CORS 与内置浏览器）
+          —— 下面的 LIVE_FALLBACK 是最后一道兜底：后端全挂时入口依然点得动
+       -------------------------------------------------------------------------- */
+    const LIVE_FALLBACK = { roomId: '', title: '', note: '', enabled: true };
+    const LIVE_REFRESH_MS = 60000;
+    const LIVE_COPY_LABEL = '复制链接';
+
+    let liveCfg = { roomId: LIVE_FALLBACK.roomId, title: '', note: '', enabled: true };
+    let liveStatus = null;    // 云函数带回的 B 站实时状态；null = 这一轮没拿到
+    let liveLoaded = false;   // 是否成功读到过云端配置
+    let liveCopyTimer = null;
+
+    /** 房间号 → 直播间地址；非法一律给空串（宁可不显示，也不放一个能注入的地址出去） */
+    function liveRoomUrl(roomId) {
+      return /^[0-9]{1,12}$/.test(String(roomId || ''))
+        ? 'https://live.bilibili.com/' + roomId
+        : '';
+    }
+
+    /** 人气过万折成「x 万」，免得一串数字把直播条撑开 */
+    function liveOnlineText(n) {
+      const v = Number(n) || 0;
+      if (v >= 10000) return (v / 10000).toFixed(1).replace(/\.0$/, '') + ' 万';
+      return String(v);
+    }
+
+    function liveStateOf() {
+      if (!liveCfg.enabled) return 'off';
+      if (!liveStatus) return 'unknown';
+      if (liveStatus.liveStatus === 2) return 'replay';
+      return liveStatus.isLive ? 'live' : 'off';
+    }
+
+    function renderLiveBar() {
+      const bar = document.getElementById('liveBar');
+      if (!bar) return;
+
+      const url = liveRoomUrl(liveCfg.roomId);
+
+      // 后台关掉 / 没配房间号 → 整条收起来，一格空间都不占
+      if (!liveCfg.enabled || !url) {
+        bar.hidden = true;
+        return;
+      }
+      bar.hidden = false;
+      bar.setAttribute('data-state', liveStateOf());
+
+      const anchor = document.getElementById('liveAnchor');
+      const goBtn = document.getElementById('liveGoBtn');
+      if (anchor) anchor.href = url;
+      if (goBtn) goBtn.href = url;
+
+      const badgeEl = document.getElementById('liveBadge');
+      const titleEl = document.getElementById('liveTitle');
+      const metaEl = document.getElementById('liveMeta');
+      const noteEl = document.getElementById('liveNote');
+      const faceEl = document.getElementById('liveFace');
+      const st = liveStatus;
+
+      if (badgeEl) {
+        badgeEl.innerText = !st ? '总台'
+          : (st.liveStatus === 2 ? '轮播中' : (st.isLive ? '直播中' : '未开播'));
+      }
+
+      // 管理员填了标题就听管理员的，否则跟着 B 站的实时标题走
+      const title = liveCfg.title || (st && st.roomTitle) || '总台直播间';
+      if (titleEl) titleEl.innerText = title;
+
+      if (noteEl) {
+        const note = String(liveCfg.note || '').trim();
+        noteEl.innerText = note;
+        noteEl.style.display = note ? '' : 'none';
+      }
+
+      // 副行：主播 · 分区 · 人气；没拿到状态时退化成一句提示
+      const parts = [];
+      if (st) {
+        if (st.anchor) parts.push(st.anchor);
+        if (st.areaName) parts.push(st.areaName);
+        if (st.isLive && Number(st.online) > 0) parts.push('人气 ' + liveOnlineText(st.online));
+        if (!st.isLive && st.liveStatus !== 2) parts.push('暂未开播，可以先收藏直播间');
+      } else {
+        parts.push(liveLoaded ? '点击进入总台直播间' : '正在连接总台直播间…');
+      }
+      if (metaEl) metaEl.innerText = parts.join(' · ');
+
+      // 主播头像：拉到才显示，403 / 加载失败就安静地不显示
+      if (faceEl) {
+        const face = st && st.face;
+        if (face) {
+          if (faceEl.getAttribute('src') !== face) {
+            faceEl.classList.remove('show');
+            faceEl.onload = function () { faceEl.classList.add('show'); };
+            faceEl.onerror = function () { faceEl.classList.remove('show'); };
+            faceEl.setAttribute('src', face);
+          }
+        } else {
+          faceEl.classList.remove('show');
+          faceEl.removeAttribute('src');
+        }
+      }
+    }
+
+    /** 拉一次总台配置 + 开播状态。两条传输通道都不通时保留上一次的配置，入口不会消失。 */
+    async function loadLive() {
+      let data = null;
+      try {
+        data = await httpJson('GET', CHEER_API + '?live=1&_t=' + Date.now(), null, 12000);
+      } catch (e1) {
+        try {
+          data = await jsonpGet('live=1', 12000);
+        } catch (e2) {
+          renderLiveBar();
+          return;
+        }
+      }
+      if (!data || !data.ok) { renderLiveBar(); return; }
+
+      const cfg = data.live;
+      if (cfg && typeof cfg === 'object') {
+        // 云端配置存在就完全听它的：房间号留空 = 当前没有总台，整条收起
+        const rid = String(cfg.roomId || '');
+        liveCfg = {
+          roomId: /^[0-9]{1,12}$/.test(rid) ? rid : '',
+          title: String(cfg.title || ''),
+          note: String(cfg.note || ''),
+          enabled: cfg.enabled !== false
+        };
+      }
+      liveStatus = (data.status && typeof data.status === 'object') ? data.status : null;
+      liveLoaded = true;
+      renderLiveBar();
+    }
+
+    function scheduleLiveRefresh() {
+      setInterval(function () {
+        // 后台标签页不打接口，回到前台时再补一次
+        if (document.visibilityState === 'hidden') return;
+        loadLive();
+      }, LIVE_REFRESH_MS);
+      document.addEventListener('visibilitychange', function () {
+        if (document.visibilityState === 'visible') loadLive();
+      });
+    }
+
+    /** 复制直播间链接：老办法优先，内置浏览器里 navigator.clipboard 基本不可用 */
+    function copyLiveLink(ev) {
+      if (ev && ev.preventDefault) ev.preventDefault();
+      const url = liveRoomUrl(liveCfg.roomId) || liveRoomUrl(LIVE_FALLBACK.roomId);
+      if (!url) return;
+
+      const btn = document.getElementById('liveCopyBtn');
+      const flash = function (text) {
+        if (!btn) return;
+        btn.innerText = text;
+        btn.classList.add('copied');
+        if (liveCopyTimer) clearTimeout(liveCopyTimer);
+        liveCopyTimer = setTimeout(function () {
+          btn.innerText = LIVE_COPY_LABEL;
+          btn.classList.remove('copied');
+          liveCopyTimer = null;
+        }, 1600);
+      };
+
+      let ok = false;
+      try {
+        const ta = document.createElement('textarea');
+        ta.value = url;
+        ta.setAttribute('readonly', '');
+        ta.style.position = 'fixed';
+        ta.style.top = '-1000px';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        if (ta.setSelectionRange) ta.setSelectionRange(0, ta.value.length);
+        ok = document.execCommand('copy');
+        document.body.removeChild(ta);
+      } catch (e) { ok = false; }
+      if (ok) { flash('已复制'); return; }
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(url).then(
+          function () { flash('已复制'); },
+          function () { flash('请长按链接复制'); }
+        );
+      } else {
+        flash('请长按链接复制');
+      }
+    }
+
+    // Node 测试环境下也能直接驱动
+    if (typeof window !== 'undefined') {
+      window.__doumaoLive = {
+        state: function () { return { cfg: liveCfg, status: liveStatus, loaded: liveLoaded }; },
+        set: function (cfg, status) { liveCfg = cfg; liveStatus = status; liveLoaded = true; },
+        renderLiveBar: renderLiveBar,
+        loadLive: loadLive,
+        copyLiveLink: copyLiveLink,
+        liveRoomUrl: liveRoomUrl,
+        liveOnlineText: liveOnlineText,
+        liveStateOf: liveStateOf
+      };
+    }
+
+    // 初始化运行
+    window.onload = function() {
+      seedZeroLikes();
+      renderPlayers(PLAYERS_DATA);
+      renderChapterPills();
+      updateSliceDisplay();
+      updateGameBonusLine();
+      loadLeaderboard(false);
+
+      // 当前总台：先拉一次，之后每分钟静默刷新（后台标签页不刷）
+      loadLive();
+      scheduleLiveRefresh();
+
+      // 选手标签：拉一次就够了，拉不到就保留内置兜底（页面照常可用）
+      loadPlayerTags();
+
+      // 首屏异步拉取云端票数，随后定时静默刷新，保证多端一致
+      loadFromCloud(true);
+      setInterval(function () { loadFromCloud(false); }, SYNC_INTERVAL_MS);
+
+      // 支持 URL hash 直接跳至对应标签页，支持 ?draw=1 直接卜算、?salvage=1 直接开局
+      const hash = window.location.hash.replace('#', '');
+      if (hash === 'rules' || hash === 'gacha' || hash === 'game') {
+        switchNavTab(hash);
+      }
+      if (window.location.search.includes('draw=1')) {
+        switchNavTab('gacha');
+        performGacha();
+      }
+      if (window.location.search.includes('salvage=1')) {
+        switchNavTab('game');
+        setTimeout(function () { startSalvage(); }, 260);
+      }
+    };
+  </script>
+</body>
+</html>

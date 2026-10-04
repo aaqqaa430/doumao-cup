@@ -1,0 +1,32 @@
+# ---- 凭据：绝对不要提交 ----
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+cb_key.json
+*mcp*.json
+tcb_env.sh
+secrets/
+
+# ---- 我自己的部署/测试脚手架 ----
+tmp/
+backup/
+*.zip
+*.log
+
+# ---- 编辑器 / 系统 ----
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ---- Python / Node ----
+__pycache__/
+*.py[cod]
+node_modules/
+
+# ---- 本地截图与对比产物 ----
+shots*/
+final_*.png

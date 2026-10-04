@@ -1,0 +1,170 @@
+[
+  {
+    "id": 1,
+    "group_nickname": "选手01",
+    "game_bili_nickname": "选手01（B站同名）",
+    "difficulty": "N15",
+    "squad": "术特",
+    "initial_likes": 0
+  },
+  {
+    "id": 2,
+    "group_nickname": "选手02",
+    "game_bili_nickname": "选手02（B站同名）",
+    "difficulty": "N15",
+    "squad": "多边贸易",
+    "initial_likes": 0
+  },
+  {
+    "id": 3,
+    "group_nickname": "选手03",
+    "game_bili_nickname": "选手03（B站同名）",
+    "difficulty": "N15",
+    "squad": "多边贸易",
+    "initial_likes": 0
+  },
+  {
+    "id": 4,
+    "group_nickname": "选手04",
+    "game_bili_nickname": "选手04（B站同名）",
+    "difficulty": "N15",
+    "squad": "野蛮退化",
+    "initial_likes": 0
+  },
+  {
+    "id": 5,
+    "group_nickname": "选手05",
+    "game_bili_nickname": "选手05（B站同名）",
+    "difficulty": "N15",
+    "squad": "多边贸易",
+    "initial_likes": 0
+  },
+  {
+    "id": 6,
+    "group_nickname": "选手06",
+    "game_bili_nickname": "选手06（B站同名）",
+    "difficulty": "N15",
+    "squad": "重辅",
+    "initial_likes": 0
+  },
+  {
+    "id": 7,
+    "group_nickname": "选手07",
+    "game_bili_nickname": "选手07（B站同名）",
+    "difficulty": "N15",
+    "squad": "多边贸易",
+    "initial_likes": 0
+  },
+  {
+    "id": 8,
+    "group_nickname": "选手08",
+    "game_bili_nickname": "选手08（B站同名）",
+    "difficulty": "N12",
+    "squad": "本源研修",
+    "initial_likes": 0
+  },
+  {
+    "id": 9,
+    "group_nickname": "选手09",
+    "game_bili_nickname": "选手09（B站同名）",
+    "difficulty": "N12",
+    "squad": "术特",
+    "initial_likes": 0
+  },
+  {
+    "id": 10,
+    "group_nickname": "选手10",
+    "game_bili_nickname": "选手10（B站同名）",
+    "difficulty": "N15",
+    "squad": "多边贸易",
+    "initial_likes": 0
+  },
+  {
+    "id": 11,
+    "group_nickname": "选手11",
+    "game_bili_nickname": "选手11（B站同名）",
+    "difficulty": "N15",
+    "squad": "重辅",
+    "initial_likes": 0
+  },
+  {
+    "id": 12,
+    "group_nickname": "选手12",
+    "game_bili_nickname": "选手12（B站同名）",
+    "difficulty": "N15",
+    "squad": "近锋",
+    "initial_likes": 0
+  },
+  {
+    "id": 13,
+    "group_nickname": "选手13",
+    "game_bili_nickname": "选手13（B站同名）",
+    "difficulty": "N15",
+    "squad": "近锋",
+    "initial_likes": 0
+  },
+  {
+    "id": 14,
+    "group_nickname": "选手14",
+    "game_bili_nickname": "选手14（B站同名）",
+    "difficulty": "N15",
+    "squad": "狙医",
+    "initial_likes": 0
+  },
+  {
+    "id": 15,
+    "group_nickname": "选手15",
+    "game_bili_nickname": "选手15（B站同名）",
+    "difficulty": "N15",
+    "squad": "近锋",
+    "initial_likes": 0
+  },
+  {
+    "id": 16,
+    "group_nickname": "选手16",
+    "game_bili_nickname": "选手16（B站同名）",
+    "difficulty": "N15",
+    "squad": "多边贸易",
+    "initial_likes": 0
+  },
+  {
+    "id": 17,
+    "group_nickname": "选手17",
+    "game_bili_nickname": "选手17（B站同名）",
+    "difficulty": "N12",
+    "squad": "术特",
+    "initial_likes": 0
+  },
+  {
+    "id": 18,
+    "group_nickname": "选手18",
+    "game_bili_nickname": "选手18（B站同名）",
+    "difficulty": "N15",
+    "squad": "重辅",
+    "initial_likes": 0
+  },
+  {
+    "id": 19,
+    "group_nickname": "选手19",
+    "game_bili_nickname": "选手19（B站同名）",
+    "difficulty": "N15",
+    "squad": "多边贸易",
+    "initial_likes": 0
+  },
+  {
+    "id": 20,
+    "group_nickname": "选手20",
+    "game_bili_nickname": "选手20（B站同名）",
+    "difficulty": "N15",
+    "squad": "多边贸易",
+    "initial_likes": 0
+  },
+  {
+    "id": 21,
+    "group_nickname": "选手21",
+    "game_bili_nickname": "选手21（B站同名）",
+    "difficulty": "N12",
+    "squad": "术特",
+    "initial_likes": 0
+  }
+]

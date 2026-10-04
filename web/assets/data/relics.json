@@ -1,0 +1,378 @@
+[
+  {
+    "id": 1,
+    "name": "藏品01",
+    "tier": "中吉",
+    "tier_code": "zhongji",
+    "image": "assets/relics/relic_01_zhongji.jpg"
+  },
+  {
+    "id": 2,
+    "name": "藏品02",
+    "tier": "小吉",
+    "tier_code": "xiaoji",
+    "image": "assets/relics/relic_02_xiaoji.jpg"
+  },
+  {
+    "id": 3,
+    "name": "藏品03",
+    "tier": "中吉",
+    "tier_code": "zhongji",
+    "image": "assets/relics/relic_03_zhongji.jpg"
+  },
+  {
+    "id": 4,
+    "name": "藏品04",
+    "tier": "凶",
+    "tier_code": "xiong",
+    "image": "assets/relics/relic_04_xiong.png"
+  },
+  {
+    "id": 5,
+    "name": "藏品05",
+    "tier": "中吉",
+    "tier_code": "zhongji",
+    "image": "assets/relics/relic_05_zhongji.jpg"
+  },
+  {
+    "id": 6,
+    "name": "藏品06",
+    "tier": "中吉",
+    "tier_code": "zhongji",
+    "image": "assets/relics/relic_06_zhongji.jpg"
+  },
+  {
+    "id": 7,
+    "name": "藏品07",
+    "tier": "中吉",
+    "tier_code": "zhongji",
+    "image": "assets/relics/relic_07_zhongji.jpg"
+  },
+  {
+    "id": 8,
+    "name": "藏品08",
+    "tier": "大吉",
+    "tier_code": "daji",
+    "image": "assets/relics/relic_08_daji.jpg"
+  },
+  {
+    "id": 9,
+    "name": "藏品09",
+    "tier": "大吉",
+    "tier_code": "daji",
+    "image": "assets/relics/relic_09_daji.jpg"
+  },
+  {
+    "id": 10,
+    "name": "藏品10",
+    "tier": "中吉",
+    "tier_code": "zhongji",
+    "image": "assets/relics/relic_10_zhongji.jpg"
+  },
+  {
+    "id": 11,
+    "name": "藏品11",
+    "tier": "鸿运",
+    "tier_code": "hongyun",
+    "image": "assets/relics/relic_11_hongyun.jpg"
+  },
+  {
+    "id": 12,
+    "name": "藏品12",
+    "tier": "大吉",
+    "tier_code": "daji",
+    "image": "assets/relics/relic_12_daji.jpg"
+  },
+  {
+    "id": 13,
+    "name": "藏品13",
+    "tier": "中吉",
+    "tier_code": "zhongji",
+    "image": "assets/relics/relic_13_zhongji.jpg"
+  },
+  {
+    "id": 14,
+    "name": "藏品14",
+    "tier": "中吉",
+    "tier_code": "zhongji",
+    "image": "assets/relics/relic_14_zhongji.jpg"
+  },
+  {
+    "id": 15,
+    "name": "藏品15",
+    "tier": "平",
+    "tier_code": "ping",
+    "image": "assets/relics/relic_15_ping.jpg"
+  },
+  {
+    "id": 16,
+    "name": "藏品16",
+    "tier": "中吉",
+    "tier_code": "zhongji",
+    "image": "assets/relics/relic_16_zhongji.jpg"
+  },
+  {
+    "id": 17,
+    "name": "藏品17",
+    "tier": "中吉",
+    "tier_code": "zhongji",
+    "image": "assets/relics/relic_17_zhongji.jpg"
+  },
+  {
+    "id": 18,
+    "name": "藏品18",
+    "tier": "大吉",
+    "tier_code": "daji",
+    "image": "assets/relics/relic_18_daji.jpg"
+  },
+  {
+    "id": 19,
+    "name": "藏品19",
+    "tier": "凶",
+    "tier_code": "xiong",
+    "image": "assets/relics/relic_19_xiong.png"
+  },
+  {
+    "id": 20,
+    "name": "藏品20",
+    "tier": "大吉",
+    "tier_code": "daji",
+    "image": "assets/relics/relic_20_daji.jpg"
+  },
+  {
+    "id": 21,
+    "name": "藏品21",
+    "tier": "中吉",
+    "tier_code": "zhongji",
+    "image": "assets/relics/relic_21_zhongji.jpg"
+  },
+  {
+    "id": 22,
+    "name": "藏品22",
+    "tier": "小吉",
+    "tier_code": "xiaoji",
+    "image": "assets/relics/relic_22_xiaoji.jpg"
+  },
+  {
+    "id": 23,
+    "name": "藏品23",
+    "tier": "中吉",
+    "tier_code": "zhongji",
+    "image": "assets/relics/relic_23_zhongji.jpg"
+  },
+  {
+    "id": 24,
+    "name": "藏品24",
+    "tier": "中吉",
+    "tier_code": "zhongji",
+    "image": "assets/relics/relic_24_zhongji.jpg"
+  },
+  {
+    "id": 25,
+    "name": "藏品25",
+    "tier": "小吉",
+    "tier_code": "xiaoji",
+    "image": "assets/relics/relic_25_xiaoji.jpg"
+  },
+  {
+    "id": 26,
+    "name": "藏品26",
+    "tier": "大吉",
+    "tier_code": "daji",
+    "image": "assets/relics/relic_26_daji.jpg"
+  },
+  {
+    "id": 27,
+    "name": "藏品27",
+    "tier": "中吉",
+    "tier_code": "zhongji",
+    "image": "assets/relics/relic_27_zhongji.jpg"
+  },
+  {
+    "id": 28,
+    "name": "藏品28",
+    "tier": "大吉",
+    "tier_code": "daji",
+    "image": "assets/relics/relic_28_daji.jpg"
+  },
+  {
+    "id": 29,
+    "name": "藏品29",
+    "tier": "大吉",
+    "tier_code": "daji",
+    "image": "assets/relics/relic_29_daji.png",
+    "effect": "示例效果：占位文本，请替换为你自己的藏品效果",
+    "desc": "示例说明：占位文本，请替换为你自己的藏品描述。"
+  },
+  {
+    "id": 30,
+    "name": "藏品30",
+    "tier": "大吉",
+    "tier_code": "daji",
+    "image": "assets/relics/relic_30_daji.png",
+    "effect": "示例效果：占位文本，请替换为你自己的藏品效果",
+    "desc": "示例说明：占位文本，请替换为你自己的藏品描述。"
+  },
+  {
+    "id": 31,
+    "name": "藏品31",
+    "tier": "大吉",
+    "tier_code": "daji",
+    "image": "assets/relics/relic_31_daji.png",
+    "effect": "示例效果：占位文本，请替换为你自己的藏品效果",
+    "desc": "示例说明：占位文本，请替换为你自己的藏品描述。"
+  },
+  {
+    "id": 32,
+    "name": "藏品32",
+    "tier": "大吉",
+    "tier_code": "daji",
+    "image": "assets/relics/relic_32_daji.png",
+    "effect": "示例效果：占位文本，请替换为你自己的藏品效果",
+    "desc": "示例说明：占位文本，请替换为你自己的藏品描述。"
+  },
+  {
+    "id": 33,
+    "name": "藏品33",
+    "tier": "大吉",
+    "tier_code": "daji",
+    "image": "assets/relics/relic_33_daji.png",
+    "effect": "示例效果：占位文本，请替换为你自己的藏品效果",
+    "desc": "示例说明：占位文本，请替换为你自己的藏品描述。"
+  },
+  {
+    "id": 34,
+    "name": "藏品34",
+    "tier": "鸿运",
+    "tier_code": "hongyun",
+    "image": "assets/relics/relic_34_hongyun.png",
+    "effect": "示例效果：占位文本，请替换为你自己的藏品效果",
+    "desc": "示例说明：占位文本，请替换为你自己的藏品描述。"
+  },
+  {
+    "id": 35,
+    "name": "藏品35",
+    "tier": "中吉",
+    "tier_code": "zhongji",
+    "image": "assets/relics/relic_35_zhongji.png",
+    "effect": "示例效果：占位文本，请替换为你自己的藏品效果",
+    "desc": "示例说明：占位文本，请替换为你自己的藏品描述。"
+  },
+  {
+    "id": 36,
+    "name": "藏品36",
+    "tier": "中吉",
+    "tier_code": "zhongji",
+    "image": "assets/relics/relic_36_zhongji.png",
+    "effect": "示例效果：占位文本，请替换为你自己的藏品效果",
+    "desc": "示例说明：占位文本，请替换为你自己的藏品描述。"
+  },
+  {
+    "id": 37,
+    "name": "藏品37",
+    "tier": "中吉",
+    "tier_code": "zhongji",
+    "image": "assets/relics/relic_37_zhongji.png",
+    "effect": "示例效果：占位文本，请替换为你自己的藏品效果",
+    "desc": "示例说明：占位文本，请替换为你自己的藏品描述。"
+  },
+  {
+    "id": 38,
+    "name": "藏品38",
+    "tier": "中吉",
+    "tier_code": "zhongji",
+    "image": "assets/relics/relic_38_zhongji.png",
+    "effect": "示例效果：占位文本，请替换为你自己的藏品效果",
+    "desc": "示例说明：占位文本，请替换为你自己的藏品描述。"
+  },
+  {
+    "id": 39,
+    "name": "藏品39",
+    "tier": "中吉",
+    "tier_code": "zhongji",
+    "image": "assets/relics/relic_39_zhongji.png",
+    "effect": "示例效果：占位文本，请替换为你自己的藏品效果",
+    "desc": "示例说明：占位文本，请替换为你自己的藏品描述。"
+  },
+  {
+    "id": 40,
+    "name": "藏品40",
+    "tier": "中吉",
+    "tier_code": "zhongji",
+    "image": "assets/relics/relic_40_zhongji.png",
+    "effect": "示例效果：占位文本，请替换为你自己的藏品效果",
+    "desc": "示例说明：占位文本，请替换为你自己的藏品描述。"
+  },
+  {
+    "id": 41,
+    "name": "藏品41",
+    "tier": "中吉",
+    "tier_code": "zhongji",
+    "image": "assets/relics/relic_41_zhongji.png",
+    "effect": "示例效果：占位文本，请替换为你自己的藏品效果",
+    "desc": "示例说明：占位文本，请替换为你自己的藏品描述。"
+  },
+  {
+    "id": 42,
+    "name": "藏品42",
+    "tier": "中吉",
+    "tier_code": "zhongji",
+    "image": "assets/relics/relic_42_zhongji.png",
+    "effect": "示例效果：占位文本，请替换为你自己的藏品效果",
+    "desc": "示例说明：占位文本，请替换为你自己的藏品描述。"
+  },
+  {
+    "id": 43,
+    "name": "藏品43",
+    "tier": "大吉",
+    "tier_code": "daji",
+    "image": "assets/relics/relic_43_daji.png",
+    "effect": "示例效果：占位文本，请替换为你自己的藏品效果",
+    "desc": "示例说明：占位文本，请替换为你自己的藏品描述。"
+  },
+  {
+    "id": 44,
+    "name": "藏品44",
+    "tier": "小吉",
+    "tier_code": "xiaoji",
+    "image": "assets/relics/relic_44_xiaoji.png",
+    "effect": "示例效果：占位文本，请替换为你自己的藏品效果",
+    "desc": "示例说明：占位文本，请替换为你自己的藏品描述。"
+  },
+  {
+    "id": 45,
+    "name": "藏品45",
+    "tier": "小吉",
+    "tier_code": "xiaoji",
+    "image": "assets/relics/relic_45_xiaoji.png",
+    "effect": "示例效果：占位文本，请替换为你自己的藏品效果",
+    "desc": "示例说明：占位文本，请替换为你自己的藏品描述。"
+  },
+  {
+    "id": 46,
+    "name": "藏品46",
+    "tier": "小吉",
+    "tier_code": "xiaoji",
+    "image": "assets/relics/relic_46_xiaoji.png",
+    "effect": "示例效果：占位文本，请替换为你自己的藏品效果",
+    "desc": "示例说明：占位文本，请替换为你自己的藏品描述。"
+  },
+  {
+    "id": 47,
+    "name": "藏品47",
+    "tier": "平",
+    "tier_code": "ping",
+    "image": "assets/relics/relic_47_ping.png",
+    "effect": "示例效果：占位文本，请替换为你自己的藏品效果",
+    "desc": "示例说明：占位文本，请替换为你自己的藏品描述。"
+  },
+  {
+    "id": 48,
+    "name": "藏品48",
+    "tier": "凶",
+    "tier_code": "xiong",
+    "image": "assets/relics/relic_48_xiong.png",
+    "effect": "示例效果：占位文本，请替换为你自己的藏品效果",
+    "desc": "示例说明：占位文本，请替换为你自己的藏品描述。"
+  }
+]

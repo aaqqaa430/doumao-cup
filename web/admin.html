@@ -1,0 +1,1551 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>管理台 · 豆猫杯</title>
+<style>
+  :root {
+    --bg-abyss: #040706;
+    --bg-card: #0e1613;
+    --bg-input: #0a1210;
+    --gold-blood: #e6a117;
+    --gold-sacred: #ffd166;
+    --gold-dim: #87621c;
+    --red-carne: #9e1c1c;
+    --red-hunt: #dc2626;
+    --cyan: #14b8a6;
+    --chalk-white: #e0e4dd;
+    --chalk-dim: #8a948c;
+    --chalk-muted: #3e4742;
+    --chalk-border: rgba(224, 228, 221, 0.16);
+    --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  /* 关键：本页大量容器是 display:flex，会盖掉 hidden 属性的默认 display:none。
+     显式写死，别让「解锁前不显示」这种事靠默认值兜着。 */
+  [hidden] { display: none !important; }
+  body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg-abyss);
+    background-image: radial-gradient(circle at 50% -10%, rgba(230, 161, 23, 0.08), transparent 60%);
+    color: var(--chalk-white);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: 1.6;
+    -webkit-text-size-adjust: 100%;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 0 14px 72px; }
+
+  /* ==========================================================================
+     A. 门禁（KEYSERVER GATE）
+     ========================================================================== */
+  .gate {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 16px 56px;
+  }
+  .gate-card {
+    width: 100%;
+    max-width: 400px;
+    background: var(--bg-card);
+    border: 1px solid var(--chalk-border);
+    border-radius: 8px;
+    padding: 26px 22px 20px;
+    box-shadow: 0 18px 60px rgba(0, 0, 0, 0.6);
+  }
+  .gate-badge {
+    width: 46px; height: 46px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 14px;
+    background: radial-gradient(circle at 50% 35%, rgba(230, 161, 23, 0.26), rgba(230, 161, 23, 0.05));
+    border: 1px solid rgba(230, 161, 23, 0.5);
+    box-shadow: 0 0 22px rgba(230, 161, 23, 0.22);
+  }
+  .gate-badge svg { width: 21px; height: 21px; fill: var(--gold-sacred); }
+  .gate-card h1 {
+    font-size: 18px;
+    margin: 0 0 6px;
+    letter-spacing: 0.08em;
+    text-align: center;
+  }
+  .gate-sub {
+    margin: 0 0 20px;
+    font-size: 12.5px;
+    color: var(--chalk-dim);
+    text-align: center;
+    line-height: 1.7;
+  }
+  .gate-btns { margin-top: 14px; }
+  .gate-msg {
+    margin-top: 12px;
+    font-size: 12.5px;
+    color: var(--chalk-muted);
+    text-align: center;
+    min-height: 19px;
+    word-break: break-word;
+  }
+  .gate-msg.err { color: #f0a0a0; }
+  .gate-msg.busy { color: #e8cd85; }
+  .gate-foot {
+    margin-top: 18px;
+    padding-top: 14px;
+    border-top: 1px dashed var(--chalk-border);
+    text-align: center;
+    font-size: 12px;
+  }
+  .gate-foot a { color: var(--gold-sacred); text-decoration: none; }
+  .gate-foot a:hover { text-decoration: underline; }
+
+  /* ==========================================================================
+     B. 管理台外壳
+     ========================================================================== */
+  header {
+    padding: 20px 0 14px;
+    border-bottom: 1px solid var(--chalk-border);
+    margin-bottom: 14px;
+  }
+  .head-top { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  h1 { font-size: 19px; margin: 0; letter-spacing: 0.08em; }
+  .sub { font-size: 12px; color: var(--chalk-dim); margin-top: 4px; }
+  .sub a { color: var(--gold-sacred); text-decoration: none; }
+  .sub a:hover { text-decoration: underline; }
+  .who {
+    margin-left: auto;
+    display: flex; align-items: center; gap: 8px;
+    font-size: 11.5px; color: var(--cyan);
+    background: rgba(20, 184, 166, 0.1);
+    border: 1px solid rgba(20, 184, 166, 0.38);
+    border-radius: 999px;
+    padding: 3px 10px 3px 8px;
+  }
+  .who-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--cyan); flex-shrink: 0; }
+  .who .btn-xs { min-height: 24px; padding: 2px 9px; font-size: 11px; }
+
+  /* Tab 栏：吸顶，长名单滚到一半也能切 */
+  .tabs {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    display: flex;
+    gap: 6px;
+    padding: 8px 0;
+    margin-bottom: 6px;
+    background: linear-gradient(180deg, var(--bg-abyss) 70%, rgba(4, 7, 6, 0.86));
+  }
+  .tab {
+    flex: 1 1 0;
+    min-height: 40px;
+    padding: 8px 10px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: var(--chalk-dim);
+    background: rgba(224, 228, 221, 0.05);
+    border: 1px solid var(--chalk-border);
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .tab:hover { color: var(--chalk-white); background: rgba(224, 228, 221, 0.1); }
+  .tab.is-on {
+    color: var(--gold-sacred);
+    background: rgba(230, 161, 23, 0.13);
+    border-color: rgba(230, 161, 23, 0.55);
+  }
+
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--chalk-border);
+    border-radius: 6px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  .card h2 {
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    color: var(--gold-sacred);
+    margin: 0 0 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card h2 .num {
+    display: inline-flex;
+    width: 18px; height: 18px;
+    align-items: center; justify-content: center;
+    border: 1px solid var(--gold-dim);
+    border-radius: 50%;
+    font-size: 11px;
+    flex-shrink: 0;
+  }
+  .card h2 .tail { margin-left: auto; font-size: 11px; letter-spacing: 0; color: var(--chalk-muted); }
+
+  label { display: block; font-size: 12px; color: var(--chalk-dim); margin: 12px 0 5px; }
+  label:first-of-type { margin-top: 0; }
+  input[type="text"], input[type="password"] {
+    width: 100%;
+    background: var(--bg-input);
+    border: 1px solid var(--chalk-border);
+    border-radius: 4px;
+    color: var(--chalk-white);
+    font-family: inherit;
+    font-size: 14px;
+    padding: 10px 12px;
+    min-height: 42px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  input:focus { border-color: var(--gold-blood); }
+  input::placeholder { color: var(--chalk-muted); }
+  .hint { font-size: 11px; color: var(--chalk-muted); margin-top: 5px; }
+  .hint.warn { color: #e08a8a; }
+
+  .row { display: flex; gap: 10px; align-items: stretch; }
+  .row > input { flex: 1; min-width: 0; }
+
+  button {
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    padding: 10px 18px;
+    min-height: 42px;
+    border-radius: 4px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.22s;
+    background: transparent;
+    color: inherit;
+  }
+  button:disabled { opacity: 0.45; cursor: not-allowed; }
+  .btn-primary {
+    background: linear-gradient(135deg, #ef4444, var(--red-carne));
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.18);
+    box-shadow: 0 0 12px rgba(220, 38, 38, 0.35);
+    flex: 1;
+  }
+  .btn-primary:hover:not(:disabled) { box-shadow: 0 0 20px rgba(220, 38, 38, 0.6); }
+  .btn-ghost {
+    background: rgba(224, 228, 221, 0.06);
+    color: var(--chalk-dim);
+    border-color: var(--chalk-border);
+  }
+  .btn-ghost:hover:not(:disabled) { color: var(--chalk-white); background: rgba(224, 228, 221, 0.12); }
+  .btn-danger { color: #e08a8a; border-color: rgba(224, 138, 138, 0.35); background: transparent; }
+  .btn-danger:hover:not(:disabled) { background: rgba(220, 38, 38, 0.12); }
+  .btn-sm { min-height: 34px; padding: 6px 12px; font-size: 12px; }
+  .btn-gold {
+    background: rgba(230, 161, 23, 0.14);
+    color: var(--gold-sacred);
+    border-color: rgba(230, 161, 23, 0.5);
+  }
+  .btn-gold:hover:not(:disabled) { background: rgba(230, 161, 23, 0.24); }
+  .btns { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+
+  .msg {
+    margin-top: 14px;
+    padding: 10px 12px;
+    border-radius: 4px;
+    font-size: 12.5px;
+    display: none;
+    border: 1px solid transparent;
+    word-break: break-word;
+  }
+  .msg.show { display: block; }
+  .msg.ok   { background: rgba(20, 184, 166, 0.12); border-color: rgba(20, 184, 166, 0.45); color: #7fe3d6; }
+  .msg.err  { background: rgba(220, 38, 38, 0.12); border-color: rgba(220, 38, 38, 0.45); color: #f0a0a0; }
+  .msg.busy { background: rgba(230, 161, 23, 0.1); border-color: rgba(230, 161, 23, 0.35); color: #e8cd85; }
+
+  /* ==========================================================================
+     C. 总台面板
+     ========================================================================== */
+  .switch-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px dashed var(--chalk-border);
+  }
+  .switch-text { font-size: 12.5px; }
+  .switch-text small { display: block; color: var(--chalk-muted); font-size: 11px; }
+  .switch {
+    position: relative;
+    width: 50px; height: 28px;
+    border-radius: 14px;
+    border: 1px solid var(--chalk-border);
+    background: rgba(224, 228, 221, 0.08);
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.25s, border-color 0.25s;
+    padding: 0;
+    min-height: 28px;
+  }
+  .switch::after {
+    content: '';
+    position: absolute;
+    top: 3px; left: 3px;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: var(--chalk-dim);
+    transition: transform 0.25s, background 0.25s;
+  }
+  .switch[aria-checked="true"] { background: rgba(220, 38, 38, 0.3); border-color: rgba(220, 38, 38, 0.6); }
+  .switch[aria-checked="true"]::after { transform: translateX(22px); background: #ff6b6b; }
+
+  /* 预览：复刻线上直播条的样子 */
+  .preview-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px 14px;
+    flex-wrap: wrap;
+    padding: 8px 12px;
+    border-radius: 4px;
+    background: rgba(9, 17, 14, 0.97);
+    border: 1px solid var(--chalk-border);
+    transition: border-color 0.3s;
+  }
+  .preview-bar.live {
+    background: linear-gradient(90deg, rgba(220, 38, 38, 0.26) 0%, rgba(220, 38, 38, 0.06) 46%, rgba(4, 7, 6, 0.2) 100%), rgba(9, 17, 14, 0.97);
+    border-color: rgba(220, 38, 38, 0.45);
+  }
+  .pv-anchor { display: flex; align-items: center; gap: 9px; flex: 1 1 auto; min-width: 0; }
+  .pv-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--chalk-muted); flex-shrink: 0; }
+  .preview-bar.live .pv-dot { background: #ff4d4d; }
+  .pv-texts { min-width: 0; }
+  .pv-line1 { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+  .pv-badge {
+    font-size: 10px; font-weight: 800; letter-spacing: 0.12em;
+    padding: 1px 6px; border-radius: 3px;
+    background: rgba(224, 228, 221, 0.12); color: var(--chalk-dim);
+    border: 1px solid var(--chalk-border); flex-shrink: 0;
+  }
+  .preview-bar.live .pv-badge { background: linear-gradient(135deg, #ef4444, var(--red-carne)); color: #fff; border-color: rgba(255,255,255,0.2); }
+  .pv-title { font-size: 13.5px; font-weight: 700; color: #fff; word-break: break-word; }
+  .pv-note {
+    font-size: 10.5px; font-weight: 700; color: var(--gold-sacred);
+    background: rgba(230, 161, 23, 0.12); border: 1px solid rgba(230, 161, 23, 0.4);
+    padding: 1px 6px; border-radius: 3px; word-break: break-word;
+  }
+  .pv-meta { font-size: 11.5px; color: var(--chalk-dim); word-break: break-word; }
+  .pv-btn {
+    font-size: 11.5px; font-weight: 700; padding: 5px 12px; border-radius: 3px;
+    background: linear-gradient(135deg, #ef4444, var(--red-carne)); color: #fff; white-space: nowrap;
+  }
+  .preview-bar:not(.live) .pv-btn { background: rgba(224, 228, 221, 0.10); color: var(--chalk-white); }
+
+  .kv { display: flex; justify-content: space-between; gap: 12px; font-size: 12.5px; padding: 5px 0; border-bottom: 1px dashed rgba(224, 228, 221, 0.08); }
+  .kv:last-child { border-bottom: none; }
+  .kv span:first-child { color: var(--chalk-dim); flex-shrink: 0; }
+  .kv span:last-child { text-align: right; word-break: break-word; }
+  .kv b { color: var(--gold-sacred); }
+  .live-tag { color: #ff6b6b; font-weight: 700; }
+
+  /* ==========================================================================
+     D. 标签面板
+     ========================================================================== */
+  .roster { display: flex; flex-direction: column; gap: 8px; }
+  .prow {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 11px;
+    border: 1px solid var(--chalk-border);
+    border-radius: 5px;
+    background: rgba(9, 17, 14, 0.5);
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .prow.dirty { border-color: rgba(230, 161, 23, 0.6); background: rgba(230, 161, 23, 0.06); }
+  .prow > .pick { flex: 0 0 auto; width: 22px; padding-top: 3px; }
+  .prow input[type="checkbox"] {
+    width: 17px; height: 17px; margin: 0;
+    accent-color: #e6a117;
+    cursor: pointer;
+  }
+  .pmain { flex: 1 1 auto; min-width: 0; }
+  .phead { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+  .pid {
+    font-size: 11px; font-weight: 700; color: var(--chalk-muted);
+    background: rgba(224, 228, 221, 0.07);
+    border-radius: 3px; padding: 1px 5px; flex-shrink: 0;
+  }
+  .pname { font-size: 14px; font-weight: 700; color: #fff; word-break: break-word; }
+
+  /* 与赛事页面完全同款的三枚徽章 */
+  .mini-diff {
+    font-size: 10px; font-weight: 800; padding: 1px 5px; border-radius: 2px;
+    letter-spacing: 0.05em; flex-shrink: 0;
+  }
+  .mini-diff.n15 { background: rgba(158, 28, 28, 0.3); border: 1px solid var(--red-carne); color: #fca5a5; }
+  .mini-diff.n12 { background: rgba(230, 161, 23, 0.2); border: 1px solid var(--gold-blood); color: var(--gold-sacred); }
+  .mini-squad {
+    font-size: 10px; padding: 1px 5px; border-radius: 2px;
+    background: rgba(20, 184, 166, 0.15); border: 1px solid rgba(20, 184, 166, 0.4); color: #5eead4;
+    flex-shrink: 0;
+  }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 7px; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.04em;
+    background: linear-gradient(135deg, rgba(230, 161, 23, 0.3), rgba(230, 161, 23, 0.1));
+    border: 1px solid rgba(255, 209, 102, 0.55);
+    color: var(--gold-sacred);
+    padding: 2px 4px 2px 7px;
+    border-radius: 2px;
+    white-space: nowrap;
+    box-shadow: 0 0 8px rgba(230, 161, 23, 0.18);
+  }
+  .chip.none {
+    background: none; border: 1px dashed var(--chalk-border);
+    color: var(--chalk-muted); box-shadow: none; padding: 2px 7px; font-weight: 400;
+  }
+  .chip-x {
+    min-height: 0; min-width: 18px; padding: 0;
+    width: 18px; height: 18px; line-height: 1;
+    font-size: 13px; font-weight: 400;
+    border-radius: 2px; color: var(--gold-sacred);
+    background: rgba(0, 0, 0, 0.22);
+    opacity: 0.75;
+  }
+  .chip-x:hover:not(:disabled) { opacity: 1; background: rgba(220, 38, 38, 0.4); color: #fff; }
+
+  .addrow { display: flex; gap: 8px; margin-top: 8px; }
+  .addrow input { flex: 1 1 auto; min-width: 0; min-height: 36px; font-size: 13px; padding: 7px 10px; }
+  .addrow button { flex: 0 0 auto; }
+
+  .toolbar {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    padding: 10px 12px; border-radius: 5px; margin-bottom: 12px;
+    background: rgba(230, 161, 23, 0.07); border: 1px solid rgba(230, 161, 23, 0.3);
+    font-size: 12.5px;
+  }
+  .toolbar.clean { background: rgba(224, 228, 221, 0.04); border-color: var(--chalk-border); color: var(--chalk-dim); }
+  .toolbar b { color: var(--gold-sacred); }
+
+  .sample {
+    display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+    padding: 9px 11px; border-radius: 4px; margin-bottom: 12px;
+    background: rgba(9, 17, 14, 0.5); border: 1px dashed var(--chalk-border);
+  }
+  .sample .lbl { font-size: 11px; color: var(--chalk-muted); margin-right: 2px; flex-shrink: 0; }
+  .clr { color: var(--chalk-muted); font-size: 11px; }
+
+  a.plain { color: var(--gold-sacred); }
+  code {
+    background: rgba(224, 228, 221, 0.08);
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: 12px;
+  }
+  .foot-note { text-align: center; font-size: 12px; color: var(--chalk-dim); }
+</style>
+</head>
+<body>
+
+<!-- ==========================================================================
+     门禁：解锁之前，管理面板根本不在视野里
+     ========================================================================== -->
+<div class="gate" id="gate">
+  <form class="gate-card" id="gateForm" novalidate>
+    <div class="gate-badge" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M12 1a5 5 0 0 0-5 5v3H6a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-9a2 2 0 0 0-2-2h-1V6a5 5 0 0 0-5-5zm-3 8V6a3 3 0 0 1 6 0v3H9zm3 4a1.6 1.6 0 0 1 .9 2.93V18a1 1 0 0 1-2 0v-2.07A1.6 1.6 0 0 1 12 13z"/></svg>
+    </div>
+    <h1>豆猫杯 · 管理台</h1>
+    <p class="gate-sub">总台直播间与选手标签都收在这一页。<br>输入管理密钥后才会显示面板。</p>
+
+    <label for="gateKey">管理密钥</label>
+    <div class="row">
+      <input type="password" id="gateKey" autocomplete="current-password" placeholder="粘贴你的管理密钥">
+      <button type="button" class="btn-ghost" id="gatePeek" style="flex:0 0 auto; min-width:64px;">显示</button>
+    </div>
+    <div class="hint">密钥只用来向服务器换取一次「可以改」的许可，页面本身不保存也不下发它。</div>
+
+    <div class="gate-btns">
+      <button type="submit" class="btn-primary" id="gateBtn">解锁</button>
+    </div>
+    <div class="gate-msg" id="gateMsg"></div>
+    <div class="gate-foot"><a href="./">← 回到赛事页面</a></div>
+  </form>
+</div>
+
+<!-- ==========================================================================
+     管理台：解锁后才显示
+     ========================================================================== -->
+<div class="wrap" id="console" hidden>
+
+  <header>
+    <div class="head-top">
+      <h1>管理台</h1>
+      <div class="who">
+        <span class="who-dot" aria-hidden="true"></span>
+        <span>已解锁</span>
+        <button type="button" class="btn-ghost btn-xs" id="lockBtn">锁定</button>
+      </div>
+    </div>
+    <div class="sub">
+      豆猫杯 · 沉沦者的黑流树海 ·
+      <a href="./">← 回到赛事页面</a>
+    </div>
+  </header>
+
+  <nav class="tabs" role="tablist">
+    <button type="button" class="tab is-on" id="tabLive" data-tab="live" role="tab">当前总台</button>
+    <button type="button" class="tab" id="tabTags" data-tab="tags" role="tab">选手标签</button>
+  </nav>
+
+  <!-- ------------------------------ 面板 1：当前总台 ------------------------------ -->
+  <section class="panel" id="panel-live">
+
+    <div class="card">
+      <h2><span class="num">1</span>总台设置</h2>
+
+      <label for="roomInput">直播间链接 / 房间号</label>
+      <input type="text" id="roomInput" autocomplete="off" placeholder="https://live.bilibili.com/123456 或 123456">
+      <div class="hint" id="roomHint">支持直接粘贴直播间地址；填了后面会自动取出房间号。</div>
+
+      <label for="titleInput">自定义标题（留空 = 跟随 B 站实时标题）</label>
+      <input type="text" id="titleInput" autocomplete="off" maxlength="40" placeholder="留空就好，B 站改标题这里会自动跟上">
+
+      <label for="noteInput">备注（最多 60 字，会显示成金色小签）</label>
+      <input type="text" id="noteInput" autocomplete="off" maxlength="60" placeholder="例：第一场 20:00 开打 / 现在是败者组">
+
+      <div class="switch-row">
+        <div class="switch-text">
+          在赛事页面显示直播条
+          <small>关掉之后整条会收起来，一格空间都不占</small>
+        </div>
+        <button type="button" class="switch" id="enabledSwitch" role="switch" aria-checked="true" aria-label="显示直播条"></button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2><span class="num">2</span>访客会看到的样子</h2>
+      <div class="preview-bar" id="pvBar">
+        <div class="pv-anchor">
+          <span class="pv-dot"></span>
+          <span class="pv-texts">
+            <span class="pv-line1">
+              <span class="pv-badge" id="pvBadge">总台</span>
+              <span class="pv-title" id="pvTitle">总台直播间</span>
+              <span class="pv-note" id="pvNote" style="display:none;"></span>
+            </span>
+            <span class="pv-meta" id="pvMeta">—</span>
+          </span>
+        </div>
+        <span class="pv-btn" id="pvBtn">进入直播间</span>
+      </div>
+      <div class="hint" id="pvHint">标题、备注会实时反映在上面。</div>
+    </div>
+
+    <div class="card">
+      <h2><span class="num">3</span>保存</h2>
+      <div class="btns">
+        <button type="button" class="btn-primary" id="liveSaveBtn">保存并立即生效</button>
+        <button type="button" class="btn-ghost" id="loadBtn">读取当前</button>
+        <button type="button" class="btn-danger" id="clearBtn">清空总台</button>
+      </div>
+      <div class="msg" id="msgLive"></div>
+    </div>
+
+    <div class="card">
+      <h2><span class="num">4</span>线上现状</h2>
+      <div class="kv"><span>总台房间号</span><span id="curRoom">—</span></div>
+      <div class="kv"><span>自定义标题</span><span id="curTitle">—</span></div>
+      <div class="kv"><span>备注</span><span id="curNote">—</span></div>
+      <div class="kv"><span>直播条开关</span><span id="curEnabled">—</span></div>
+      <div class="kv"><span>B 站实时标题</span><span id="curLiveTitle">—</span></div>
+      <div class="kv"><span>开播状态</span><span id="curLiveState">—</span></div>
+      <div class="kv"><span>主播 / 分区</span><span id="curAnchor">—</span></div>
+      <div class="kv"><span>人气</span><span id="curOnline">—</span></div>
+      <div class="kv"><span>最近更新</span><span id="curUpdated">—</span></div>
+      <div class="hint">切到这个页签时会重新读一次；改完想让访客立刻看到，等他们下次刷新即可。</div>
+    </div>
+  </section>
+
+  <!-- ------------------------------ 面板 2：选手标签 ------------------------------ -->
+  <section class="panel" id="panel-tags" hidden>
+
+    <div class="card">
+      <h2><span class="num">1</span>批量加标签<span class="tail" id="batchCountLabel"></span></h2>
+      <label for="batchTag">要加的标签</label>
+      <div class="row">
+        <input type="text" id="batchTag" autocomplete="off" maxlength="12" placeholder="例：完赛 / 四强 / 退赛">
+        <button type="button" class="btn-gold" id="batchAddBtn" style="flex:0 0 auto;">加到勾选的选手</button>
+      </div>
+      <div class="hint" id="batchHint">先在下面把选手<b>勾上</b>，再点这个按钮，一次给多个人挂同一个标签。每位选手最多 6 个标签。</div>
+      <div class="btns" style="margin-top:10px;">
+        <button type="button" class="btn-ghost btn-sm" id="pickAllBtn">全选</button>
+        <button type="button" class="btn-ghost btn-sm" id="pickNoneBtn">全不选</button>
+        <button type="button" class="btn-ghost btn-sm" id="pickTaggedBtn">只选已有标签的</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2><span class="num">2</span>选手标签<span class="tail" id="dirtyLabel"></span></h2>
+
+      <div class="sample">
+        <span class="lbl">徽章配色</span>
+        <span class="mini-diff n15">N15</span>
+        <span class="mini-squad">术特</span>
+        <span class="chip" id="sampleChip">完赛</span>
+        <span class="clr">← 标签就是这个金色款</span>
+      </div>
+
+      <div class="roster" id="roster"></div>
+      <div class="hint">改动只是暂存在本页，点下面的「保存改动」才会写进服务器。带 × 的标签点一下即可删掉。</div>
+    </div>
+
+    <div class="card">
+      <h2><span class="num">3</span>保存</h2>
+      <div class="toolbar clean" id="toolbar">尚未连接服务器…</div>
+      <div class="btns">
+        <button type="button" class="btn-primary" id="tagSaveBtn">保存改动</button>
+        <button type="button" class="btn-ghost" id="tagReloadBtn">放弃改动，重新读取</button>
+      </div>
+      <div class="msg" id="msgTags"></div>
+    </div>
+
+    <div class="card">
+      <h2><span class="num">4</span>线上现状</h2>
+      <div class="kv"><span>当前挂了标签的选手</span><span id="curCount">—</span></div>
+      <div class="kv" style="display:block;">
+        <span style="display:block;margin-bottom:4px;">全部标签</span>
+        <span id="curList" style="display:block;text-align:left;"></span>
+      </div>
+      <div class="hint">这里读的是服务器上的真实状态。访客下次刷新赛事页面就能看到（页面本身每次打开也会拉一次）。</div>
+    </div>
+  </section>
+
+  <div class="foot-note">
+    本页已标记 <code>noindex</code>，不会被搜索引擎收录。真正拦住乱改的，
+    是服务器上的密钥校验 —— 密钥不对，这里一个字都改不动。
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  var API = 'https://YOUR_ENV_ID-YOUR_APP_ID.REGION.app.tcloudbase.com/cheer';
+  var KEY_STORE = 'doumao_live_admin_key_v1';
+  var UNLOCK_FLAG = 'doumao_admin_unlocked_v1';
+
+  var ROOM_RE = /^[0-9]{1,12}$/;
+  var TAG_MAX = 12;
+  var TAG_COUNT_MAX = 6;
+
+  /* 选手名单。id 必须与赛事页面 PLAYERS_DATA 一致 —— 标签是按 id 存的，
+     名字只用于显示，写错名字不会写坏数据，但看着会对不上。
+     改名单时记得同步这里（以及 index.html 里的 PLAYERS_DATA）。 */
+  var ROSTER = [
+    [1, '选手01', 'N15', '术特'],
+    [2, '选手02', 'N15', '多边贸易'],
+    [3, '选手03', 'N15', '多边贸易'],
+    [4, '选手04', 'N15', '野蛮退化'],
+    [5, '选手05', 'N15', '多边贸易'],
+    [6, '选手06', 'N15', '重辅'],
+    [7, '选手07', 'N15', '多边贸易'],
+    [8, '选手08', 'N12', '本源研修'],
+    [9, '选手09', 'N12', '术特'],
+    [10, '选手10', 'N15', '多边贸易'],
+    [11, '选手11', 'N15', '重辅'],
+    [12, '选手12', 'N15', '近锋'],
+    [13, '选手13', 'N15', '近锋'],
+    [14, '选手14', 'N15', '狙医'],
+    [15, '选手15', 'N15', '近锋'],
+    [16, '选手16', 'N15', '多边贸易'],
+    [17, '选手17', 'N12', '术特'],
+    [18, '选手18', 'N15', '重辅'],
+    [19, '选手19', 'N15', '多边贸易'],
+    [20, '选手20', 'N15', '多边贸易'],
+    [21, '选手21', 'N12', '术特']
+  ];
+
+  var ROSTER_BY_ID = {};
+  ROSTER.forEach(function (r) { ROSTER_BY_ID[r[0]] = r; });
+
+  /* 总台面板的临时状态 */
+  var liveState = { enabled: true, busy: false, status: null, loaded: false };
+  /* 标签面板：tags = 正在编辑的标签；origin = 服务器上的原始值（用来判断谁被改过） */
+  var tagState = { tags: {}, origin: {}, busy: false, loaded: false };
+
+  /* 门禁：解锁后密钥只留在内存与本机存储里，永不回写进页面 */
+  var adminKey = '';
+  var booted = false;      // 面板是否已经初始化过一次
+  var activeTab = 'live';
+
+  function $(id) { return document.getElementById(id); }
+
+  function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  /* ---------------- 密钥存取（内置浏览器可能禁掉 localStorage） ---------------- */
+  var memKey = '';
+
+  function recallKey() {
+    if (memKey) return memKey;
+    try { var v = localStorage.getItem(KEY_STORE); if (v) return v; } catch (e) {}
+    try { var v2 = sessionStorage.getItem(KEY_STORE); if (v2) return v2; } catch (e) {}
+    return '';
+  }
+  function rememberKey(v) {
+    memKey = v;
+    try { localStorage.setItem(KEY_STORE, v); } catch (e) {}
+    try { sessionStorage.setItem(KEY_STORE, v); } catch (e) {}
+  }
+  function getKey() { return adminKey || memKey || recallKey(); }
+  function setKey(v) { adminKey = String(v == null ? '' : v).trim(); }
+
+  function isUnlocked() {
+    try { return sessionStorage.getItem(UNLOCK_FLAG) === '1'; } catch (e) { return false; }
+  }
+  function markUnlocked(on) {
+    try {
+      if (on) sessionStorage.setItem(UNLOCK_FLAG, '1');
+      else sessionStorage.removeItem(UNLOCK_FLAG);
+    } catch (e) {}
+  }
+
+  /* ---------------- 传输层：XHR 优先，JSONP 兜底（同赛事页面） ---------------- */
+  function httpJson(method, url, body, ms) {
+    return new Promise(function (resolve, reject) {
+      var xhr;
+      try { xhr = new XMLHttpRequest(); } catch (e) { return reject(new Error('no_xhr')); }
+      var settled = false;
+      function done(fn, arg) { if (settled) return; settled = true; fn(arg); }
+      try {
+        xhr.open(method, url, true);
+        try { xhr.timeout = ms || 15000; } catch (e) {}
+        if (method !== 'GET') xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.onreadystatechange = function () {
+          if (xhr.readyState !== 4) return;
+          if (xhr.status >= 200 && xhr.status < 300) {
+            var d = null;
+            try { d = JSON.parse(xhr.responseText); } catch (e) {}
+            if (d) done(resolve, d); else done(reject, new Error('bad_json'));
+          } else {
+            done(reject, new Error('http_' + xhr.status));
+          }
+        };
+        xhr.ontimeout = function () { done(reject, new Error('timeout')); };
+        xhr.onerror = function () { done(reject, new Error('network')); };
+        xhr.send(body ? JSON.stringify(body) : null);
+      } catch (e) { done(reject, e); }
+    });
+  }
+
+  function jsonpGet(qs, ms) {
+    return new Promise(function (resolve, reject) {
+      var name = 'dmAdmCb' + Math.floor(Math.random() * 1e9);
+      var script = document.createElement('script');
+      var kept = true;
+      var timer = setTimeout(function () { cleanup(); reject(new Error('jsonp_timeout')); }, ms || 15000);
+      function cleanup() {
+        clearTimeout(timer);
+        try { window[name] = undefined; } catch (e) {}
+        if (kept && script.parentNode) { script.parentNode.removeChild(script); kept = false; }
+      }
+      window[name] = function (d) { cleanup(); resolve(d); };
+      script.onerror = function () { cleanup(); reject(new Error('jsonp_error')); };
+      script.src = API + '?' + qs + '&callback=' + name + '&_t=' + Date.now();
+      try { document.body.appendChild(script); } catch (e) { cleanup(); reject(e); }
+    });
+  }
+
+  function toQuery(o) {
+    return Object.keys(o).map(function (k) {
+      return encodeURIComponent(k) + '=' + encodeURIComponent(o[k]);
+    }).join('&');
+  }
+
+  async function apiGet(qs) {
+    try {
+      return await httpJson('GET', API + '?' + qs + '&_t=' + Date.now(), null, 15000);
+    } catch (e) {
+      return await jsonpGet(qs, 15000);
+    }
+  }
+
+  /** 写入：优先 POST（密钥走 body，不落在 URL 里），不通再退回 GET。
+      数组参数（标签）交给 toQuery 做 toString，服务端按 "|,、" 分隔解析。 */
+  async function apiWrite(params) {
+    try {
+      return await httpJson('POST', API, params, 15000);
+    } catch (e) {
+      return await apiGet(toQuery(params));
+    }
+  }
+
+  /* ---------------- 门禁 ---------------- */
+  function gateSay(kind, text) {
+    var el = $('gateMsg');
+    el.className = 'gate-msg' + (kind ? ' ' + kind : '');
+    el.innerText = text || '';
+  }
+
+  /** 拿密钥去服务器换一次许可。只读接口，不会改任何数据。 */
+  async function verifyKey(key) {
+    try {
+      var d = await apiWrite({ auth: true, key: key });
+      if (d && d.ok) return { ok: true };
+      return { ok: false, reason: (d && d.reason) || 'unknown' };
+    } catch (e) {
+      return { ok: false, reason: 'network', detail: (e && e.message) || '' };
+    }
+  }
+
+  async function unlock(key, silent) {
+    if (!key) {
+      gateSay('err', '先填密钥再解锁。');
+      $('gateKey').focus();
+      return false;
+    }
+    $('gateBtn').disabled = true;
+    if (!silent) gateSay('busy', '正在校验…');
+
+    var r = await verifyKey(key);
+    $('gateBtn').disabled = false;
+
+    if (r.ok) {
+      setKey(key);
+      rememberKey(key);
+      markUnlocked(true);
+      enterConsole();
+      return true;
+    }
+
+    if (silent) {
+      // 静默自动校验失败（多半是服务器上换过密钥）：安静地退回门禁，别吓人
+      markUnlocked(false);
+      gateSay('', '');
+      return false;
+    }
+
+    var map = {
+      bad_key: '密钥不对。',
+      too_many: '错误次数太多，已临时限流，过几分钟再试。',
+      network: '连不上服务器' + (r.detail ? '（' + r.detail + '）' : '') + '，检查一下网络。'
+    };
+    gateSay('err', map[r.reason] || ('解锁失败（' + r.reason + '）。'));
+    return false;
+  }
+
+  function enterConsole() {
+    $('gate').hidden = true;
+    $('console').hidden = false;
+    if (!booted) {
+      booted = true;
+      bootPanels();
+    }
+    showTab(activeTab, false);
+  }
+
+  function lockConsole() {
+    setKey('');
+    memKey = '';
+    markUnlocked(false);
+    try { localStorage.removeItem(KEY_STORE); } catch (e) {}
+    try { sessionStorage.removeItem(KEY_STORE); } catch (e) {}
+    $('console').hidden = true;
+    $('gate').hidden = false;
+    $('gateKey').value = '';
+    gateSay('', '');
+    $('gateKey').focus();
+  }
+
+  /* ---------------- Tab ---------------- */
+  function showTab(name, scrollTop) {
+    var t = (name === 'tags') ? 'tags' : 'live';
+    activeTab = t;
+    $('tabLive').classList.toggle('is-on', t === 'live');
+    $('tabTags').classList.toggle('is-on', t === 'tags');
+    $('panel-live').hidden = t !== 'live';
+    $('panel-tags').hidden = t !== 'tags';
+    try { history.replaceState(null, '', '#' + t); } catch (e) {}
+
+    // 切到哪个页签就刷哪个页签的线上现状：省一次没必要的请求，也保证看到的是新鲜数。
+    // 但这个「自动刷新」绝不能覆盖还没保存的改动 —— 否则改完标签去总台看一眼再回来，
+    // 刚才的编辑就被线上数据冲掉了，而且毫无提示。
+    if (!booted) return;
+    if (t === 'live') refreshLive(liveState.loaded === false);
+    else if (!dirtyIds().length) refreshTags();
+    if (scrollTop) { try { window.scrollTo(0, 0); } catch (e) {} }
+  }
+
+  /* ==========================================================================
+     总台直播间
+     ========================================================================== */
+  function sayLive(kind, text) {
+    var el = $('msgLive');
+    el.className = 'msg show ' + kind;
+    el.innerHTML = text;
+  }
+  function quietLive() { $('msgLive').className = 'msg'; }
+
+  function parseRoom(input) {
+    var s = String(input || '').trim();
+    if (!s) return '';
+    if (ROOM_RE.test(s)) return s;
+    var m = s.match(/live\.bilibili\.com\/[^0-9]*([0-9]{1,12})/i);
+    if (m) return m[1];
+    m = s.match(/([0-9]{1,12})(?:[?#/].*)?$/);
+    return m ? m[1] : '';
+  }
+
+  function roomUrl(roomId) {
+    return ROOM_RE.test(String(roomId || '')) ? 'https://live.bilibili.com/' + roomId : '';
+  }
+
+  function renderLivePreview() {
+    var room = parseRoom($('roomInput').value);
+    var title = $('titleInput').value.trim();
+    var note = $('noteInput').value.trim();
+    var st = liveState.status;
+    var bar = $('pvBar');
+
+    var show = liveState.enabled && !!room;
+    bar.style.display = show ? '' : 'none';
+    if (!show) return;
+
+    var isLive = !!(st && st.isLive);
+    bar.className = 'preview-bar' + (isLive ? ' live' : '');
+
+    $('pvBadge').innerText = !st ? '总台' : (st.liveStatus === 2 ? '轮播中' : (st.isLive ? '直播中' : '未开播'));
+    $('pvTitle').innerText = title || (st && st.roomTitle) || '总台直播间';
+
+    var noteEl = $('pvNote');
+    noteEl.innerText = note;
+    noteEl.style.display = note ? '' : 'none';
+
+    var parts = [];
+    if (st) {
+      if (st.anchor) parts.push(st.anchor);
+      if (st.areaName) parts.push(st.areaName);
+      if (st.isLive && Number(st.online) > 0) parts.push('人气 ' + Number(st.online));
+      if (!st.isLive && st.liveStatus !== 2) parts.push('暂未开播，可以先收藏直播间');
+    } else {
+      parts.push('（取不到 B 站状态时会显示这句）');
+    }
+    $('pvMeta').innerText = parts.join(' · ');
+    $('pvHint').innerText = isLive
+      ? '这个房间此刻正在直播，访客看到的就是上面这一条。'
+      : '这个房间此刻没有开播；访客看到的是灰调版本，入口仍然可点。';
+  }
+
+  function renderLiveStatus(data) {
+    var cfg = (data && data.live) || {};
+    var st = (data && data.status) || null;
+    liveState.status = st;
+
+    $('curRoom').innerHTML = cfg.roomId
+      ? '<b>' + esc(cfg.roomId) + '</b>（<a class="plain" href="' + roomUrl(cfg.roomId) + '" target="_blank" rel="noopener">打开</a>）'
+      : '未设置';
+    $('curTitle').innerText = cfg.title || '（未设置，跟随 B 站）';
+    $('curNote').innerText = cfg.note || '（空）';
+    $('curEnabled').innerText = cfg.enabled === false ? '已关闭（访客看不到）' : '开启中';
+
+    if (st) {
+      $('curLiveTitle').innerText = st.roomTitle || '—';
+      $('curLiveState').innerHTML = st.isLive
+        ? '<span class="live-tag">直播中</span>'
+        : (st.liveStatus === 2 ? '轮播中' : '未开播');
+      $('curAnchor').innerText = [st.anchor, st.areaName].filter(Boolean).join(' / ') || '—';
+      $('curOnline').innerText = Number(st.online) ? String(st.online) : '—';
+    } else {
+      $('curLiveTitle').innerText = '读取失败';
+      $('curLiveState').innerText = '—';
+      $('curAnchor').innerText = '—';
+      $('curOnline').innerText = '—';
+    }
+    $('curUpdated').innerText = cfg.updatedAt || '—';
+  }
+
+  function fillLiveForm(cfg) {
+    if (!cfg) return;
+    $('roomInput').value = cfg.roomId ? roomUrl(cfg.roomId) : '';
+    $('titleInput').value = cfg.title || '';
+    $('noteInput').value = cfg.note || '';
+    setLiveEnabled(cfg.enabled !== false);
+  }
+
+  function setLiveEnabled(on) {
+    liveState.enabled = !!on;
+    $('enabledSwitch').setAttribute('aria-checked', on ? 'true' : 'false');
+  }
+
+  async function refreshLive(fill) {
+    try {
+      var d = await apiGet('live=1');
+      if (!d || !d.ok) throw new Error('bad_response');
+      renderLiveStatus(d);
+      liveState.loaded = true;
+      if (fill) { fillLiveForm(d.live); renderLivePreview(); }
+      return d;
+    } catch (e) {
+      liveState.loaded = false;
+      if (fill) {
+        $('curRoom').innerText = '读取失败';
+        $('curLiveTitle').innerText = '读取失败（' + (e && e.message) + '）';
+      }
+      return null;
+    }
+  }
+
+  async function saveLive(room, title, note, enabled, okText) {
+    if (liveState.busy) return;
+    var key = getKey();
+    if (!key) { sayLive('err', '密钥丢了，请重新解锁。'); return; }
+
+    liveState.busy = true;
+    $('liveSaveBtn').disabled = true;
+    $('clearBtn').disabled = true;
+    sayLive('busy', '正在提交…');
+
+    try {
+      var d = await apiWrite({
+        liveSet: true,
+        key: key,
+        room: room,
+        title: title,
+        note: note,
+        enabled: enabled
+      });
+
+      if (d && d.ok) {
+        renderLiveStatus(d);
+        if (okText) sayLive('ok', okText);
+        else sayLive('ok', '已保存并生效。<br>房间号 <b>' + esc((d.live && d.live.roomId) || '（空）') + '</b>'
+          + (d.live && d.live.title ? '，标题 <b>' + esc(d.live.title) + '</b>' : '')
+          + '。访客刷新页面即可看到。');
+        fillLiveForm(d.live);
+      } else {
+        var reason = (d && d.reason) || 'unknown';
+        var map = {
+          bad_key: '密钥不对，没有改动任何东西。',
+          bad_room: '房间号不合法：只能是 1~12 位数字。',
+          too_many: '错误次数太多，被临时限流了，过几分钟再试。',
+          live_set_failed: '服务器没能保存，稍后重试。'
+        };
+        sayLive('err', map[reason] || ('保存失败（' + esc(reason) + '）。'));
+      }
+    } catch (e) {
+      sayLive('err', '网络不通，没能提交（' + esc(e && e.message) + '）。检查一下网络再试。');
+    }
+
+    liveState.busy = false;
+    $('liveSaveBtn').disabled = false;
+    $('clearBtn').disabled = false;
+    renderLivePreview();
+  }
+
+  /* ==========================================================================
+     选手标签
+     ========================================================================== */
+  function sayTags(kind, text) {
+    var el = $('msgTags');
+    el.className = 'msg show ' + kind;
+    el.innerHTML = text;
+  }
+  function quietTags() { $('msgTags').className = 'msg'; }
+
+  function cleanTag(raw) {
+    return String(raw == null ? '' : raw)
+      .replace(/[\u0000-\u001f\u007f]/g, '')
+      .replace(/\s+/g, ' ')
+      .trim()
+      .slice(0, TAG_MAX);
+  }
+
+  function normalizeMap(raw) {
+    var out = {};
+    if (!raw || typeof raw !== 'object') return out;
+    Object.keys(raw).forEach(function (k) {
+      var id = parseInt(k, 10);
+      var arr = raw[k];
+      if (!id || !Array.isArray(arr)) return;
+      var clean = [];
+      arr.forEach(function (t) {
+        var s = cleanTag(t);
+        if (s && clean.indexOf(s) < 0) clean.push(s);
+      });
+      if (clean.length) out[id] = clean;
+    });
+    return out;
+  }
+
+  function tagsOf(pid) { return tagState.tags[pid] || []; }
+
+  function isDirty(pid) {
+    var a = tagsOf(pid);
+    var b = tagState.origin[pid] || [];
+    if (a.length !== b.length) return true;
+    for (var i = 0; i < a.length; i++) { if (a[i] !== b[i]) return true; }
+    return false;
+  }
+
+  function dirtyIds() {
+    return ROSTER.map(function (r) { return r[0]; }).filter(isDirty);
+  }
+
+  function renderChips(pid) {
+    var box = $('chips-' + pid);
+    if (!box) return;
+    var list = tagsOf(pid);
+    if (!list.length) {
+      box.innerHTML = '<span class="chip none">暂无标签</span>';
+    } else {
+      box.innerHTML = list.map(function (t, i) {
+        return '<span class="chip">' + esc(t)
+          + '<button type="button" class="chip-x" data-act="del" data-pid="' + pid
+          + '" data-i="' + i + '" title="删掉这个标签" aria-label="删掉标签 ' + esc(t) + '">×</button>'
+          + '</span>';
+      }).join('');
+    }
+    var row = $('row-' + pid);
+    if (row) row.classList.toggle('dirty', isDirty(pid));
+  }
+
+  function renderAllChips() {
+    ROSTER.forEach(function (r) { renderChips(r[0]); });
+    renderToolbar();
+  }
+
+  function renderToolbar() {
+    var n = dirtyIds().length;
+    var bar = $('toolbar');
+    if (!tagState.loaded) {
+      bar.className = 'toolbar clean';
+      bar.innerHTML = '尚未连接服务器…';
+    } else if (n === 0) {
+      bar.className = 'toolbar clean';
+      bar.innerHTML = '已连接，当前没有未保存的改动。';
+    } else {
+      bar.className = 'toolbar';
+      bar.innerHTML = '有 <b>' + n + '</b> 位选手的标签被改过，还没保存。';
+    }
+    $('dirtyLabel').innerText = n ? ('已改 ' + n + ' 位') : '';
+    $('tagSaveBtn').disabled = tagState.busy || n === 0;
+  }
+
+  function renderTagStatus() {
+    var ids = Object.keys(tagState.origin).map(Number).sort(function (a, b) { return a - b; });
+    $('curCount').innerText = ids.length ? (ids.length + ' 位') : '还没有人挂标签';
+    if (!ids.length) {
+      $('curList').innerHTML = '<span class="clr">—</span>';
+      return;
+    }
+    $('curList').innerHTML = ids.map(function (id) {
+      var r = ROSTER_BY_ID[id];
+      var name = r ? r[1] : ('#' + id);
+      return '<div style="font-size:12.5px;padding:2px 0;">'
+        + '<b style="color:#fff;">' + esc(name) + '</b> '
+        + (tagState.origin[id] || []).map(function (t) {
+            return '<span class="chip" style="margin-left:4px;">' + esc(t) + '</span>';
+          }).join('')
+        + '</div>';
+    }).join('');
+  }
+
+  function renderRoster() {
+    var html = ROSTER.map(function (r) {
+      var id = r[0], name = r[1], diff = r[2], squad = r[3];
+      var cls = (String(diff).indexOf('15') >= 0) ? 'n15' : 'n12';
+      return ''
+        + '<div class="prow" id="row-' + id + '">'
+        +   '<div class="pick">'
+        +     '<input type="checkbox" class="pickbox" data-pid="' + id + '" aria-label="选中 ' + esc(name) + '">'
+        +   '</div>'
+        +   '<div class="pmain">'
+        +     '<div class="phead">'
+        +       '<span class="pid">#' + String(id).padStart(2, '0') + '</span>'
+        +       '<span class="pname">' + esc(name) + '</span>'
+        +       '<span class="mini-diff ' + cls + '">' + esc(diff) + '</span>'
+        +       '<span class="mini-squad">' + esc(squad) + '</span>'
+        +     '</div>'
+        +     '<div class="chips" id="chips-' + id + '"></div>'
+        +     '<div class="addrow">'
+        +       '<input type="text" id="tagin-' + id + '" maxlength="12" autocomplete="off" placeholder="给 Ta 加个标签…">'
+        +       '<button type="button" class="btn-ghost btn-sm" data-act="add" data-pid="' + id + '">＋ 添加</button>'
+        +     '</div>'
+        +   '</div>'
+        + '</div>';
+    }).join('');
+    $('roster').innerHTML = html;
+    renderAllChips();
+  }
+
+  function addTag(pid, raw) {
+    var t = cleanTag(raw);
+    if (!t) return { ok: false, reason: 'empty' };
+    var list = tagsOf(pid);
+    if (list.indexOf(t) >= 0) return { ok: false, reason: 'dup' };
+    if (list.length >= TAG_COUNT_MAX) return { ok: false, reason: 'full' };
+
+    tagState.tags[pid] = list.concat([t]);
+    renderChips(pid);
+    renderToolbar();
+    return { ok: true, truncated: String(raw == null ? '' : raw).replace(/\s+/g, ' ').trim().length > TAG_MAX };
+  }
+
+  function removeTag(pid, idx) {
+    var list = tagsOf(pid).slice();
+    if (idx < 0 || idx >= list.length) return;
+    list.splice(idx, 1);
+    if (list.length) tagState.tags[pid] = list;
+    else delete tagState.tags[pid];
+    renderChips(pid);
+    renderToolbar();
+  }
+
+  function flashRow(pid, text, kind) {
+    var row = $('row-' + pid);
+    if (!row) return;
+    var note = document.createElement('div');
+    note.className = 'hint' + (kind === 'warn' ? ' warn' : '');
+    note.innerText = text;
+    row.querySelector('.pmain').appendChild(note);
+    setTimeout(function () { if (note.parentNode) note.parentNode.removeChild(note); }, 2200);
+  }
+
+  async function refreshTags() {
+    try {
+      var d = await apiGet('tags=1');
+      if (!d || !d.ok) throw new Error('bad_response');
+      var map = normalizeMap(d.tags);
+      tagState.origin = map;
+      tagState.tags = JSON.parse(JSON.stringify(map));
+      tagState.loaded = true;
+      renderAllChips();
+      renderTagStatus();
+      return true;
+    } catch (e) {
+      tagState.loaded = false;
+      renderToolbar();
+      $('curCount').innerText = '读取失败';
+      $('curList').innerHTML = '<span class="clr">' + esc(e && e.message) + '</span>';
+      return false;
+    }
+  }
+
+  async function saveOneTag(pid, key) {
+    var list = tagsOf(pid);
+    var d = await apiWrite({ tagSet: true, key: key, playerId: pid, tags: list });
+    if (d && d.ok) return { ok: true };
+    var reason = (d && d.reason) || 'unknown';
+    var map = {
+      bad_key: '密钥不对，什么都没改。',
+      bad_player: '选手编号不合法。',
+      bad_tags: '标签格式不对。',
+      too_many_tags: '标签超过 6 个了。',
+      too_many: '错误次数太多，被临时限流，过几分钟再试。',
+      tag_set_failed: '服务器没能保存。'
+    };
+    return { ok: false, reason: reason, text: map[reason] || ('保存失败（' + reason + '）。') };
+  }
+
+  async function saveAllTags() {
+    if (tagState.busy) return;
+    var key = getKey();
+    if (!key) { sayTags('err', '密钥无效，请重新解锁。'); return; }
+
+    var ids = dirtyIds();
+    if (!ids.length) { sayTags('ok', '没有需要保存的改动。'); return; }
+
+    tagState.busy = true;
+    renderToolbar();
+    sayTags('busy', '正在保存 ' + ids.length + ' 位选手…');
+
+    var done = 0;
+    var firstErr = '';
+    for (var i = 0; i < ids.length; i++) {
+      try {
+        var r = await saveOneTag(ids[i], key);
+        if (r.ok) {
+          done++;
+          tagState.origin[ids[i]] = tagsOf(ids[i]).slice();
+          if (!tagState.origin[ids[i]].length) delete tagState.origin[ids[i]];
+        } else if (!firstErr) {
+          firstErr = r.text;
+          if (r.reason === 'bad_key') break; // 密钥不对就别接着试了
+        }
+      } catch (e) {
+        if (!firstErr) firstErr = '网络不通，没能提交（' + (e && e.message) + '）。';
+        break;
+      }
+    }
+
+    tagState.busy = false;
+
+    if (done && !firstErr) {
+      sayTags('ok', '已保存 <b>' + done + '</b> 位选手的标签。访客下次刷新赛事页面就能看到。');
+      await refreshTags();
+    } else if (done && firstErr) {
+      sayTags('err', '保存了 <b>' + done + '</b> 位，剩下的失败了：' + esc(firstErr));
+      renderAllChips();
+      renderTagStatus();
+    } else {
+      sayTags('err', esc(firstErr || '保存失败，什么都没改。'));
+      renderToolbar();
+    }
+  }
+
+  function pickedIds() {
+    var out = [];
+    var boxes = document.querySelectorAll('.pickbox');
+    for (var i = 0; i < boxes.length; i++) {
+      if (boxes[i].checked) out.push(parseInt(boxes[i].getAttribute('data-pid'), 10));
+    }
+    return out;
+  }
+
+  function setPicked(fn) {
+    var boxes = document.querySelectorAll('.pickbox');
+    for (var i = 0; i < boxes.length; i++) {
+      var pid = parseInt(boxes[i].getAttribute('data-pid'), 10);
+      boxes[i].checked = !!fn(pid);
+    }
+    renderBatchCount();
+  }
+
+  function renderBatchCount() {
+    var n = pickedIds().length;
+    $('batchCountLabel').innerText = n ? ('已勾选 ' + n + ' 位') : '';
+    $('batchAddBtn').disabled = tagState.busy;
+  }
+
+  /* ==========================================================================
+     事件绑定
+     ========================================================================== */
+  function bindEvents() {
+    /* ---- 门禁 ---- */
+    $('gateForm').addEventListener('submit', function (ev) {
+      ev.preventDefault();
+      unlock($('gateKey').value.trim(), false);
+    });
+
+    $('gatePeek').addEventListener('click', function () {
+      var input = $('gateKey');
+      var show = input.type === 'password';
+      input.type = show ? 'text' : 'password';
+      this.innerText = show ? '隐藏' : '显示';
+    });
+
+    $('lockBtn').addEventListener('click', function () { lockConsole(); });
+
+    $('tabLive').addEventListener('click', function () { showTab('live', true); });
+    $('tabTags').addEventListener('click', function () { showTab('tags', true); });
+
+    /* ---- 总台 ---- */
+    $('enabledSwitch').addEventListener('click', function () {
+      setLiveEnabled(!liveState.enabled);
+      renderLivePreview();
+    });
+
+    ['roomInput', 'titleInput', 'noteInput'].forEach(function (id) {
+      $(id).addEventListener('input', function () {
+        if (id === 'roomInput') {
+          var raw = this.value.trim();
+          var room = parseRoom(raw);
+          var hint = $('roomHint');
+          if (!raw) {
+            hint.className = 'hint';
+            hint.innerText = '支持直接粘贴直播间地址；填了后面会自动取出房间号。';
+          } else if (room) {
+            hint.className = 'hint';
+            hint.innerText = '识别到房间号 ' + room + '（保存后访客点开的就是这个直播间）。';
+          } else {
+            hint.className = 'hint warn';
+            hint.innerText = '没看出房间号，请粘贴形如 https://live.bilibili.com/123456 的地址。';
+          }
+        }
+        renderLivePreview();
+      });
+    });
+
+    $('loadBtn').addEventListener('click', async function () {
+      this.disabled = true;
+      quietLive();
+      var d = await refreshLive(true);
+      this.disabled = false;
+      if (d) sayLive('ok', '已读取线上当前配置。');
+      else sayLive('err', '读取失败，检查一下网络。');
+    });
+
+    $('liveSaveBtn').addEventListener('click', function () {
+      var raw = $('roomInput').value.trim();
+      var room = parseRoom(raw);
+      if (raw && !room) { sayLive('err', '房间号没识别出来，请粘贴完整直播间的地址。'); $('roomInput').focus(); return; }
+      saveLive(room, $('titleInput').value.trim(), $('noteInput').value.trim(), liveState.enabled, '');
+    });
+
+    $('clearBtn').addEventListener('click', function () {
+      if (!confirm('清空总台？赛事页面上的直播条会整条收起来。')) return;
+      saveLive('', '', '', liveState.enabled, '已清空总台，赛事页面上的直播条已收起。');
+    });
+
+    /* ---- 标签 ---- */
+    $('roster').addEventListener('click', function (ev) {
+      var el = ev.target;
+      if (!el || !el.getAttribute) return;
+      var act = el.getAttribute('data-act');
+      if (!act) return;
+      var pid = parseInt(el.getAttribute('data-pid'), 10);
+      if (!pid) return;
+
+      if (act === 'del') {
+        removeTag(pid, parseInt(el.getAttribute('data-i'), 10));
+      } else if (act === 'add') {
+        var input = $('tagin-' + pid);
+        if (!input) return;
+        var res = addTag(pid, input.value);
+        if (res.ok) {
+          input.value = '';
+          input.focus();
+          if (res.truncated) flashRow(pid, '标签太长，已截到 ' + TAG_MAX + ' 字。', 'warn');
+        } else if (res.reason === 'dup') {
+          flashRow(pid, '这个标签已经有了。', 'warn');
+        } else if (res.reason === 'full') {
+          flashRow(pid, '已经 6 个标签了，先删一个再加。', 'warn');
+        } else {
+          input.focus();
+        }
+      }
+    });
+
+    $('roster').addEventListener('keydown', function (ev) {
+      if (ev.key !== 'Enter' && ev.keyCode !== 13) return;
+      var el = ev.target;
+      if (!el || !el.id || el.id.indexOf('tagin-') !== 0) return;
+      ev.preventDefault();
+      var pid = parseInt(el.id.slice(6), 10);
+      var btn = document.querySelector('[data-act="add"][data-pid="' + pid + '"]');
+      if (btn) btn.click();
+    });
+
+    $('roster').addEventListener('change', function (ev) {
+      var el = ev.target;
+      if (el && el.classList && el.classList.contains('pickbox')) renderBatchCount();
+    });
+
+    $('pickAllBtn').addEventListener('click', function () { setPicked(function () { return true; }); });
+    $('pickNoneBtn').addEventListener('click', function () { setPicked(function () { return false; }); });
+    $('pickTaggedBtn').addEventListener('click', function () {
+      setPicked(function (pid) { return tagsOf(pid).length > 0; });
+    });
+
+    $('batchAddBtn').addEventListener('click', function () {
+      var t = cleanTag($('batchTag').value);
+      var ids = pickedIds();
+      var hint = $('batchHint');
+      if (!t) { hint.className = 'hint warn'; hint.innerText = '先写一个标签再点。'; $('batchTag').focus(); return; }
+      if (!ids.length) { hint.className = 'hint warn'; hint.innerText = '先勾上至少一位选手。'; return; }
+
+      var added = 0, dup = 0, full = 0;
+      ids.forEach(function (pid) {
+        var res = addTag(pid, t);
+        if (res.ok) added++;
+        else if (res.reason === 'dup') dup++;
+        else if (res.reason === 'full') full++;
+      });
+
+      hint.className = 'hint';
+      var parts = ['给 ' + added + ' 位加上「' + t + '」'];
+      if (dup) parts.push(dup + ' 位本来就有');
+      if (full) parts.push(full + ' 位已满 6 个');
+      hint.innerText = parts.join('，') + '。改完记得点下面的「保存改动」。';
+    });
+
+    $('tagSaveBtn').addEventListener('click', function () { saveAllTags(); });
+
+    $('tagReloadBtn').addEventListener('click', async function () {
+      if (dirtyIds().length && !confirm('放弃所有未保存的改动，重新从服务器读取？')) return;
+      this.disabled = true;
+      quietTags();
+      var ok = await refreshTags();
+      this.disabled = false;
+      if (ok) sayTags('ok', '已重新读取服务器上的标签。');
+      else sayTags('err', '读取失败，检查一下网络。');
+    });
+  }
+
+  /** 首次进管理台时把两个面板都初始化一遍。
+      DOM 渲染不依赖网络；网络的第一次拉取统一交给紧随其后的 showTab，别在这里重复发。 */
+  function bootPanels() {
+    renderRoster();
+    renderBatchCount();
+    renderLivePreview();
+  }
+
+  /* ==========================================================================
+     开机
+     ========================================================================== */
+  function boot() {
+    bindEvents();
+
+    // 先从 URL hash 里认页签：live-admin.html / tag-admin.html 的旧链接会带过来
+    var h = String(location.hash || '').replace(/^#/, '');
+    activeTab = (h === 'tags') ? 'tags' : 'live';
+
+    if (isUnlocked()) {
+      var k = recallKey();
+      if (k) {
+        gateSay('busy', '正在验证本机保存的密钥…');
+        unlock(k, true);
+        return;
+      }
+    }
+
+    $('gateKey').focus();
+  }
+
+  boot();
+
+  // Node 测试环境下也能直接驱动内部逻辑
+  if (typeof window !== 'undefined') {
+    window.__doumaoTagAdmin = {
+      ROSTER: ROSTER,
+      state: tagState,
+      liveState: liveState,
+      limits: { TAG_MAX: TAG_MAX, TAG_COUNT_MAX: TAG_COUNT_MAX },
+      cleanTag: cleanTag,
+      normalizeMap: normalizeMap,
+      tagsOf: tagsOf,
+      isDirty: isDirty,
+      dirtyIds: dirtyIds,
+      addTag: addTag,
+      removeTag: removeTag,
+      renderRoster: renderRoster,
+      renderAllChips: renderAllChips,
+      renderToolbar: renderToolbar,
+      renderTagStatus: renderTagStatus,
+      refreshTags: refreshTags,
+      saveAll: saveAllTags,
+      setPicked: setPicked,
+      pickedIds: pickedIds,
+      apiWrite: apiWrite,
+      setKey: setKey,
+      getKey: getKey,
+      verifyKey: verifyKey,
+      unlock: unlock,
+      showTab: showTab,
+      activeTab: function () { return activeTab; }
+    };
+  }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,77 @@
+{
+  "rule_1": {
+    "title": "总规与计分细则 (Rule 1)",
+    "subtitle": "黑流树海 dlc0 基础规程、得分公式与违规条例",
+    "sections": [
+      {
+        "id": 1,
+        "chapter": "第 1 章",
+        "title": "限制规则",
+        "summary": "难度选择、奖励禁用、沙盘要求与干员抓取限制",
+        "image": "assets/rules/slices/rule1_sec01_limitations.jpg"
+      },
+      {
+        "id": 2,
+        "chapter": "第 2 章",
+        "title": "分数总览",
+        "summary": "总分计算公式、N12/N15 生还结算与逃课扣分",
+        "image": "assets/rules/slices/rule1_sec02_scoring_base.jpg"
+      },
+      {
+        "id": 3,
+        "chapter": "第 3 章",
+        "title": "分队与临时招募",
+        "summary": "文明开化分队奖励、六星及以下临时招募加分",
+        "image": "assets/rules/slices/rule1_sec03_squad_recruits.jpg"
+      },
+      {
+        "id": 4,
+        "chapter": "第 4 章",
+        "title": "藏品路线加分",
+        "summary": "双沙盘携带、神明/光明/文明三件套与特色藏品加分",
+        "image": "assets/rules/slices/rule1_sec04_relics_routes.jpg"
+      },
+      {
+        "id": 5,
+        "chapter": "第 5 章",
+        "title": "关卡与追猎加分",
+        "summary": "赤金厄运、哀悼铁腕、冰冷流亡等追猎关卡高额加分",
+        "image": "assets/rules/slices/rule1_sec05_stages_hunts.jpg"
+      },
+      {
+        "id": 6,
+        "chapter": "第 6 章",
+        "title": "不期而遇特殊战",
+        "summary": "闹乐/灭身/纵怒、源流交汇处作战与特殊实托邦",
+        "image": "assets/rules/slices/rule1_sec06_encounters.jpg"
+      },
+      {
+        "id": 7,
+        "chapter": "第 7 章",
+        "title": "紧急与违规条例",
+        "summary": "紧急关卡加分、违规扣分/取消成绩及录屏提交须知",
+        "image": "assets/rules/slices/rule1_sec07_penalties_submission.jpg"
+      }
+    ]
+  },
+  "rule_2": {
+    "title": "可选挑战赛道 (Rule 2)",
+    "subtitle": "职业队巅峰与特色分队悬赏挑战",
+    "sections": [
+      {
+        "id": 1,
+        "chapter": "赛道 1",
+        "title": "职业队赛道",
+        "summary": "近锋/术特/狙医/重辅最强挑战、非本家干员限制与奖金",
+        "image": "assets/rules/slices/rule2_sec01_prof_squads.jpg"
+      },
+      {
+        "id": 2,
+        "chapter": "赛道 2",
+        "title": "特色队赛道",
+        "summary": "野人开智(文明开化双盘三供全追猎)、赛前声明与终极大奖",
+        "image": "assets/rules/slices/rule2_sec02_special_squads.jpg"
+      }
+    ]
+  }
+}
